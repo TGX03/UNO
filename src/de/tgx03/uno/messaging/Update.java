@@ -9,9 +9,11 @@ public class Update implements Serializable {
 
     public final Player player;
     public final Card topCard;
+    public final int[] cardNumbers;
 
-    public Update(Player player, Card card) {
+    public Update(Player player, Card card, int[] count) {
         this.player = player;
         this.topCard = card;
+        this.cardNumbers = count;
     }
 }

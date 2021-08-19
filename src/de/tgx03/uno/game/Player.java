@@ -58,6 +58,10 @@ public class Player implements Serializable {
         return false;
     }
 
+    public int cardCount() {
+        return cards.size();
+    }
+
     public boolean won() {
         return cards.size() == 0;
     }

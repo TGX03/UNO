@@ -78,7 +78,7 @@ public class Host implements Runnable {
 
     private void update() throws IOException {
         for (Handler handler : this.handler) {
-            handler.update();
+            handler.update(game.getCardCount());
         }
     }
 
@@ -135,8 +135,8 @@ public class Host implements Runnable {
             }
         }
 
-        public void update() throws IOException {
-            Update update = new Update(game.getPlayer(this.id), game.getTopCard());
+        public void update(int[] cardCount) throws IOException {
+            Update update = new Update(game.getPlayer(this.id), game.getTopCard(), cardCount);
             output.writeObject(update);
         }
     }

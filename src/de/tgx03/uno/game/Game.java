@@ -70,6 +70,14 @@ public class Game {
         return players[id];
     }
 
+    public synchronized int[] getCardCount() {
+        int[] count = new int[players.length];
+        for (int i = 0; i < players.length; i++) {
+            count[i] = players[i].cardCount();
+        }
+        return count;
+    }
+
     public Card getTopCard() {
         return top;
     }
