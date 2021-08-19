@@ -9,12 +9,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client implements Runnable {
 
     private final Socket socket;
     private final ObjectInputStream input;
     private final ObjectOutputStream output;
+    private final List<ClientUpdate> receivers = new ArrayList<>(1);
 
     private Player player;
     private Card topCard;
@@ -49,6 +52,10 @@ public class Client implements Runnable {
         return this.player != null;
     }
 
+    public void registerReceiver(ClientUpdate receiver) {
+        this.receivers.add(receiver);
+    }
+
     public String toString() {
         Card[] cards = player.getCards();
         StringBuilder builder = new StringBuilder();
@@ -67,6 +74,9 @@ public class Client implements Runnable {
                 synchronized (Client.this) {
                     player = update.player;
                     topCard = update.topCard;
+                }
+                for (ClientUpdate receiver : receivers) {
+                    receiver.update(update);
                 }
             } catch (IOException | ClassCastException | ClassNotFoundException e) {
                 System.err.println(e.getMessage());
