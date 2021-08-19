@@ -159,7 +159,7 @@ public class Cards {
         }
 
         @Override
-        public void writeImage(BufferedImage bufferedImage, TranscoderOutput transcoderOutput) throws TranscoderException {
+        public void writeImage(BufferedImage bufferedImage, TranscoderOutput transcoderOutput) {
             this.img = bufferedImage;
         }
     }
