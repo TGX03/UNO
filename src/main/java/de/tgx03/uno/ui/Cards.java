@@ -40,7 +40,7 @@ public class Cards {
         }
         WILD = SwingFXUtils.toFXImage(transcoder.img, null);
 
-        filename = "/cards/WILD.svg";
+        filename = "/cards/WILD_TAKEFOUR.svg";
         in = new TranscoderInput(Cards.class.getResourceAsStream(filename));
         try {
             transcoder.transcode(in, null);
