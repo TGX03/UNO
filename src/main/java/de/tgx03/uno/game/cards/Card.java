@@ -9,21 +9,21 @@ public abstract class Card implements Serializable {
 
     public static Card generateCard() {
         int code = rand.nextInt(108);
-        if (code < 10) {
+        if (code < 19) {
             return new Default(Color.BLUE, (byte) code);
-        } else if (code < 20) {
+        } else if (code < 38) {
             return new Default(Color.GREEN, (byte) (code % 10));
-        } else if (code < 30) {
+        } else if (code < 57) {
             return new Default(Color.RED, (byte) (code % 10));
-        } else if (code < 40) {
+        } else if (code < 76) {
             return new Default(Color.YELLOW, (byte) (code % 10));
-        } else if (code < 48) {
+        } else if (code < 84) {
             return new TakeTwo(chooseSpecialColor(code % 8));
-        } else if (code < 56) {
+        } else if (code < 92) {
             return new Reverse(chooseSpecialColor(code % 8));
-        } else if (code < 64) {
+        } else if (code < 100) {
             return new Skip(chooseSpecialColor(code % 8));
-        } else if (code < 68) {
+        } else if (code < 104) {
             return new ChooseColor();
         } else {
             return new TakeFour();
