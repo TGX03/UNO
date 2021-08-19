@@ -1,0 +1,143 @@
+package de.tgx03.uno.host;
+
+import de.tgx03.uno.game.Game;
+import de.tgx03.uno.game.Rules;
+import de.tgx03.uno.messaging.Command;
+import de.tgx03.uno.messaging.Update;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Host implements Runnable {
+
+    private final ServerSocket serverSocket;
+    private final Rules rules;
+
+    private boolean start = false;
+    private boolean quit = false;
+    private Game game;
+    private final List<Handler> handler = new ArrayList<>();
+
+    public Host(int port, Rules rules) throws IOException {
+        serverSocket = new ServerSocket(port);
+        this.rules = rules;
+        new Thread(this).start();
+    }
+
+    public synchronized void start() {
+        start = true;
+        notifyAll();
+    }
+
+    public void quit() {
+        quit = true;
+    }
+
+    @Override
+    public void run() {
+        new Thread(this::waitForClients).start();
+        synchronized (this) {
+            while (!start) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
+        game = new Game(handler.size(), rules);
+        try {
+            update();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
+    }
+
+    private void waitForClients() {
+        int currentID = 0;
+        while (!start) {
+            try {
+                Socket socket = serverSocket.accept();
+                if (!start) {
+                    Handler handler = new Handler(socket, currentID);
+                    currentID++;
+                    new Thread(handler).start();
+                    this.handler.add(handler);
+                }
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
+
+    private void update() throws IOException {
+        for (Handler handler : this.handler) {
+            handler.update();
+        }
+    }
+
+    private class Handler implements Runnable {
+
+        private final int id;
+        private final ObjectInputStream input;
+        private final ObjectOutputStream output;
+
+        public Handler(Socket socket, int id) throws IOException {
+            this.id = id;
+            this.input = new ObjectInputStream(socket.getInputStream());
+            this.output = new ObjectOutputStream(socket.getOutputStream());
+        }
+
+        @Override
+        public void run() {
+
+            // Wait until the game starts
+            synchronized (Host.this) {
+                while (!start) {
+                    try {
+                        Host.this.wait();
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+            }
+
+            while (!quit) {
+                // Read orders and process them
+                try {
+                    Command order = (Command) input.readObject();
+                    boolean success = false;
+                    synchronized (game) {
+                        switch (order.type) {
+                            case NORMAL -> {
+                                if (game.getCurrentPlayer() == this.id) {
+                                    success = game.playCard(order.cardNumber);
+                                }
+                            }
+                            case JUMP -> success = game.jump(this.id, order.cardNumber);
+                            case ACCEPT -> {
+                                if (game.getCurrentPlayer() == this.id) {
+                                    success = game.acceptCards();
+                                }
+                            }
+                        }
+                    }
+                    output.writeBoolean(success);
+                    Host.this.update();
+                } catch (ClassCastException | IOException | ClassNotFoundException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
+
+        public void update() throws IOException {
+            Update update = new Update(game.getPlayer(this.id), game.getTopCard());
+            output.writeObject(update);
+        }
+    }
+}
