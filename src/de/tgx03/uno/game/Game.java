@@ -70,10 +70,10 @@ public class Game {
         return players[id];
     }
 
-    public synchronized int[] getCardCount() {
-        int[] count = new int[players.length];
+    public synchronized short[] getCardCount() {
+        short[] count = new short[players.length];
         for (int i = 0; i < players.length; i++) {
-            count[i] = players[i].cardCount();
+            count[i] = (short) players[i].cardCount();
         }
         return count;
     }
