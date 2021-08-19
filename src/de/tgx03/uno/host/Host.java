@@ -77,8 +77,11 @@ public class Host implements Runnable {
     }
 
     private void update() throws IOException {
-        for (Handler handler : this.handler) {
-            handler.update(game.getCardCount());
+        synchronized (game) {
+            short[] cardCount = game.getCardCount();
+            for (Handler handler : this.handler) {
+                handler.update(cardCount);
+            }
         }
     }
 
