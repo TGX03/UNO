@@ -139,7 +139,8 @@ public class Host implements Runnable {
         }
 
         public void update(short[] cardCount) throws IOException {
-            Update update = new Update(game.getPlayer(this.id), game.getTopCard(), cardCount);
+            boolean turn = game.getCurrentPlayer() == this.id;
+            Update update = new Update(turn, game.getPlayer(this.id), game.getTopCard(), cardCount);
             output.writeObject(update);
         }
     }
