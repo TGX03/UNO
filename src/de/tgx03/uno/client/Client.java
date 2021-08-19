@@ -52,6 +52,10 @@ public class Client implements Runnable {
         return this.player != null;
     }
 
+    public void exit() {
+        exit = true;
+    }
+
     public void registerReceiver(ClientUpdate receiver) {
         this.receivers.add(receiver);
     }
@@ -81,6 +85,11 @@ public class Client implements Runnable {
             } catch (IOException | ClassCastException | ClassNotFoundException e) {
                 System.err.println(e.getMessage());
             }
+        }
+        try {
+            socket.close();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
         }
     }
 }
