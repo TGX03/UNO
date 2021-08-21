@@ -20,34 +20,20 @@ public class Host implements Runnable {
 
     private final ServerSocket serverSocket;
     private final Rules rules;
-    private final Thread mainThread;
     private final List<Handler> handler = new ArrayList<>();
 
     private boolean start = false;
-    private boolean quit = false;
     private Game game;
 
     public Host(int port, Rules rules) throws IOException {
         serverSocket = new ServerSocket(port);
         this.rules = rules;
-        mainThread = new Thread(this);
-        mainThread.start();
+        new Thread(this).start();
     }
 
     public synchronized void start() {
         start = true;
         notifyAll();
-    }
-
-    public void quit() {
-        quit = true;
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ignored) {
-        } finally {
-            mainThread.stop();
-        }
-
     }
 
     @Override
@@ -122,7 +108,7 @@ public class Host implements Runnable {
                 }
             }
 
-            while (!quit) {
+            while (true) {
                 // Read orders and process them
                 try {
                     Command order = (Command) input.readObject();

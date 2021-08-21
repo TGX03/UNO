@@ -37,70 +37,62 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.tgx03.uno.ui.MainFrame">
-  <children>
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="de.tgx03.uno.ui.MainFrame">
     <MenuBar VBox.vgrow="NEVER">
-      <menus>
         <Menu mnemonicParsing="false" text="Start">
-               <items>
-                  <MenuItem fx:id="createHost" mnemonicParsing="false" onAction="#createHost" text="Create Host" />
-                  <MenuItem fx:id="startGame" disable="true" mnemonicParsing="false" onAction="#startHost" text="Start Host Game" />
-                  <MenuItem fx:id="joinGame" mnemonicParsing="false" onAction="#createClient" text="Join Game" />
-               </items>
+            <MenuItem fx:id="createHost" mnemonicParsing="false" onAction="#createHost" text="Create Host"/>
+            <MenuItem fx:id="startGame" disable="true" mnemonicParsing="false" onAction="#startHost"
+                      text="Start Host Game"/>
+            <MenuItem fx:id="joinGame" mnemonicParsing="false" onAction="#createClient" text="Join Game"/>
         </Menu>
-      </menus>
     </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-         <children>
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                     <children>
-                        <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <ImageView fx:id="topCard" fitHeight="174.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                              <VBox>
-                                 <children>
-                                    <Button fx:id="play" disable="true" mnemonicParsing="false" onAction="#playCard" text="Play">
-                                       <VBox.margin>
-                                          <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
-                                       </VBox.margin>
-                                    </Button>
-                                    <Button mnemonicParsing="false" onAction="#jumpCard" text="Jump">
-                                       <VBox.margin>
-                                          <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                                       </VBox.margin>
-                                    </Button>
-                                    <Button fx:id="accept" disable="true" mnemonicParsing="false" onAction="#acceptCards" text="Accept Cards">
-                                       <VBox.margin>
-                                          <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                                       </VBox.margin>
-                                    </Button>
-                                    <Button fx:id="take" disable="true" mnemonicParsing="false" onAction="#takeCard" text="Take Card">
-                                       <VBox.margin>
-                                          <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                                       </VBox.margin>
-                                    </Button>
-                                    <HBox prefHeight="100.0" prefWidth="200.0">
-                                       <children>
-                                          <ComboBox fx:id="colorPicker" disable="true" prefWidth="150.0" />
-                                          <Button fx:id="setColor" disable="true" mnemonicParsing="false" onAction="#selectColor" text="Set" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                              <ListView fx:id="playerList" disable="true" prefHeight="200.0" prefWidth="200.0" />
-                           </children>
+    <AnchorPane VBox.vgrow="ALWAYS">
+        <SplitPane dividerPositions="0.5" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0"
+                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <ImageView fx:id="topCard" fitHeight="174.0" fitWidth="200.0" pickOnBounds="true"
+                               preserveRatio="true"/>
+                    <VBox>
+                        <Button fx:id="play" disable="true" mnemonicParsing="false"
+                                onAction="#playCard" text="Play">
+                            <VBox.margin>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
+                            </VBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#jumpCard" text="Jump">
+                            <VBox.margin>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="accept" disable="true" mnemonicParsing="false"
+                                onAction="#acceptCards" text="Accept Cards">
+                            <VBox.margin>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="take" disable="true" mnemonicParsing="false"
+                                onAction="#takeCard" text="Take Card">
+                            <VBox.margin>
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                            </VBox.margin>
+                        </Button>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                            <ComboBox fx:id="colorPicker" disable="true" prefWidth="150.0"/>
+                            <Button fx:id="setColor" disable="true" mnemonicParsing="false"
+                                    onAction="#selectColor" text="Set"/>
                         </HBox>
-                     </children>
-                  </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                     <children>
-                        <ListView id="cardList" fx:id="cardList" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-              </items>
-            </SplitPane>
-         </children></AnchorPane>
-  </children>
+                    </VBox>
+                    <ListView fx:id="playerList" disable="true" prefHeight="200.0" prefWidth="200.0"/>
+                </HBox>
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <ListView id="cardList" fx:id="cardList" orientation="HORIZONTAL" prefHeight="200.0"
+                          prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+            </AnchorPane>
+        </SplitPane>
+    </AnchorPane>
 </VBox>

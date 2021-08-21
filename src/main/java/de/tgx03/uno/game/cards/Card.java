@@ -45,7 +45,7 @@ public abstract class Card implements Serializable {
             case 3 -> {
                 return Color.YELLOW;
             }
-            default -> {throw new IllegalArgumentException("Number must be between 0 and 3");}
+            default -> throw new IllegalArgumentException("Number must be between 0 and 3");
         }
     }
 

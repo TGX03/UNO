@@ -1,8 +1,6 @@
 package de.tgx03.uno.game;
 
 import de.tgx03.uno.game.cards.Card;
-import de.tgx03.uno.game.cards.TakeFour;
-import de.tgx03.uno.game.cards.TakeTwo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,20 +40,6 @@ public class Player implements Serializable {
 
     public void updateTop(Card card) {
         this.top = card;
-    }
-
-    public boolean canStack2() {
-        for (Card card : cards) {
-            if (card instanceof TakeTwo) return true;
-        }
-        return false;
-    }
-
-    public boolean canStack4() {
-        for (Card card : cards) {
-            if (card instanceof TakeFour) return true;
-        }
-        return false;
     }
 
     public int cardCount() {

@@ -58,7 +58,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     private Host host;
     private Client client;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         launch(args);
     }
 
@@ -168,13 +168,6 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 
     private Rules createRules() {
         return new RuleDialog().showAndWait();
-    }
-
-    private void playError() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText(null);
-        alert.setContentText("Can't play this card");
-        alert.showAndWait();
     }
 
     private synchronized void enable(boolean turn) {

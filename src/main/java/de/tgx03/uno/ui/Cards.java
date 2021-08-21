@@ -58,7 +58,7 @@ public class Cards {
     }
 
     public static Image getCard(Card card) {
-        int number = 0;
+        int number;
         if (card instanceof TakeFour) {
             return TAKEFOUR;
         } else if (card instanceof ChooseColor) {
@@ -87,9 +87,7 @@ public class Cards {
             case BLUE -> {
                 return BLUE[number];
             }
-            default -> {
-                throw new IllegalArgumentException("Card has invalid color");
-            }
+            default -> throw new IllegalArgumentException("Card has invalid color");
         }
     }
 

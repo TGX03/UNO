@@ -15,17 +15,15 @@ import java.util.List;
 
 public class Client implements Runnable {
 
-    private final Socket socket;
     private final ObjectInputStream input;
     private final ObjectOutputStream output;
     private final List<ClientUpdate> receivers = new ArrayList<>(1);
 
     private Player player;
     private Card topCard;
-    private boolean exit = false;
 
     public Client(String hostIP, int hostPort) throws IOException {
-        socket = new Socket(hostIP, hostPort);
+        Socket socket = new Socket(hostIP, hostPort);
         output = new ObjectOutputStream(socket.getOutputStream());
         input = new ObjectInputStream(socket.getInputStream());
         new Thread(this).start();
@@ -65,14 +63,6 @@ public class Client implements Runnable {
         return player;
     }
 
-    public synchronized boolean started() {
-        return this.player != null;
-    }
-
-    public void exit() {
-        exit = true;
-    }
-
     public void registerReceiver(ClientUpdate receiver) {
         this.receivers.add(receiver);
     }
@@ -89,7 +79,7 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
-        while(!exit) {
+        while(true) {
             try {
                 Update update = (Update) input.readObject();
                 synchronized (Client.this) {
@@ -102,11 +92,6 @@ public class Client implements Runnable {
             } catch (IOException | ClassCastException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-        }
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
