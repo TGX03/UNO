@@ -10,6 +10,12 @@ public class Command implements Serializable {
     public final int cardNumber;
     public final Color color;
 
+    public Command() {
+        this.type = CommandType.TAKE_CARD;
+        this.cardNumber = -1;
+        this.color = null;
+    }
+
     public Command(CommandType type, int cardNumber) {
         this.type = type;
         this.cardNumber = cardNumber;
@@ -23,6 +29,6 @@ public class Command implements Serializable {
     }
 
     public enum CommandType {
-        NORMAL, JUMP, ACCEPT, SELECT_COLOR
+        NORMAL, JUMP, ACCEPT, SELECT_COLOR, TAKE_CARD
     }
 }

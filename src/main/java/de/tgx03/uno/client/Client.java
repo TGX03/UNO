@@ -48,6 +48,16 @@ public class Client implements Runnable {
         return input.readBoolean();
     }
 
+    public synchronized boolean takeCard() throws IOException {
+        Command command = new Command();
+        output.writeObject(command);
+        return input.readBoolean();
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
     public synchronized boolean started() {
         return this.player != null;
     }
