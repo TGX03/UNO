@@ -54,6 +54,8 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     private Button take;
     @FXML
     private Button setColor;
+    @FXML
+    private ListView<String> counter;
 
     private Host host;
     private Client client;
@@ -191,8 +193,14 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
             cardList.refresh();
             topCard.setImage(Cards.getCard(update.topCard));
             enable(update.turn);
+            ObservableList<String> counts = counter.getItems();
+            counts.clear();
+            for (int i = 0; i < update.cardNumbers.length; i++) {
+                counts.add((i + 1) + ": \t" + update.cardNumbers[i]);
+            }
+            counter.setItems(counts);
+            counter.refresh();
         });
-
     }
 
     @Override
