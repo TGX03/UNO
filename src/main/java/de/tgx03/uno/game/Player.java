@@ -11,7 +11,7 @@ import java.util.List;
 public class Player implements Serializable {
 
     private final List<Card> cards = new ArrayList<>(7);
-    private Card top;
+    private transient Card top;
 
     public void initialize() {
         cards.clear();
