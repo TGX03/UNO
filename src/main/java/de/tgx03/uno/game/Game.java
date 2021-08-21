@@ -19,6 +19,12 @@ public class Game {
             players[i].initialize();
             players[i].updateTop(top);
         }
+        while (top instanceof ColorChooser) {
+            top = Card.generateCard();
+        }
+        if (top instanceof Reverse) reversed = !reversed;
+        else if (top instanceof Skip) nextPlayer();
+        else if (top instanceof TakeTwo) stack = stack + 2;
     }
 
     public synchronized boolean playCard(int cardNumber) {
