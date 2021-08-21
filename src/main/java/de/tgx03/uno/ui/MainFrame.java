@@ -200,23 +200,25 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     }
 
     @Override
-    public void changed(ObservableValue<? extends Number> observableValue, Number number1, Number number2) {
-        Player player = client.getPlayer();
-        Card card = player.getCards()[number2.intValue()];
-        if (card instanceof ColorChooser) {
-            colorPicker.setDisable(false);
-            colorPicker.setItems(choosableColors);
-        } else {
-            colorPicker.setDisable(true);
-            colorPicker.setItems(normalColors);
-        }
-        SelectionModel<String> selector = colorPicker.getSelectionModel();
-        switch (card.color()) {
-            case BLUE -> selector.select(0);
-            case GREEN -> selector.select(1);
-            case RED -> selector.select(2);
-            case YELLOW -> selector.select(3);
-            case BLACK -> selector.select(4);
+    public synchronized void changed(ObservableValue<? extends Number> observableValue, Number number1, Number number2) {
+        if (number2.intValue() > 0) {
+            Player player = client.getPlayer();
+            Card card = player.getCards()[number2.intValue()];
+            if (card instanceof ColorChooser) {
+                colorPicker.setDisable(false);
+                colorPicker.setItems(choosableColors);
+            } else {
+                colorPicker.setDisable(true);
+                colorPicker.setItems(normalColors);
+            }
+            SelectionModel<String> selector = colorPicker.getSelectionModel();
+            switch (card.color()) {
+                case BLUE -> selector.select(0);
+                case GREEN -> selector.select(1);
+                case RED -> selector.select(2);
+                case YELLOW -> selector.select(3);
+                case BLACK -> selector.select(4);
+            }
         }
     }
 }
