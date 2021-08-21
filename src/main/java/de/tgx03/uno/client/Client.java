@@ -12,7 +12,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Client implements Runnable {
 
@@ -25,7 +24,6 @@ public class Client implements Runnable {
     private Player player;
     private Card topCard;
     private boolean exit = false;
-    private boolean awaitingResponse = false;
 
     public Client(String hostIP, int hostPort) throws IOException {
         socket = new Socket(hostIP, hostPort);
@@ -59,16 +57,10 @@ public class Client implements Runnable {
         output.writeObject(command);
     }
 
-    public synchronized boolean selectColor(int cardNumber, Color color) throws IOException {
+    public synchronized void selectColor(int cardNumber, Color color) throws IOException {
+        output.reset();
         Command command = new Command(color, cardNumber);
-        awaitingResponse = true;
-        thread.interrupt();
-        synchronized (input) {
-            output.writeObject(command);
-            boolean result = input.readBoolean();
-            notify();
-            return result;
-        }
+        output.writeObject(command);
     }
 
     public Player getPlayer() {
@@ -101,13 +93,7 @@ public class Client implements Runnable {
     public void run() {
         while(!exit) {
             try {
-                Update update;
-                synchronized (input) {
-                    while (awaitingResponse) {
-                        wait();
-                    }
-                    update = (Update) input.readObject();
-                }
+                Update update = (Update) input.readObject();
                 synchronized (Client.this) {
                     player = update.player;
                     topCard = update.topCard;
@@ -115,7 +101,7 @@ public class Client implements Runnable {
                 for (ClientUpdate receiver : receivers) {
                     receiver.update(update);
                 }
-            } catch (IOException | ClassCastException | ClassNotFoundException | InterruptedException e) {
+            } catch (IOException | ClassCastException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
