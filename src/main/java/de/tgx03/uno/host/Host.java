@@ -58,7 +58,7 @@ public class Host implements Runnable {
                 try {
                     wait();
                 } catch (InterruptedException e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
@@ -66,7 +66,7 @@ public class Host implements Runnable {
         try {
             update();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
 
     }
@@ -83,7 +83,7 @@ public class Host implements Runnable {
                     this.handler.add(handler);
                 }
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -152,7 +152,7 @@ public class Host implements Runnable {
                     output.writeBoolean(success);
                     Host.this.update();
                 } catch (ClassCastException | IOException | ClassNotFoundException e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }

@@ -36,7 +36,7 @@ public class Cards {
         try {
             transcoder.transcode(in, null);
         } catch (TranscoderException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
         WILD = SwingFXUtils.toFXImage(transcoder.img, null);
 
@@ -45,7 +45,7 @@ public class Cards {
         try {
             transcoder.transcode(in, null);
         } catch (TranscoderException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
         TAKEFOUR = SwingFXUtils.toFXImage(transcoder.img, null);
 
@@ -114,7 +114,7 @@ public class Cards {
                     transcoder.transcode(in, null);
                     target[i] = SwingFXUtils.toFXImage(transcoder.img, null);
                 } catch (TranscoderException e) {
-                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
 
@@ -124,7 +124,7 @@ public class Cards {
                 transcoder.transcode(in, null);
                 target[10] = SwingFXUtils.toFXImage(transcoder.img, null);
             } catch (TranscoderException e) {
-                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
 
             filename = "/cards/" + color + "_SKIP.svg";
@@ -134,7 +134,7 @@ public class Cards {
                 target[11] = SwingFXUtils.toFXImage(transcoder.img, null);
 
             } catch (TranscoderException e) {
-                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
 
             filename = "/cards/" + color + "_TAKETWO.svg";
@@ -144,7 +144,7 @@ public class Cards {
                 target[12] = SwingFXUtils.toFXImage(transcoder.img, null);
 
             } catch (TranscoderException e) {
-                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }

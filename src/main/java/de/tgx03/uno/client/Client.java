@@ -100,13 +100,13 @@ public class Client implements Runnable {
                     receiver.update(update);
                 }
             } catch (IOException | ClassCastException | ClassNotFoundException e) {
-                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         }
         try {
             socket.close();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }
