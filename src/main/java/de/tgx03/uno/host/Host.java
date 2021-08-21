@@ -111,6 +111,7 @@ public class Host implements Runnable {
             while (true) {
                 // Read orders and process them
                 try {
+                    input.reset();
                     Command order = (Command) input.readObject();
                     boolean success = false;
                     synchronized (game) {
@@ -138,7 +139,7 @@ public class Host implements Runnable {
                     if (success) {
                         Host.this.update();
                     }
-                } catch (ClassCastException | IOException | ClassNotFoundException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
