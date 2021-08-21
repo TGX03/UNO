@@ -90,9 +90,6 @@ public class Game {
     }
 
     private synchronized boolean normalPlay(int cardNumber) {
-        while (players[currentPlayer].won()) {
-            nextPlayer();
-        }
         Card played = players[currentPlayer].playCard(cardNumber);
         if (played == null) return false;
         top = played;
