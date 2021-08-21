@@ -2,6 +2,7 @@ package de.tgx03.uno.client;
 
 import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.cards.Card;
+import de.tgx03.uno.game.cards.Color;
 import de.tgx03.uno.messaging.Command;
 import de.tgx03.uno.messaging.Update;
 
@@ -50,6 +51,12 @@ public class Client implements Runnable {
 
     public synchronized boolean takeCard() throws IOException {
         Command command = new Command();
+        output.writeObject(command);
+        return input.readBoolean();
+    }
+
+    public synchronized boolean selectColor(int cardNumber, Color color) throws IOException {
+        Command command = new Command(color, cardNumber);
         output.writeObject(command);
         return input.readBoolean();
     }
