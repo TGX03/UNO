@@ -147,6 +147,9 @@ public class Game {
             currentPlayer++;
             if (currentPlayer >= players.length) currentPlayer = 0;
         }
+        if (getPlayer(getCurrentPlayer()).won()) {
+            nextPlayer();
+        }
     }
 
     private synchronized void updateTop() {
