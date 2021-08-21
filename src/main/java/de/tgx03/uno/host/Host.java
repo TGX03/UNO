@@ -1,7 +1,10 @@
 package de.tgx03.uno.host;
 
 import de.tgx03.uno.game.Game;
+import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.Rules;
+import de.tgx03.uno.game.cards.Card;
+import de.tgx03.uno.game.cards.ColorChooser;
 import de.tgx03.uno.messaging.Command;
 import de.tgx03.uno.messaging.Update;
 
@@ -137,6 +140,7 @@ public class Host implements Runnable {
                                     success = game.acceptCards();
                                 }
                             }
+                            case SELECT_COLOR -> success = selectColor(order);
                         }
                     }
                     output.writeBoolean(success);
@@ -151,6 +155,17 @@ public class Host implements Runnable {
             boolean turn = game.getCurrentPlayer() == this.id;
             Update update = new Update(turn, game.getPlayer(this.id), game.getTopCard(), cardCount);
             output.writeObject(update);
+        }
+
+        private boolean selectColor(Command order) {
+            Player player = game.getPlayer(this.id);
+            Card card = player.getCards()[order.cardNumber];
+            if (card instanceof ColorChooser) {
+                ((ColorChooser) card).setColor(order.color);
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }

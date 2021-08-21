@@ -89,6 +89,11 @@ public class Game {
         Card played = players[currentPlayer].playCard(cardNumber);
         if (played == null) return false;
         top = played;
+        if (played instanceof ColorChooser) {
+            if (played.color() == Color.BLACK) {
+                return false;
+            }
+        }
         if (played instanceof Reverse) {
             reversed = !reversed;
         } else if (played instanceof Skip) {
