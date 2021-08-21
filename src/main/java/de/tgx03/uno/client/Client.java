@@ -19,7 +19,6 @@ public class Client implements Runnable {
     private final ObjectInputStream input;
     private final ObjectOutputStream output;
     private final List<ClientUpdate> receivers = new ArrayList<>(1);
-    private final Thread thread;
 
     private Player player;
     private Card topCard;
@@ -29,8 +28,7 @@ public class Client implements Runnable {
         socket = new Socket(hostIP, hostPort);
         output = new ObjectOutputStream(socket.getOutputStream());
         input = new ObjectInputStream(socket.getInputStream());
-        thread = new Thread(this);
-        thread.start();
+        new Thread(this).start();
     }
 
     public synchronized void play(int cardNumber) throws IOException {
