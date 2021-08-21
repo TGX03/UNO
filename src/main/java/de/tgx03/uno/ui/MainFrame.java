@@ -34,6 +34,8 @@ public class MainFrame extends Application implements ClientUpdate {
     private MenuItem startGame;
     @FXML
     private MenuItem joinGame;
+    @FXML
+    private ImageView topCard;
 
     private final ObservableList<ImageView> list = FXCollections.observableArrayList();
 
@@ -109,5 +111,6 @@ public class MainFrame extends Application implements ClientUpdate {
         list.clear();
         list.addAll(images);
         cardList.setItems(list);
+        topCard.setImage(Cards.getCard(update.topCard));
     }
 }

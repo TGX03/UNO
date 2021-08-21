@@ -33,6 +33,7 @@
 -->
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.tgx03.uno.ui.MainFrame">
@@ -51,6 +52,7 @@
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
             <ListView id="cardList" fx:id="cardList" layoutY="174.0" orientation="HORIZONTAL" prefHeight="200.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="175.0" />
+            <ImageView fx:id="topCard" fitHeight="174.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
          </children></AnchorPane>
   </children>
 </VBox>
