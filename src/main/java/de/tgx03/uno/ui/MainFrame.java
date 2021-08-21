@@ -181,17 +181,22 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     }
 
     @Override
-    public void update(Update update) {
-        Card[] cards = update.player.getCards();
-        ImageView[] images = new ImageView[cards.length];
-        for (int i = 0; i < cards.length; i++)  {
-            images[i] = new ImageView(Cards.getCard(cards[i]));
-        }
-        list.clear();
-        list.addAll(images);
-        cardList.setItems(list);
-        topCard.setImage(Cards.getCard(update.topCard));
-        enable(update.turn);
+    public synchronized void update(Update update) {
+        Platform.runLater(() -> {
+            Card[] cards = update.player.getCards();
+            ImageView[] images = new ImageView[cards.length];
+            for (int i = 0; i < cards.length; i++)  {
+                images[i] = new ImageView(Cards.getCard(cards[i]));
+            }
+            ObservableList<ImageView> list = cardList.getItems();
+            list.clear();
+            list.addAll(images);
+            cardList.setItems(list);
+            cardList.refresh();
+            topCard.setImage(Cards.getCard(update.topCard));
+            enable(update.turn);
+        });
+
     }
 
     @Override
