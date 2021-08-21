@@ -36,21 +36,25 @@ public class Client implements Runnable {
     }
 
     public synchronized void play(int cardNumber) throws IOException {
+        output.reset();
         Command command = new Command(Command.CommandType.NORMAL, cardNumber);
         output.writeObject(command);
     }
 
     public synchronized void jump(int cardNumber) throws IOException {
+        output.reset();
         Command command = new Command(Command.CommandType.JUMP, cardNumber);
         output.writeObject(command);
     }
 
     public synchronized void acceptCards() throws IOException {
+        output.reset();
         Command command = new Command(Command.CommandType.ACCEPT, -1);
         output.writeObject(command);
     }
 
     public synchronized void takeCard() throws IOException {
+        output.reset();
         Command command = new Command();
         output.writeObject(command);
     }
