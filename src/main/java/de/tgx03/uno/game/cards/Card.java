@@ -10,7 +10,7 @@ public abstract class Card implements Serializable {
     public static Card generateCard() {
         int code = rand.nextInt(108);
         if (code < 19) {
-            return new Default(Color.BLUE, (byte) code);
+            return new Default(Color.BLUE, (byte) (code % 10));
         } else if (code < 38) {
             return new Default(Color.GREEN, (byte) (code % 10));
         } else if (code < 57) {
