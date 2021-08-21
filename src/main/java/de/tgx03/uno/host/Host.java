@@ -140,7 +140,7 @@ public class Host implements Runnable {
                                     success = game.acceptCards();
                                 }
                             }
-                            case SELECT_COLOR -> success = selectColor(order);
+                            case SELECT_COLOR -> selectColor(order);
                             case TAKE_CARD -> {
                                 if (game.getCurrentPlayer() == this.id) {
                                     game.takeCard();
@@ -149,8 +149,9 @@ public class Host implements Runnable {
                             }
                         }
                     }
-                    output.writeBoolean(success);
-                    Host.this.update();
+                    if (success) {
+                        Host.this.update();
+                    }
                 } catch (ClassCastException | IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }

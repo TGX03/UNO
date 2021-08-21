@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Client implements Runnable {
 
@@ -19,46 +20,51 @@ public class Client implements Runnable {
     private final ObjectInputStream input;
     private final ObjectOutputStream output;
     private final List<ClientUpdate> receivers = new ArrayList<>(1);
+    private final Thread thread;
 
     private Player player;
     private Card topCard;
     private boolean exit = false;
+    private boolean awaitingResponse = false;
 
     public Client(String hostIP, int hostPort) throws IOException {
         socket = new Socket(hostIP, hostPort);
         output = new ObjectOutputStream(socket.getOutputStream());
         input = new ObjectInputStream(socket.getInputStream());
-        new Thread(this).start();
+        thread = new Thread(this);
+        thread.start();
     }
 
-    public synchronized boolean play(int cardNumber) throws IOException {
+    public synchronized void play(int cardNumber) throws IOException {
         Command command = new Command(Command.CommandType.NORMAL, cardNumber);
         output.writeObject(command);
-        return input.readBoolean();
     }
 
-    public synchronized boolean jump(int cardNumber) throws IOException {
+    public synchronized void jump(int cardNumber) throws IOException {
         Command command = new Command(Command.CommandType.JUMP, cardNumber);
         output.writeObject(command);
-        return input.readBoolean();
     }
 
-    public synchronized boolean acceptCards() throws IOException {
+    public synchronized void acceptCards() throws IOException {
         Command command = new Command(Command.CommandType.ACCEPT, -1);
         output.writeObject(command);
-        return input.readBoolean();
     }
 
-    public synchronized boolean takeCard() throws IOException {
+    public synchronized void takeCard() throws IOException {
         Command command = new Command();
         output.writeObject(command);
-        return input.readBoolean();
     }
 
     public synchronized boolean selectColor(int cardNumber, Color color) throws IOException {
         Command command = new Command(color, cardNumber);
-        output.writeObject(command);
-        return input.readBoolean();
+        awaitingResponse = true;
+        thread.interrupt();
+        synchronized (input) {
+            output.writeObject(command);
+            boolean result = input.readBoolean();
+            notify();
+            return result;
+        }
     }
 
     public Player getPlayer() {
@@ -91,7 +97,13 @@ public class Client implements Runnable {
     public void run() {
         while(!exit) {
             try {
-                Update update = (Update) input.readObject();
+                Update update;
+                synchronized (input) {
+                    while (awaitingResponse) {
+                        wait();
+                    }
+                    update = (Update) input.readObject();
+                }
                 synchronized (Client.this) {
                     player = update.player;
                     topCard = update.topCard;
@@ -99,7 +111,7 @@ public class Client implements Runnable {
                 for (ClientUpdate receiver : receivers) {
                     receiver.update(update);
                 }
-            } catch (IOException | ClassCastException | ClassNotFoundException e) {
+            } catch (IOException | ClassCastException | ClassNotFoundException | InterruptedException e) {
                 e.printStackTrace();
             }
         }

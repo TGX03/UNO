@@ -2,11 +2,16 @@ package de.tgx03.uno.ui;
 
 import de.tgx03.uno.client.Client;
 import de.tgx03.uno.client.ClientUpdate;
+import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.Rules;
 import de.tgx03.uno.game.cards.Card;
+import de.tgx03.uno.game.cards.Color;
+import de.tgx03.uno.game.cards.ColorChooser;
 import de.tgx03.uno.host.Host;
 import de.tgx03.uno.messaging.Update;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,17 +19,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Optional;
 
-public class MainFrame extends Application implements ClientUpdate {
+public class MainFrame extends Application implements ClientUpdate, ChangeListener<Number> {
+
+    private static final ObservableList<String> normalColors = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow");
+    private static final ObservableList<String> choosableColors = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow", "Black");
 
     @FXML
     private ListView<ImageView> cardList;
@@ -36,6 +41,16 @@ public class MainFrame extends Application implements ClientUpdate {
     private MenuItem joinGame;
     @FXML
     private ImageView topCard;
+    @FXML
+    private ComboBox<String> colorPicker;
+    @FXML
+    private ListView<String> playerList;
+    @FXML
+    private Button play;
+    @FXML
+    private Button accept;
+    @FXML
+    private Button take;
 
     private final ObservableList<ImageView> list = FXCollections.observableArrayList();
 
@@ -85,6 +100,7 @@ public class MainFrame extends Application implements ClientUpdate {
 
     public void startHost(ActionEvent e) {
         host.start();
+        cardList.getSelectionModel().selectedIndexProperty().addListener(this);
     }
 
     public void createClient(ActionEvent e) {
@@ -92,13 +108,77 @@ public class MainFrame extends Application implements ClientUpdate {
             ConnectionDialog dialog = new ConnectionDialog();
             client = dialog.createClient();
             client.registerReceiver(this);
+            cardList.getSelectionModel().selectedIndexProperty().addListener(this);
         } catch (Exception ex) {
+            ExceptionDialog.showException(ex);
+        }
+    }
+
+    public void playCard(ActionEvent e) {
+        int selected = cardList.getSelectionModel().getSelectedIndex();
+        try {
+            client.play(selected);
+        } catch (IOException ex) {
+            ExceptionDialog.showException(ex);
+        }
+    }
+
+    public void jumpCard(ActionEvent e) {
+        int selected = cardList.getSelectionModel().getSelectedIndex();
+        try {
+            client.jump(selected);
+        } catch (IOException ex) {
+            ExceptionDialog.showException(ex);
+        }
+    }
+
+    public void acceptCards(ActionEvent e) {
+        try {
+            client.acceptCards();
+        } catch (IOException ex) {
+            ExceptionDialog.showException(ex);
+        }
+    }
+
+    public void takeCard(ActionEvent e) {
+        try {
+            client.takeCard();
+        } catch (IOException ex) {
+            ExceptionDialog.showException(ex);
+        }
+    }
+
+    public void selectColor(ActionEvent e) {
+        int selectedColor = colorPicker.getSelectionModel().getSelectedIndex();
+        int selectedCard = cardList.getSelectionModel().getSelectedIndex();
+        try {
+            switch (selectedColor) {
+                case 0 -> client.selectColor(selectedCard, Color.BLUE);
+                case 1 -> client.selectColor(selectedCard, Color.GREEN);
+                case 2 -> client.selectColor(selectedCard, Color.RED);
+                case 3 -> client.selectColor(selectedCard, Color.YELLOW);
+                case 4 -> client.selectColor(selectedCard, Color.BLACK);
+            }
+        } catch (IOException ex) {
             ExceptionDialog.showException(ex);
         }
     }
 
     private Rules createRules() {
         return new RuleDialog().showAndWait();
+    }
+
+    private void playError() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(null);
+        alert.setContentText("Can't play this card");
+        alert.showAndWait();
+    }
+
+    private void enable(boolean turn) {
+        play.setDisable(!turn);
+        accept.setDisable(!turn);
+        take.setDisable(!turn);
     }
 
     @Override
@@ -112,5 +192,27 @@ public class MainFrame extends Application implements ClientUpdate {
         list.addAll(images);
         cardList.setItems(list);
         topCard.setImage(Cards.getCard(update.topCard));
+        enable(update.turn);
+    }
+
+    @Override
+    public void changed(ObservableValue<? extends Number> observableValue, Number number1, Number number2) {
+        Player player = client.getPlayer();
+        Card card = player.getCards()[number2.intValue()];
+        if (card instanceof ColorChooser) {
+            colorPicker.setDisable(false);
+            colorPicker.setItems(choosableColors);
+        } else {
+            colorPicker.setDisable(true);
+            colorPicker.setItems(normalColors);
+        }
+        SelectionModel<String> selector = colorPicker.getSelectionModel();
+        switch (card.color()) {
+            case BLUE -> selector.select(0);
+            case GREEN -> selector.select(1);
+            case RED -> selector.select(2);
+            case YELLOW -> selector.select(3);
+            case BLACK -> selector.select(4);
+        }
     }
 }
