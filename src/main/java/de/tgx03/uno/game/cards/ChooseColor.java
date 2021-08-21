@@ -20,11 +20,7 @@ public class ChooseColor extends Card implements ColorChooser{
     }
 
     public void setColor(Color color) {
-        if (color == Color.BLACK) {
-            throw new IllegalArgumentException("Needs to be set to a valid color after playing");
-        } else {
-            this.color = color;
-        }
+        this.color = color;
     }
 
     @Override

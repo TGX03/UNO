@@ -52,6 +52,8 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     private Button accept;
     @FXML
     private Button take;
+    @FXML
+    private Button setColor;
 
     private Host host;
     private Client client;
@@ -65,6 +67,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         Parent root = FXMLLoader.load(getClass().getResource("/MainFrame.fxml"));
         stage.setTitle("UNO");
         stage.setScene(new Scene(root));
+        stage.setOnCloseRequest(e -> System.exit(0));
         stage.show();
     }
 
@@ -185,7 +188,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         Platform.runLater(() -> {
             Card[] cards = update.player.getCards();
             ImageView[] images = new ImageView[cards.length];
-            for (int i = 0; i < cards.length; i++)  {
+            for (int i = 0; i < cards.length; i++) {
                 images[i] = new ImageView(Cards.getCard(cards[i]));
             }
             ObservableList<ImageView> list = cardList.getItems();
@@ -206,9 +209,11 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
             Card card = player.getCards()[number2.intValue()];
             if (card instanceof ColorChooser) {
                 colorPicker.setDisable(false);
+                setColor.setDisable(false);
                 colorPicker.setItems(choosableColors);
             } else {
                 colorPicker.setDisable(true);
+                setColor.setDisable(false);
                 colorPicker.setItems(normalColors);
             }
             SelectionModel<String> selector = colorPicker.getSelectionModel();

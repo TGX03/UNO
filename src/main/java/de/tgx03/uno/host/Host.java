@@ -140,7 +140,7 @@ public class Host implements Runnable {
                                     success = game.acceptCards();
                                 }
                             }
-                            case SELECT_COLOR -> selectColor(order);
+                            case SELECT_COLOR -> success = selectColor(order);
                             case TAKE_CARD -> {
                                 if (game.getCurrentPlayer() == this.id) {
                                     game.takeCard();
