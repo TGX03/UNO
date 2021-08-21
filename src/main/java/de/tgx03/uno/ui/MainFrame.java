@@ -89,6 +89,7 @@ public class MainFrame extends Application implements ClientUpdate {
         try {
             ConnectionDialog dialog = new ConnectionDialog();
             client = dialog.createClient();
+            client.registerReceiver(this);
         } catch (Exception ex) {
             ExceptionDialog.showException(ex);
         }
