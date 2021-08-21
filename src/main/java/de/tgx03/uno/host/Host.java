@@ -17,16 +17,18 @@ public class Host implements Runnable {
 
     private final ServerSocket serverSocket;
     private final Rules rules;
+    private final Thread mainThread;
+    private final List<Handler> handler = new ArrayList<>();
 
     private boolean start = false;
     private boolean quit = false;
     private Game game;
-    private final List<Handler> handler = new ArrayList<>();
 
     public Host(int port, Rules rules) throws IOException {
         serverSocket = new ServerSocket(port);
         this.rules = rules;
-        new Thread(this).start();
+        mainThread = new Thread(this);
+        mainThread.start();
     }
 
     public synchronized void start() {
@@ -36,6 +38,13 @@ public class Host implements Runnable {
 
     public void quit() {
         quit = true;
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ignored) {
+        } finally {
+            mainThread.stop();
+        }
+
     }
 
     @Override
