@@ -10,6 +10,7 @@ import de.tgx03.uno.game.cards.ColorChooser;
 import de.tgx03.uno.host.Host;
 import de.tgx03.uno.messaging.Update;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -52,8 +53,6 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     @FXML
     private Button take;
 
-    private final ObservableList<ImageView> list = FXCollections.observableArrayList();
-
     private Host host;
     private Client client;
 
@@ -69,7 +68,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         stage.show();
     }
 
-    public void createHost(ActionEvent event) {
+    public synchronized void createHost(ActionEvent event) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Create Host");
         dialog.setHeaderText("Choose Port");
@@ -98,12 +97,12 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
-    public void startHost(ActionEvent e) {
+    public synchronized void startHost(ActionEvent e) {
         host.start();
         cardList.getSelectionModel().selectedIndexProperty().addListener(this);
     }
 
-    public void createClient(ActionEvent e) {
+    public synchronized void createClient(ActionEvent e) {
         try {
             ConnectionDialog dialog = new ConnectionDialog();
             client = dialog.createClient();
@@ -114,7 +113,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
-    public void playCard(ActionEvent e) {
+    public synchronized void playCard(ActionEvent e) {
         int selected = cardList.getSelectionModel().getSelectedIndex();
         try {
             client.play(selected);
@@ -123,7 +122,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
-    public void jumpCard(ActionEvent e) {
+    public synchronized void jumpCard(ActionEvent e) {
         int selected = cardList.getSelectionModel().getSelectedIndex();
         try {
             client.jump(selected);
@@ -132,7 +131,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
-    public void acceptCards(ActionEvent e) {
+    public synchronized void acceptCards(ActionEvent e) {
         try {
             client.acceptCards();
         } catch (IOException ex) {
@@ -140,7 +139,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
-    public void takeCard(ActionEvent e) {
+    public synchronized void takeCard(ActionEvent e) {
         try {
             client.takeCard();
         } catch (IOException ex) {
@@ -148,7 +147,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
-    public void selectColor(ActionEvent e) {
+    public synchronized void selectColor(ActionEvent e) {
         int selectedColor = colorPicker.getSelectionModel().getSelectedIndex();
         int selectedCard = cardList.getSelectionModel().getSelectedIndex();
         try {
@@ -175,7 +174,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         alert.showAndWait();
     }
 
-    private void enable(boolean turn) {
+    private synchronized void enable(boolean turn) {
         play.setDisable(!turn);
         accept.setDisable(!turn);
         take.setDisable(!turn);
