@@ -29,6 +29,7 @@ public class ConnectionDialog {
         confirm.setOnAction(e -> {
             try {
                 client = new Client(host.getText(), Integer.parseInt(port.getText()));
+                stage.close();
             } catch (IOException ignored) {
             } catch (NumberFormatException ex) {
                 validPort = false;
