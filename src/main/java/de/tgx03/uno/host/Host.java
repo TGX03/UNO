@@ -111,7 +111,6 @@ public class Host implements Runnable {
             while (true) {
                 // Read orders and process them
                 try {
-                    input.reset();
                     Command order = (Command) input.readObject();
                     boolean success = false;
                     synchronized (game) {
