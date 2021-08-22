@@ -11,7 +11,7 @@ public class Player implements Serializable {
     private final List<Card> cards = new ArrayList<>(7);
     private transient Card top;
 
-    public void initialize() {
+    protected void initialize() {
         cards.clear();
         for (int i = 0; i < 7; i++) {
             cards.add(Card.generateCard());
