@@ -27,7 +27,9 @@ public class TakeFour extends Card implements ColorChooser {
 	}
 
 	public boolean equals(Object o) {
-		return o instanceof TakeFour;
+		if (o instanceof TakeFour) {
+			return ((TakeFour) o).color == this.color;
+		} else return false;
 	}
 
 	public String toString() {

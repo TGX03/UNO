@@ -28,7 +28,9 @@ public class ChooseColor extends Card implements ColorChooser {
 
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof ChooseColor;
+		if (o instanceof ChooseColor) {
+			return this.color == ((ChooseColor) o).color;
+		} else return false;
 	}
 
 	@Override
