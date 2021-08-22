@@ -91,15 +91,7 @@ public final class Cards {
         }
     }
 
-    private static class Transcoder implements Runnable {
-
-        private final String color;
-        private final Image[] target;
-
-        public Transcoder(String color, Image[] target) {
-            this.color = color;
-            this.target = target;
-        }
+    private record Transcoder(String color, Image[] target) implements Runnable {
 
         @Override
         public void run() {
