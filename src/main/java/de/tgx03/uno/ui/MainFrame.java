@@ -45,8 +45,6 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     @FXML
     private ComboBox<String> colorPicker;
     @FXML
-    private ListView<String> playerList;
-    @FXML
     private Button play;
     @FXML
     private Button accept;
