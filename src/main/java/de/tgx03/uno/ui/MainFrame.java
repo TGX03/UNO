@@ -112,6 +112,8 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
             client = dialog.createClient();
             client.registerReceiver(this);
             cardList.getSelectionModel().selectedIndexProperty().addListener(this);
+            createHost.setDisable(true);
+            joinGame.setDisable(true);
         } catch (Exception ex) {
             ExceptionDialog.showException(ex);
         }
