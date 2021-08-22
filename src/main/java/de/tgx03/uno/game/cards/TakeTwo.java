@@ -1,9 +1,20 @@
 package de.tgx03.uno.game.cards;
 
+/**
+ * A take two card
+ */
 public class TakeTwo extends Card {
 
+    /**
+     * The color of this card
+     */
     public final Color color;
 
+    /**
+     * Creates a new take two card with the provided color
+     *
+     * @param color The color of the new card
+     */
     public TakeTwo(Color color) {
         if (color == Color.BLACK) throw new IllegalArgumentException();
         this.color = color;

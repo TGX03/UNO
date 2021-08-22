@@ -1,6 +1,9 @@
 package de.tgx03.uno.game.cards;
 
-public class TakeFour extends Card implements ColorChooser{
+/**
+ * A class representing the wild take four card
+ */
+public class TakeFour extends Card implements ColorChooser {
 
     private Color color = Color.BLACK;
 

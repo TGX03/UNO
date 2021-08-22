@@ -13,6 +13,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The client of a UNO-Game. It only holds information of its assigned player
+ * and handles communication with the host
+ */
 public class Client implements Runnable {
 
     private final ObjectInputStream input;
@@ -22,47 +26,98 @@ public class Client implements Runnable {
     private Player player;
     private Card topCard;
 
-    public Client(String hostIP, int hostPort) throws IOException {
-        Socket socket = new Socket(hostIP, hostPort);
+    /**
+     * Creates a new client that is connected to the host and interfaces with it
+     *
+     * @param host     The hostname of the server
+     * @param hostPort The port to connect to
+     * @throws IOException If an error occurred when trying to establish the connection
+     */
+    public Client(String host, int hostPort) throws IOException {
+        Socket socket = new Socket(host, hostPort);
         output = new ObjectOutputStream(socket.getOutputStream());
         input = new ObjectInputStream(socket.getInputStream());
         new Thread(this).start();
     }
 
+    /**
+     * Play the selected card normally
+     * There is no response, whether the operation has actually succeeded
+     * must be determined with the update
+     *
+     * @param cardNumber The card to place
+     * @throws IOException When an error occurs during transmission
+     */
     public synchronized void play(int cardNumber) throws IOException {
         output.reset();
         Command command = new Command(Command.CommandType.NORMAL, cardNumber);
         output.writeObject(command);
     }
 
+    /**
+     * Throws in the selected card no matter whose turn it is
+     * There is no response, whether the operation has actually succeeded
+     * must be determined with the update.
+     *
+     * @param cardNumber The card to throw
+     * @throws IOException When an error occurs during transmission
+     */
     public synchronized void jump(int cardNumber) throws IOException {
         output.reset();
         Command command = new Command(Command.CommandType.JUMP, cardNumber);
         output.writeObject(command);
     }
 
+    /**
+     * Informs the host that the penalty cards get accepted by this client
+     *
+     * @throws IOException When an error occurs during transmission
+     */
     public synchronized void acceptCards() throws IOException {
         output.reset();
         Command command = new Command(Command.CommandType.ACCEPT, -1);
         output.writeObject(command);
     }
 
+    /**
+     * Requests the host to create a new card and add it to this player
+     *
+     * @throws IOException When an error occurs during transmission
+     */
     public synchronized void takeCard() throws IOException {
         output.reset();
         Command command = new Command();
         output.writeObject(command);
     }
 
+    /**
+     * Informs the server which color a +4 or Wild Card should have
+     *
+     * @param cardNumber The number of the card to set
+     * @param color      The desired color
+     * @throws IOException When an error occurs during transmission
+     */
     public synchronized void selectColor(int cardNumber, Color color) throws IOException {
         output.reset();
         Command command = new Command(color, cardNumber);
         output.writeObject(command);
     }
 
+    /**
+     * Returns the player object of this client
+     *
+     * @return The player of this client
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Allows another class to receive updates when this client receives
+     * an update from the host
+     *
+     * @param receiver The class requesting to get updated
+     */
     public void registerReceiver(ClientUpdate receiver) {
         this.receivers.add(receiver);
     }
@@ -77,9 +132,12 @@ public class Client implements Runnable {
         return builder.toString();
     }
 
+    /**
+     * Basically the daemon waiting for updates from the server
+     */
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             try {
                 Update update = (Update) input.readObject();
                 synchronized (Client.this) {

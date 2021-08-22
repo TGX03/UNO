@@ -10,6 +10,9 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * The class responsible for providing the images representing the cards
+ */
 public final class Cards {
 
     private static final Image[] RED = new Image[13];
@@ -20,6 +23,8 @@ public final class Cards {
     private static final Image TAKEFOUR;
 
     static {
+
+        // Create the threads transcoding the colored cards
         Thread[] threads = new Thread[4];
         threads[0] = new Thread(new Transcoder("RED", RED));
         threads[0].start();
@@ -30,6 +35,7 @@ public final class Cards {
         threads[3] = new Thread(new Transcoder("BLUE", BLUE));
         threads[3].start();
 
+        // Translate the normal wildcard
         BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
         String filename = "/cards/WILD.svg";
         TranscoderInput in = new TranscoderInput(Cards.class.getResourceAsStream(filename));
@@ -40,6 +46,7 @@ public final class Cards {
         }
         WILD = SwingFXUtils.toFXImage(transcoder.img, null);
 
+        // Translate the wild take four card
         filename = "/cards/WILD_TAKEFOUR.svg";
         in = new TranscoderInput(Cards.class.getResourceAsStream(filename));
         try {
@@ -49,6 +56,7 @@ public final class Cards {
         }
         TAKEFOUR = SwingFXUtils.toFXImage(transcoder.img, null);
 
+        // Wait for the other threads to finish
         try {
             for (Thread thread : threads) {
                 thread.join();
@@ -57,7 +65,15 @@ public final class Cards {
         }
     }
 
+    /**
+     * Returns the image corresponding to the provided card
+     *
+     * @param card
+     * @return
+     */
     public static Image getCard(Card card) {
+
+        // Get the position in the corresponding array
         int number;
         if (card instanceof TakeFour) {
             return TAKEFOUR;
@@ -74,6 +90,8 @@ public final class Cards {
         } else {
             throw new IllegalArgumentException("Unknown card");
         }
+
+        // Get the card from the corresponding color array
         switch (card.color()) {
             case RED -> {
                 return RED[number];
@@ -97,6 +115,7 @@ public final class Cards {
         public void run() {
             BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
 
+            // Transcode the normal number
             for (int i = 0; i < 10; i++) {
                 String filename = "/cards/" + color + i + ".svg";
                 TranscoderInput in = new TranscoderInput(getClass().getResourceAsStream(filename));
@@ -108,6 +127,7 @@ public final class Cards {
                 }
             }
 
+            // Transcode the reverse card
             String filename = "/cards/" + color + "_REVERSE.svg";
             TranscoderInput in = new TranscoderInput(getClass().getResourceAsStream(filename));
             try {
@@ -117,6 +137,7 @@ public final class Cards {
                 e.printStackTrace();
             }
 
+            // Transcode the skip card
             filename = "/cards/" + color + "_SKIP.svg";
             in = new TranscoderInput(getClass().getResourceAsStream(filename));
             try {
@@ -127,6 +148,7 @@ public final class Cards {
                 e.printStackTrace();
             }
 
+            // Transcode the take two card
             filename = "/cards/" + color + "_TAKETWO.svg";
             in = new TranscoderInput(getClass().getResourceAsStream(filename));
             try {
@@ -139,6 +161,9 @@ public final class Cards {
         }
     }
 
+    /**
+     * I just copied this from the internet, I have no idea what exactly this does
+     */
     private static class BufferedImageTranscoder extends ImageTranscoder {
 
         private BufferedImage img;

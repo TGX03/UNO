@@ -1,10 +1,19 @@
 package de.tgx03.uno.game.cards;
 
-public class Default extends Card{
+/**
+ * A standard UNO card
+ */
+public class Default extends Card {
 
     public final Color color;
     public final byte value;
 
+    /**
+     * Creates a new card
+     *
+     * @param color The color of the new card
+     * @param value The number of the new card
+     */
     public Default(Color color, byte value) {
         if (color == Color.BLACK || value < 0 || value >= 10) {
             throw new IllegalArgumentException();

@@ -9,8 +9,16 @@ import javafx.scene.layout.Priority;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+/**
+ * Shows a dialog presenting the user with the stacktrace of an exception
+ */
 public final class ExceptionDialog {
 
+    /**
+     * Show the user an exception dialog
+     *
+     * @param e The exception to show
+     */
     public static void showException(Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");

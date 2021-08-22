@@ -1,9 +1,20 @@
 package de.tgx03.uno.game.cards;
 
-public class Skip extends Card{
+/**
+ * A class representing the skip card
+ */
+public class Skip extends Card {
 
+    /**
+     * The color of this skip card
+     */
     public final Color color;
 
+    /**
+     * Creates a new skip card with the provided color
+     *
+     * @param color The color of the new card
+     */
     public Skip(Color color) {
         this.color = color;
     }

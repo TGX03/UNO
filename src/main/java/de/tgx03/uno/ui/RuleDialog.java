@@ -8,10 +8,19 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * A window requesting the rules for a game of UNO
+ */
 public class RuleDialog {
 
     private Rules rules;
 
+    /**
+     * Shows the user a dialog and creates the ruleset
+     * and then returns it
+     *
+     * @return The created rules
+     */
     public Rules showAndWait() {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);

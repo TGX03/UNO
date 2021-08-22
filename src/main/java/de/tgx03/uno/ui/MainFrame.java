@@ -58,6 +58,11 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     private Host host;
     private Client client;
 
+    /**
+     * Launches a new MainFrame
+     *
+     * @param args Gets sent to JavaFX
+     */
     public static void main(String[] args) {
         launch(args);
     }
@@ -71,27 +76,41 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         stage.show();
     }
 
+    /**
+     * Creates a new host
+     * Gets triggered by the "New Game" button
+     *
+     * @param event ignored
+     */
     public synchronized void createHost(ActionEvent event) {
+
+        // Show the window requesting the port from the user
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Create Host");
         dialog.setHeaderText("Choose Port");
         dialog.setContentText("Port:");
         Optional<String> result = dialog.showAndWait();
+
+        // When the user entered a valid number, try to set up the host
         if (result.isPresent()) {
             try {
                 int port = Integer.parseInt(result.get());
                 Rules rules = createRules();
                 try {
-                    host = new Host(port, rules);
+                    host = new Host(port, rules);   // Create the host
+
+                    // Disable the buttons
                     createHost.setDisable(true);
                     startGame.setDisable(false);
                     joinGame.setDisable(true);
+
+                    // Set up the client
                     client = new Client("localhost", port);
                     client.registerReceiver(this);
                 } catch (IOException e) {
                     ExceptionDialog.showException(e);
                 }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException e) { // When the user doesn't enter a valid number
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Invalid port");
                 alert.setContentText("Invalid number entered");
@@ -100,18 +119,34 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
+    /**
+     * Starts the game
+     * Gets used by the "Start Game" button
+     *
+     * @param e ignored
+     */
     public synchronized void startHost(ActionEvent e) {
         host.start();
         cardList.getSelectionModel().selectedIndexProperty().addListener(this);
         startGame.setDisable(true);
     }
 
+    /**
+     * Creates a new client that connects to a remote host
+     * Gets used by the "Join Game" button
+     *
+     * @param e ignored
+     */
     public synchronized void createClient(ActionEvent e) {
         try {
+
+            // Create the client and register with it
             ConnectionDialog dialog = new ConnectionDialog();
             client = dialog.createClient();
             client.registerReceiver(this);
             cardList.getSelectionModel().selectedIndexProperty().addListener(this);
+
+            // Disable the buttons
             createHost.setDisable(true);
             joinGame.setDisable(true);
         } catch (Exception ex) {
@@ -119,6 +154,12 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
+    /**
+     * Tires to play the currently selected card
+     * Gets used by the "Play" button
+     *
+     * @param e ignored
+     */
     public synchronized void playCard(ActionEvent e) {
         int selected = cardList.getSelectionModel().getSelectedIndex();
         try {
@@ -128,6 +169,12 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
+    /**
+     * Tries to jump in with the currently selected card
+     * Gets used by the "Jump" button
+     *
+     * @param e ignored
+     */
     public synchronized void jumpCard(ActionEvent e) {
         int selected = cardList.getSelectionModel().getSelectedIndex();
         try {
@@ -137,6 +184,12 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
+    /**
+     * Accepts the penalty cards
+     * Gets used by the "Accept Cards" button
+     *
+     * @param e ignored
+     */
     public synchronized void acceptCards(ActionEvent e) {
         try {
             client.acceptCards();
@@ -145,6 +198,12 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
+    /**
+     * Picks up a new card
+     * Gets used by the "Take card" button
+     *
+     * @param e ignored
+     */
     public synchronized void takeCard(ActionEvent e) {
         try {
             client.takeCard();
@@ -153,6 +212,12 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
+    /**
+     * Selects the color of a black card
+     * Gets called when the "Set" button is used and takes what is currently selected in the Combo Box
+     *
+     * @param e ignored
+     */
     public synchronized void selectColor(ActionEvent e) {
         int selectedColor = colorPicker.getSelectionModel().getSelectedIndex();
         int selectedCard = cardList.getSelectionModel().getSelectedIndex();
@@ -169,10 +234,20 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
         }
     }
 
+    /**
+     * Launch a Dialog requesting the rules for a new game from the player
+     *
+     * @return The created ruleset
+     */
     private Rules createRules() {
         return new RuleDialog().showAndWait();
     }
 
+    /**
+     * Enables or disables the buttons depending on whether it'S currently the turn of this player
+     *
+     * @param turn Whether it's this clients turn
+     */
     private synchronized void enable(boolean turn) {
         play.setDisable(!turn);
         accept.setDisable(!turn);
@@ -182,18 +257,25 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     @Override
     public synchronized void update(Update update) {
         Platform.runLater(() -> {
+
+            // Get the images of the cards
             Card[] cards = update.player.getCards();
             ImageView[] images = new ImageView[cards.length];
             for (int i = 0; i < cards.length; i++) {
                 images[i] = new ImageView(Cards.getCard(cards[i]));
             }
+
+            // Clear the listview and add the new images to it
             ObservableList<ImageView> list = cardList.getItems();
             list.clear();
             list.addAll(images);
             cardList.setItems(list);
             cardList.refresh();
-            topCard.setImage(Cards.getCard(update.topCard));
-            enable(update.turn);
+
+            topCard.setImage(Cards.getCard(update.topCard));    // Update the top card
+            enable(update.turn);    // Enable or disable the buttons
+
+            // Update the list showing how many cards the other players have
             ObservableList<String> counts = counter.getItems();
             counts.clear();
             for (int i = 0; i < update.cardNumbers.length; i++) {
@@ -206,6 +288,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 
     @Override
     public synchronized void changed(ObservableValue<? extends Number> observableValue, Number number1, Number number2) {
+        // Updates the color shown in the combo box
         if (number2.intValue() > 0) {
             Player player = client.getPlayer();
             Card card = player.getCards()[number2.intValue()];

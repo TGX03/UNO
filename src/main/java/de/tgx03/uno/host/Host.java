@@ -16,6 +16,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class representing the server of a game of UNO
+ */
 public class Host implements Runnable {
 
     private final ServerSocket serverSocket;
@@ -25,12 +28,23 @@ public class Host implements Runnable {
     private boolean start = false;
     private Game game;
 
+    /**
+     * Creates a new server that listens on the provided port
+     * for clients
+     *
+     * @param port  The port this server should listen on
+     * @param rules The rules of the game
+     * @throws IOException When something goes wrong while starting the server
+     */
     public Host(int port, Rules rules) throws IOException {
         serverSocket = new ServerSocket(port);
         this.rules = rules;
         new Thread(this).start();
     }
 
+    /**
+     * Starts the round
+     */
     public synchronized void start() {
         start = true;
         notifyAll();
@@ -38,7 +52,11 @@ public class Host implements Runnable {
 
     @Override
     public void run() {
+
+        // Take in new players
         new Thread(this::waitForClients).start();
+
+        // Wait for the round to start
         synchronized (this) {
             while (!start) {
                 try {
@@ -48,6 +66,8 @@ public class Host implements Runnable {
                 }
             }
         }
+
+        // Set up the game and inform the clients of it
         game = new Game(handler.size(), rules);
         try {
             update();
@@ -57,8 +77,11 @@ public class Host implements Runnable {
 
     }
 
+    /**
+     * Accepts new clients and sets up the connections with them
+     */
     private void waitForClients() {
-        int currentID = 0;
+        int currentID = 0;  // Used to get the ID for each new connection
         while (!start) {
             try {
                 Socket socket = serverSocket.accept();
@@ -74,6 +97,11 @@ public class Host implements Runnable {
         }
     }
 
+    /**
+     * Informs all the clients of an update to the game
+     *
+     * @throws IOException When something went wrong while sendig the update
+     */
     private void update() throws IOException {
         synchronized (game) {
             short[] cardCount = game.getCardCount();
@@ -83,12 +111,22 @@ public class Host implements Runnable {
         }
     }
 
+    /**
+     * A class handling the connection with a client
+     */
     private class Handler implements Runnable {
 
         private final int id;
         private final ObjectInputStream input;
         private final ObjectOutputStream output;
 
+        /**
+         * Creates a new handler
+         *
+         * @param socket The socket of this handler
+         * @param id     The ID of the player this handler is responsible for
+         * @throws IOException When a stream couldn't be opened
+         */
         public Handler(Socket socket, int id) throws IOException {
             this.id = id;
             this.input = new ObjectInputStream(socket.getInputStream());
@@ -135,6 +173,8 @@ public class Host implements Runnable {
                             }
                         }
                     }
+
+                    // Update the clients when something was changed after execution
                     if (success) {
                         Host.this.update();
                     }
@@ -144,6 +184,12 @@ public class Host implements Runnable {
             }
         }
 
+        /**
+         * Sends an update to the client of this handler
+         *
+         * @param cardCount How many cards all the players have
+         * @throws IOException When something goes wrong during send operation
+         */
         public void update(short[] cardCount) throws IOException {
             boolean turn = game.getCurrentPlayer() == this.id;
             Update update = new Update(turn, game.getPlayer(this.id), game.getTopCard(), cardCount);
@@ -151,6 +197,12 @@ public class Host implements Runnable {
             output.writeObject(update);
         }
 
+        /**
+         * Sets the color of a wild card this player holds
+         *
+         * @param order The order informing this host of the operation
+         * @return Whether the operation succeeded
+         */
         private boolean selectColor(Command order) {
             Player player = game.getPlayer(this.id);
             Card card = player.getCards()[order.cardNumber];

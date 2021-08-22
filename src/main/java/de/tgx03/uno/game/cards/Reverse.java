@@ -1,9 +1,20 @@
 package de.tgx03.uno.game.cards;
 
-public class Reverse extends Card{
+/**
+ * The card inverting the playing order
+ */
+public class Reverse extends Card {
 
+    /**
+     * The color of this card
+     */
     public final Color color;
 
+    /**
+     * Creates a new reverse card with the provided color
+     *
+     * @param color The color of the new card
+     */
     public Reverse(Color color) {
         this.color = color;
     }

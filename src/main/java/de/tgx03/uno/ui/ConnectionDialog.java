@@ -11,11 +11,20 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * A class responsible for getting the hostname and port of a game server
+ */
 public class ConnectionDialog {
 
     private Client client;
     private boolean validPort = true;
 
+    /**
+     * Requests the data for a client from the user
+     * and then sets up the client and returns it
+     *
+     * @return The created client
+     */
     public Client createClient() {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
