@@ -10,7 +10,7 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
 
 import java.awt.image.BufferedImage;
 
-public class Cards {
+public final class Cards {
 
     private static final Image[] RED = new Image[13];
     private static final Image[] GREEN = new Image[13];

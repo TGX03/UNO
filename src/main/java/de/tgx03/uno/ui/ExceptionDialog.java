@@ -9,7 +9,7 @@ import javafx.scene.layout.Priority;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class ExceptionDialog {
+public final class ExceptionDialog {
 
     public static void showException(Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
