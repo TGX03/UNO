@@ -68,8 +68,8 @@ public final class Cards {
 	/**
 	 * Returns the image corresponding to the provided card
 	 *
-	 * @param card
-	 * @return
+	 * @param card The card to get the image for
+	 * @return The corresponding image
 	 */
 	public static Image getCard(Card card) {
 
