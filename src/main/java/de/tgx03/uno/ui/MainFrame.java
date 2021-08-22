@@ -103,6 +103,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
     public synchronized void startHost(ActionEvent e) {
         host.start();
         cardList.getSelectionModel().selectedIndexProperty().addListener(this);
+        startGame.setDisable(true);
     }
 
     public synchronized void createClient(ActionEvent e) {
