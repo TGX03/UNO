@@ -4,6 +4,7 @@ import de.tgx03.uno.game.cards.Card;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -111,11 +112,18 @@ public class Player implements Serializable {
 		cards.add(cardNumber, card);
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		return o == this;
 	}
 
+	@Override
 	public int hashCode() {
 		return cards.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return cards.toString();
 	}
 }

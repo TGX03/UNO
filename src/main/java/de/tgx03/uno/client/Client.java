@@ -122,6 +122,7 @@ public class Client implements Runnable {
 		this.receivers.add(receiver);
 	}
 
+	@Override
 	public String toString() {
 		Card[] cards = player.getCards();
 		StringBuilder builder = new StringBuilder();

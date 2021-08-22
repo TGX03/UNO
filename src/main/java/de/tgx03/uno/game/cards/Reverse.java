@@ -34,6 +34,7 @@ public class Reverse extends Card {
 		return color;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Reverse) {
 			return ((Reverse) o).color == this.color;
@@ -41,14 +42,17 @@ public class Reverse extends Card {
 		return false;
 	}
 
+	@Override
 	public String toString() {
 		return color.name() + " Reverse";
 	}
 
+	@Override
 	public Reverse clone() {
 		return new Reverse(this.color);
 	}
 
+	@Override
 	public int hashCode() {
 		return 40 + this.color.ordinal();
 	}

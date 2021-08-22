@@ -33,6 +33,7 @@ public class Rules implements Serializable, Cloneable {
 		this.forceContinue = forceContinue;
 	}
 
+	@Override
 	public Rules clone() {
 		return new Rules(this.jumping, this.stacking, this.forceContinue);
 	}

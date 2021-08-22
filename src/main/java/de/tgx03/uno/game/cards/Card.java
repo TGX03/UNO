@@ -88,5 +88,6 @@ public abstract class Card implements Serializable, Cloneable {
 	 */
 	public abstract Color color();
 
+	@Override
 	public abstract Card clone();
 }

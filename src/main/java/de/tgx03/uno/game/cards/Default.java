@@ -47,14 +47,17 @@ public class Default extends Card {
 		return false;
 	}
 
+	@Override
 	public String toString() {
 		return color.name() + " " + value;
 	}
 
+	@Override
 	public Default clone() {
 		return new Default(this.color, this.value);
 	}
 
+	@Override
 	public int hashCode() {
 		int start = 0;
 		switch (color) {

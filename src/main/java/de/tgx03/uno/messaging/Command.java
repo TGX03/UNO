@@ -86,6 +86,7 @@ public class Command implements Serializable {
 		TAKE_CARD
 	}
 
+	@Override
 	public int hashCode() {
 		if (this.type == CommandType.NORMAL || this.type == CommandType.JUMP) {
 			return Objects.hash(type, cardNumber);
@@ -96,6 +97,7 @@ public class Command implements Serializable {
 		}
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Command) {
 			Command c = (Command) o;

@@ -35,6 +35,7 @@ public class TakeTwo extends Card {
 		return color;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof TakeTwo) {
 			return ((TakeTwo) o).color == this.color;
@@ -42,14 +43,17 @@ public class TakeTwo extends Card {
 		return false;
 	}
 
+	@Override
 	public String toString() {
 		return color.name() + " TakeTwo";
 	}
 
+	@Override
 	public TakeTwo clone() {
 		return new TakeTwo(this.color);
 	}
 
+	@Override
 	public int hashCode() {
 		int start = 48;
 		start = start + this.color.ordinal();

@@ -22,6 +22,7 @@ public class ChooseColor extends Card implements ColorChooser {
 		return color;
 	}
 
+	@Override
 	public void setColor(Color color) {
 		this.color = color;
 	}
@@ -38,12 +39,14 @@ public class ChooseColor extends Card implements ColorChooser {
 		return "Wild";
 	}
 
+	@Override
 	public ChooseColor clone() {
 		ChooseColor result = new ChooseColor();
 		result.setColor(this.color);
 		return result;
 	}
 
+	@Override
 	public int hashCode() {
 		return 52 + color.ordinal();
 	}

@@ -34,6 +34,7 @@ public class Skip extends Card {
 		return color;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Skip) {
 			return ((Skip) o).color == this.color;
@@ -41,14 +42,17 @@ public class Skip extends Card {
 		return false;
 	}
 
+	@Override
 	public String toString() {
 		return color.name() + " Skip";
 	}
 
+	@Override
 	public Skip clone() {
 		return new Skip(this.color);
 	}
 
+	@Override
 	public int hashCode() {
 		return 44 + this.color.ordinal();
 	}
