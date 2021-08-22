@@ -50,4 +50,19 @@ public class Default extends Card {
 	public String toString() {
 		return color.name() + " " + value;
 	}
+
+	public Default clone() {
+		return new Default(this.color, this.value);
+	}
+
+	public int hashCode() {
+		int start = 0;
+		switch (color) {
+			case GREEN -> start = 10;
+			case RED -> start = 20;
+			case YELLOW -> start = 30;
+		}
+		start = start + this.value;
+		return start;
+	}
 }

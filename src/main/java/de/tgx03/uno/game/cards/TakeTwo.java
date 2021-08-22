@@ -45,4 +45,14 @@ public class TakeTwo extends Card {
 	public String toString() {
 		return color.name() + " TakeTwo";
 	}
+
+	public TakeTwo clone() {
+		return new TakeTwo(this.color);
+	}
+
+	public int hashCode() {
+		int start = 48;
+		start = start + this.color.ordinal();
+		return start;
+	}
 }

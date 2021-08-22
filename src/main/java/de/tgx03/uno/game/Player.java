@@ -110,4 +110,12 @@ public class Player implements Serializable {
 	protected void giveCard(int cardNumber, Card card) {
 		cards.add(cardNumber, card);
 	}
+
+	public boolean equals(Object o) {
+		return o == this;
+	}
+
+	public int hashCode() {
+		return cards.hashCode();
+	}
 }

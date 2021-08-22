@@ -4,6 +4,8 @@ import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.cards.Card;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A class providing clients with new data after the state of the game has changed
@@ -22,6 +24,7 @@ public class Update implements Serializable {
 	 * The card on top of the pile
 	 */
 	public final Card topCard;
+
 	/**
 	 * How many card all the other players have
 	 * Done as short to save space and I don't think any player will have more than 60000 cards
@@ -41,5 +44,20 @@ public class Update implements Serializable {
 		this.player = player;
 		this.topCard = card;
 		this.cardNumbers = count;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Update update = (Update) o;
+		return turn == update.turn && player.equals(update.player) && topCard.equals(update.topCard) && Arrays.equals(cardNumbers, update.cardNumbers);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(turn, player, topCard);
+		result = 31 * result + Arrays.hashCode(cardNumbers);
+		return result;
 	}
 }

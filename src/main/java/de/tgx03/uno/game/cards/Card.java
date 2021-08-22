@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * The basic implementation of a game card
  */
-public abstract class Card implements Serializable {
+public abstract class Card implements Serializable, Cloneable {
 
 	private static final Random rand = new Random();
 
@@ -87,4 +87,6 @@ public abstract class Card implements Serializable {
 	 * @return The color of this card
 	 */
 	public abstract Color color();
+
+	public abstract Card clone();
 }

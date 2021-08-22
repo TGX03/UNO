@@ -14,6 +14,10 @@ import java.io.StringWriter;
  */
 public final class ExceptionDialog {
 
+	private ExceptionDialog() throws IllegalAccessException {
+		throw new IllegalAccessException("Not instantiable");
+	}
+
 	/**
 	 * Show the user an exception dialog
 	 *

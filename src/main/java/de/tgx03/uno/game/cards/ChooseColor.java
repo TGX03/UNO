@@ -31,7 +31,18 @@ public class ChooseColor extends Card implements ColorChooser {
 		return o instanceof ChooseColor;
 	}
 
+	@Override
 	public String toString() {
 		return "Wild";
+	}
+
+	public ChooseColor clone() {
+		ChooseColor result = new ChooseColor();
+		result.setColor(this.color);
+		return result;
+	}
+
+	public int hashCode() {
+		return 52 + color.ordinal();
 	}
 }

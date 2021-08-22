@@ -44,4 +44,12 @@ public class Skip extends Card {
 	public String toString() {
 		return color.name() + " Skip";
 	}
+
+	public Skip clone() {
+		return new Skip(this.color);
+	}
+
+	public int hashCode() {
+		return 44 + this.color.ordinal();
+	}
 }

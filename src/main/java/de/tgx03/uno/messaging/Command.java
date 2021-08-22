@@ -3,6 +3,7 @@ package de.tgx03.uno.messaging;
 import de.tgx03.uno.game.cards.Color;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A class representing a command the client sends to the host
@@ -83,5 +84,28 @@ public class Command implements Serializable {
 		 * When a player wants to pick up a card
 		 */
 		TAKE_CARD
+	}
+
+	public int hashCode() {
+		if (this.type == CommandType.NORMAL || this.type == CommandType.JUMP) {
+			return Objects.hash(type, cardNumber);
+		} else if (this.type == CommandType.SELECT_COLOR) {
+			return Objects.hash(type, cardNumber, color);
+		} else {
+			return Objects.hash(type);
+		}
+	}
+
+	public boolean equals(Object o) {
+		if (o instanceof Command) {
+			Command c = (Command) o;
+			if (this.type == CommandType.JUMP || this.type == CommandType.NORMAL) {
+				return this.type == c.type && this.cardNumber == c.cardNumber;
+			} else if (this.type == CommandType.SELECT_COLOR) {
+				return this.type == c.type && this.cardNumber == c.cardNumber && this.color == c.color;
+			} else {
+				return this.type == c.type;
+			}
+		} else return false;
 	}
 }

@@ -44,4 +44,12 @@ public class Reverse extends Card {
 	public String toString() {
 		return color.name() + " Reverse";
 	}
+
+	public Reverse clone() {
+		return new Reverse(this.color);
+	}
+
+	public int hashCode() {
+		return 40 + this.color.ordinal();
+	}
 }

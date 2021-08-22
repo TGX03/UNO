@@ -33,4 +33,14 @@ public class TakeFour extends Card implements ColorChooser {
 	public String toString() {
 		return "Wild Take Four";
 	}
+
+	public TakeFour clone() {
+		TakeFour result = new TakeFour();
+		result.setColor(this.color);
+		return result;
+	}
+
+	public int hashCode() {
+		return 57 + this.color.ordinal();
+	}
 }

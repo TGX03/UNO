@@ -65,6 +65,10 @@ public final class Cards {
 		}
 	}
 
+	private Cards() throws IllegalAccessException {
+		throw new IllegalAccessException("Not instantiable");
+	}
+
 	/**
 	 * Returns the image corresponding to the provided card
 	 *
