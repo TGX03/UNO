@@ -99,8 +99,7 @@ public class Command implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof Command) {
-			Command c = (Command) o;
+		if (o instanceof Command c) {
 			if (this.type == CommandType.JUMP || this.type == CommandType.NORMAL) {
 				return this.type == c.type && this.cardNumber == c.cardNumber;
 			} else if (this.type == CommandType.SELECT_COLOR) {

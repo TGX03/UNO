@@ -4,7 +4,6 @@ import de.tgx03.uno.game.cards.Card;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
