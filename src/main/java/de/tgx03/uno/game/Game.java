@@ -92,12 +92,13 @@ public class Game {
     private synchronized boolean normalPlay(int cardNumber) {
         Card played = players[currentPlayer].playCard(cardNumber);
         if (played == null) return false;
-        top = played;
         if (played instanceof ColorChooser) {
             if (played.color() == Color.BLACK) {
+                players[currentPlayer].giveCard(cardNumber, played);
                 return false;
             }
         }
+        top = played;
         if (played instanceof Reverse) {
             reversed = !reversed;
         } else if (played instanceof Skip) {
@@ -131,7 +132,7 @@ public class Game {
             updateTop();
             return true;
         } else {
-            players[currentPlayer].giveCard(played);
+            players[currentPlayer].giveCard(cardNumber, played);
             return false;
         }
     }

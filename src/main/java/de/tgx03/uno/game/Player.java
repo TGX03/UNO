@@ -54,7 +54,7 @@ public class Player implements Serializable {
         return cards.toArray(new Card[0]);
     }
 
-    protected void giveCard(Card card) {
-        cards.add(card);
+    protected void giveCard(int cardNumber, Card card) {
+        cards.add(cardNumber, card);
     }
 }
