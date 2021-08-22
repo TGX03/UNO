@@ -13,39 +13,39 @@ import javafx.stage.Stage;
  */
 public class RuleDialog {
 
-    private Rules rules;
+	private Rules rules;
 
-    /**
-     * Shows the user a dialog and creates the ruleset
-     * and then returns it
-     *
-     * @return The created rules
-     */
-    public Rules showAndWait() {
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
+	/**
+	 * Shows the user a dialog and creates the ruleset
+	 * and then returns it
+	 *
+	 * @return The created rules
+	 */
+	public Rules showAndWait() {
+		Stage stage = new Stage();
+		stage.initModality(Modality.APPLICATION_MODAL);
 
-        CheckBox jump = new CheckBox("Jumping");
-        CheckBox stack = new CheckBox("Stacking");
-        CheckBox force = new CheckBox("Force Continue");
+		CheckBox jump = new CheckBox("Jumping");
+		CheckBox stack = new CheckBox("Stacking");
+		CheckBox force = new CheckBox("Force Continue");
 
-        Button confirm = new Button("Confirm");
-        confirm.setOnAction(e -> {
-            rules = new Rules(jump.isSelected(), stack.isSelected(), force.isSelected());
-            stage.close();
-        });
+		Button confirm = new Button("Confirm");
+		confirm.setOnAction(e -> {
+			rules = new Rules(jump.isSelected(), stack.isSelected(), force.isSelected());
+			stage.close();
+		});
 
-        GridPane layout = new GridPane();
-        layout.add(jump, 0, 0);
-        layout.add(stack, 0, 1);
-        layout.add(force, 0, 2);
-        layout.add(confirm, 0, 3);
+		GridPane layout = new GridPane();
+		layout.add(jump, 0, 0);
+		layout.add(stack, 0, 1);
+		layout.add(force, 0, 2);
+		layout.add(confirm, 0, 3);
 
-        Scene scene = new Scene(layout, 300, 100);
-        stage.setTitle("Select rules");
-        stage.setScene(scene);
-        stage.showAndWait();
+		Scene scene = new Scene(layout, 300, 100);
+		stage.setTitle("Select rules");
+		stage.setScene(scene);
+		stage.showAndWait();
 
-        return rules;
-    }
+		return rules;
+	}
 }

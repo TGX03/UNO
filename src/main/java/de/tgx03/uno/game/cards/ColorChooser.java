@@ -5,10 +5,10 @@ package de.tgx03.uno.game.cards;
  */
 public interface ColorChooser {
 
-    /**
-     * Sets the color of this card to the provided color
-     *
-     * @param color The chosen color
-     */
-    void setColor(Color color);
+	/**
+	 * Sets the color of this card to the provided color
+	 *
+	 * @param color The chosen color
+	 */
+	void setColor(Color color);
 }

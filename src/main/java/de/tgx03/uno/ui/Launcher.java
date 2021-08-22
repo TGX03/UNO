@@ -6,12 +6,12 @@ package de.tgx03.uno.ui;
  */
 public final class Launcher {
 
-    /**
-     * Starts the MainFrame
-     *
-     * @param args Gets sent to JavaFX
-     */
-    public static void main(String[] args) {
-        MainFrame.main(args);
-    }
+	/**
+	 * Starts the MainFrame
+	 *
+	 * @param args Gets sent to JavaFX
+	 */
+	public static void main(String[] args) {
+		MainFrame.main(args);
+	}
 }

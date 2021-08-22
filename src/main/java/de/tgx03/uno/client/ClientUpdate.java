@@ -7,10 +7,10 @@ import de.tgx03.uno.messaging.Update;
  */
 public interface ClientUpdate {
 
-    /**
-     * Provides the implementing class with updates of the game
-     *
-     * @param update The update sent by the server
-     */
-    void update(Update update);
+	/**
+	 * Provides the implementing class with updates of the game
+	 *
+	 * @param update The update sent by the server
+	 */
+	void update(Update update);
 }
