@@ -38,7 +38,7 @@ public class Player implements Serializable {
         cards.add(Card.generateCard());
     }
 
-    public void updateTop(Card card) {
+    protected void updateTop(Card card) {
         this.top = card;
     }
 
