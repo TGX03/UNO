@@ -39,7 +39,9 @@ public class Host implements Runnable {
 	public Host(int port, Rules rules) throws IOException {
 		serverSocket = new ServerSocket(port);
 		this.rules = rules;
-		new Thread(this).start();
+		Thread accepter = new Thread(this);
+		accepter.setDaemon(true);
+		accepter.start();
 	}
 
 	/**

@@ -37,7 +37,9 @@ public class Client implements Runnable {
 		Socket socket = new Socket(host, hostPort);
 		output = new ObjectOutputStream(socket.getOutputStream());
 		input = new ObjectInputStream(socket.getInputStream());
-		new Thread(this).start();
+		Thread thread = new Thread(this);
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	/**

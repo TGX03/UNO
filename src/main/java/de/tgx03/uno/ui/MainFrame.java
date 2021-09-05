@@ -72,7 +72,6 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 		Parent root = FXMLLoader.load(getClass().getResource("/MainFrame.fxml"));
 		stage.setTitle("UNO");
 		stage.setScene(new Scene(root));
-		stage.setOnCloseRequest(e -> System.exit(0));
 		stage.show();
 	}
 
