@@ -1,9 +1,14 @@
 package de.tgx03.uno.game.cards;
 
+import java.io.Serial;
+
 /**
  * A standard UNO card
  */
 public class Default extends Card {
+
+	@Serial
+	private static final long serialVersionUID = -807259155534165108L;
 
 	public final Color color;
 	public final byte value;

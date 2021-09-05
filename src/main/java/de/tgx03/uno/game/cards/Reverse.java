@@ -1,9 +1,14 @@
 package de.tgx03.uno.game.cards;
 
+import java.io.Serial;
+
 /**
  * The card inverting the playing order
  */
 public class Reverse extends Card {
+
+	@Serial
+	private static final long serialVersionUID = 467179758413513210L;
 
 	/**
 	 * The color of this card

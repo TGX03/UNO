@@ -1,9 +1,14 @@
 package de.tgx03.uno.game.cards;
 
+import java.io.Serial;
+
 /**
  * A take two card
  */
 public class TakeTwo extends Card {
+
+	@Serial
+	private static final long serialVersionUID = 3572737636745065895L;
 
 	/**
 	 * The color of this card

@@ -1,5 +1,6 @@
 package de.tgx03.uno.game;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -7,6 +8,9 @@ import java.util.Objects;
  * All the rules that can be changed for a game of UNO
  */
 public class Rules implements Serializable, Cloneable {
+
+	@Serial
+	private static final long serialVersionUID = 5037643636101348351L;
 
 	/**
 	 * Whether throwing in when a player has exactly the same card as is lying on the pile

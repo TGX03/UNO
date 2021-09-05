@@ -1,5 +1,6 @@
 package de.tgx03.uno.game.cards;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -7,6 +8,9 @@ import java.util.Random;
  * The basic implementation of a game card
  */
 public abstract class Card implements Serializable, Cloneable {
+
+	@Serial
+	private static final long serialVersionUID = 3828684409287282936L;
 
 	private static final Random rand = new Random();
 

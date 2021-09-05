@@ -3,6 +3,7 @@ package de.tgx03.uno.messaging;
 import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.cards.Card;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -11,6 +12,9 @@ import java.util.Objects;
  * A class providing clients with new data after the state of the game has changed
  */
 public class Update implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 1959833843176392241L;
 
 	/**
 	 * Whether it's this player turn

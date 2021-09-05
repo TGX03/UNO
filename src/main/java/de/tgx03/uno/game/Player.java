@@ -2,6 +2,7 @@ package de.tgx03.uno.game;
 
 import de.tgx03.uno.game.cards.Card;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,9 @@ import java.util.List;
  * holding cards
  */
 public class Player implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = -1301404883505022064L;
 
 	private final List<Card> cards = new ArrayList<>(7);
 	private transient Card top; // Transient as clients already gets this other ways

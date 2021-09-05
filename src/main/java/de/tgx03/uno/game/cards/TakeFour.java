@@ -1,9 +1,14 @@
 package de.tgx03.uno.game.cards;
 
+import java.io.Serial;
+
 /**
  * A class representing the wild take four card
  */
 public class TakeFour extends Card implements ColorChooser {
+
+	@Serial
+	private static final long serialVersionUID = 1773201801357025228L;
 
 	private Color color = Color.BLACK;
 

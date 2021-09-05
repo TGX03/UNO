@@ -2,6 +2,7 @@ package de.tgx03.uno.messaging;
 
 import de.tgx03.uno.game.cards.Color;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -9,6 +10,9 @@ import java.util.Objects;
  * A class representing a command the client sends to the host
  */
 public class Command implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = -569083254883826234L;
 
 	/**
 	 * The type of command being transmitted

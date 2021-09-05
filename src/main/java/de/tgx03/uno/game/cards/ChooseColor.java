@@ -1,9 +1,14 @@
 package de.tgx03.uno.game.cards;
 
+import java.io.Serial;
+
 /**
  * A class representing the wild card
  */
 public class ChooseColor extends Card implements ColorChooser {
+
+	@Serial
+	private static final long serialVersionUID = -2223262444434498162L;
 
 	private Color color = Color.BLACK;
 

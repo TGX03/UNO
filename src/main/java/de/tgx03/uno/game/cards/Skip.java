@@ -1,9 +1,14 @@
 package de.tgx03.uno.game.cards;
 
+import java.io.Serial;
+
 /**
  * A class representing the skip card
  */
 public class Skip extends Card {
+
+	@Serial
+	private static final long serialVersionUID = 8521656320247047647L;
 
 	/**
 	 * The color of this skip card
