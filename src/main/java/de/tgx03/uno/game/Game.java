@@ -28,17 +28,17 @@ public class Game {
 		// Store the rules
 		this.rules = rules;
 
+		// If the card on top is a card that chooses colors, get a new one cause fuck it, I'm not implementing that
+		while (top instanceof ColorChooser) {
+			top = Card.generateCard();
+		}
+
 		// Initialize the players with their cards
 		players = new Player[playerCount];
 		for (int i = 0; i < playerCount; i++) {
 			players[i] = new Player();
 			players[i].initialize();
 			players[i].updateTop(top);
-		}
-
-		// If the card on top is a card that chooses colors, get a new one cause fuck it, I'm not implementing that
-		while (top instanceof ColorChooser) {
-			top = Card.generateCard();
 		}
 
 		// Test for the various penalties that will apply to the first player
