@@ -12,7 +12,7 @@ public class Game {
 
 	private final Player[] players;
 	private final Rules rules;
-	private Card top = Card.generateCard();
+	private Card top;
 	private int currentPlayer = 0;
 	private boolean reversed = false;
 	private int stack = 0;
@@ -29,9 +29,9 @@ public class Game {
 		this.rules = rules;
 
 		// If the card on top is a card that chooses colors, get a new one cause fuck it, I'm not implementing that
-		while (top instanceof ColorChooser) {
+		do {
 			top = Card.generateCard();
-		}
+		} while (top instanceof ColorChooser);
 
 		// Initialize the players with their cards
 		players = new Player[playerCount];
