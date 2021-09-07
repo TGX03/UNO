@@ -165,6 +165,23 @@ public class Game {
 		return top;
 	}
 
+	public synchronized boolean hasEnded() {
+		for (Player player : players) {
+			if (!player.won()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Returns the amount of players in this game
+	 * @return How many players are in this game
+	 */
+	public int playerCount() {
+		return players.length;
+	}
+
 	/**
 	 * Plays a card the normal way without any penalties in the game
 	 *
@@ -240,18 +257,18 @@ public class Game {
 	 * Go to the next player
 	 */
 	private synchronized void nextPlayer() {
-		if (reversed) {
-			currentPlayer--;
-			if (currentPlayer < 0) currentPlayer = players.length - 1;
-		} else {
-			currentPlayer++;
-			if (currentPlayer >= players.length) currentPlayer = 0;
-		}
-
-		// In case the current player has won, go to the next one
-		// Will probably get a stackoverflow if everyone has finished
-		if (getPlayer(getCurrentPlayer()).won()) {
-			nextPlayer();
+		if (!this.hasEnded()) {
+			if (reversed) {
+				do {
+					currentPlayer--;
+					if (currentPlayer < 0) currentPlayer = players.length - 1;
+				} while (players[currentPlayer].won());
+			} else {
+				do {
+					currentPlayer++;
+					if (currentPlayer >= players.length) currentPlayer = 0;
+				} while (players[currentPlayer].won());
+			}
 		}
 	}
 

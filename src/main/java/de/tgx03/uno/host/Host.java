@@ -76,7 +76,6 @@ public class Host implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -110,6 +109,12 @@ public class Host implements Runnable {
 			for (Handler handler : this.handler) {
 				handler.update(cardCount);
 			}
+		}
+	}
+
+	private void end() throws IOException {
+		for (Handler handler : this.handler) {
+			handler.end();
 		}
 	}
 
@@ -148,7 +153,7 @@ public class Host implements Runnable {
 				}
 			}
 
-			while (true) {
+			do {
 				// Read orders and process them
 				try {
 					Command order = (Command) input.readObject();
@@ -183,7 +188,10 @@ public class Host implements Runnable {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
+			} while (!game.hasEnded());
+			try {
+				Host.this.end();
+			} catch (IOException ignored) {}
 		}
 
 		/**
@@ -195,8 +203,22 @@ public class Host implements Runnable {
 		public void update(short[] cardCount) throws IOException {
 			boolean turn = game.getCurrentPlayer() == this.id;
 			Update update = new Update(turn, game.getPlayer(this.id), game.getTopCard(), cardCount);
-			output.reset();
-			output.writeObject(update);
+			synchronized (output) {
+				output.reset();
+				output.writeObject(update);
+			}
+		}
+
+		/**
+		 * Sends a last update informing all clients that the round has ended
+		 * @throws IOException When something goes wrong during send operation
+		 */
+		public void end() throws IOException {
+			Update update = new Update(false, true, game.getPlayer(this.id), game.getTopCard(), new short[game.playerCount()]);
+			synchronized (output) {
+				output.reset();
+				output.writeObject(update);
+			}
 		}
 
 		/**

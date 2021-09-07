@@ -140,7 +140,8 @@ public class Client implements Runnable {
 	 */
 	@Override
 	public void run() {
-		while (true) {
+		boolean ended = false;
+		do {
 			try {
 				Update update = (Update) input.readObject();
 				synchronized (Client.this) {
@@ -150,9 +151,12 @@ public class Client implements Runnable {
 				for (ClientUpdate receiver : receivers) {
 					receiver.update(update);
 				}
+				if (update.ended) {
+					ended = true;
+				}
 			} catch (IOException | ClassCastException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-		}
+		} while (!ended);
 	}
 }

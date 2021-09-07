@@ -21,6 +21,10 @@ public class Update implements Serializable {
 	 */
 	public final boolean turn;
 	/**
+	 * Whether the game has ended because no players hold any more cards
+	 */
+	public final boolean ended;
+	/**
 	 * The updated player object corresponding to this player
 	 */
 	public final Player player;
@@ -45,6 +49,15 @@ public class Update implements Serializable {
 	 */
 	public Update(boolean turn, Player player, Card card, short[] count) {
 		this.turn = turn;
+		this.ended = false;
+		this.player = player;
+		this.topCard = card;
+		this.cardNumbers = count;
+	}
+
+	public Update(boolean turn, boolean ended, Player player, Card card, short[] count) {
+		this.turn = turn;
+		this.ended = ended;
 		this.player = player;
 		this.topCard = card;
 		this.cardNumbers = count;
