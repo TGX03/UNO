@@ -255,24 +255,24 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 
 	@Override
 	public synchronized void update(Update update) {
-		Platform.runLater(() -> {
 
-			// Get the images of the cards
-			Card[] cards = update.player.getCards();
-			ImageView[] images = new ImageView[cards.length];
-			for (int i = 0; i < cards.length; i++) {
-				images[i] = new ImageView(Cards.getCard(cards[i]));
-			}
+		// Get the images of the cards
+		Card[] cards = update.player.getCards();
+		ImageView[] images = new ImageView[cards.length];
+		for (int i = 0; i < cards.length; i++) {
+			images[i] = new ImageView(Cards.getCard(cards[i]));
+		}
+
+		topCard.setImage(Cards.getCard(update.topCard));    // Update the top card
+		enable(update.turn);    // Enable or disable the buttons
+
+		Platform.runLater(() -> {
 
 			// Clear the listview and add the new images to it
 			ObservableList<ImageView> list = cardList.getItems();
 			list.clear();
 			list.addAll(images);
-			cardList.setItems(list);
 			cardList.refresh();
-
-			topCard.setImage(Cards.getCard(update.topCard));    // Update the top card
-			enable(update.turn);    // Enable or disable the buttons
 
 			// Update the list showing how many cards the other players have
 			ObservableList<String> counts = counter.getItems();
@@ -280,7 +280,6 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 			for (int i = 0; i < update.cardNumbers.length; i++) {
 				counts.add((i + 1) + ": \t" + update.cardNumbers[i]);
 			}
-			counter.setItems(counts);
 			counter.refresh();
 		});
 	}
