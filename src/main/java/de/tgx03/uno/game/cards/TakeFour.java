@@ -5,7 +5,7 @@ import java.io.Serial;
 /**
  * A class representing the wild take four card
  */
-public class TakeFour extends Card implements ColorChooser {
+public class TakeFour extends ColorChooser {
 
 	@Serial
 	private static final long serialVersionUID = 1773201801357025228L;

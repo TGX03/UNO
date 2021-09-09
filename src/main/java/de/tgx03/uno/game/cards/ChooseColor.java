@@ -5,7 +5,7 @@ import java.io.Serial;
 /**
  * A class representing the wild card
  */
-public class ChooseColor extends Card implements ColorChooser {
+public class ChooseColor extends ColorChooser {
 
 	@Serial
 	private static final long serialVersionUID = -2223262444434498162L;
