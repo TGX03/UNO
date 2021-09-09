@@ -22,6 +22,7 @@ public final class Cards {
 	private static final Image WILD;
 	private static final Image TAKEFOUR;
 
+	// Initializes the images before first usage
 	static {
 
 		// Create the threads transcoding the colored cards

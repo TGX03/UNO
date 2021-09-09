@@ -10,7 +10,13 @@ public class Default extends Card {
 	@Serial
 	private static final long serialVersionUID = -807259155534165108L;
 
+	/**
+	 * The color of this card
+	 */
 	public final Color color;
+	/**
+	 * The number on this card
+	 */
 	public final byte value;
 
 	/**

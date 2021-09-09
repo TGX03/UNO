@@ -42,8 +42,8 @@ public class Update implements Serializable {
 	/**
 	 * Creates a new update
 	 *
-	 * @param turn   Whether it's this players turn
-	 * @param player The player object representing this palyer
+	 * @param turn   Whether it's this clients turn
+	 * @param player The player object representing this player
 	 * @param card   The card on top of the pile
 	 * @param count  How many cards the other players have
 	 */
@@ -55,6 +55,14 @@ public class Update implements Serializable {
 		this.cardNumbers = count;
 	}
 
+	/**
+	 * Creates a new update
+	 * @param turn Whether it's this clients turn
+	 * @param ended Whether the game has ended
+	 * @param player The player object representing this player
+	 * @param card The card on top of the pile
+	 * @param count How many cards the other players have
+	 */
 	public Update(boolean turn, boolean ended, Player player, Card card, short[] count) {
 		this.turn = turn;
 		this.ended = ended;

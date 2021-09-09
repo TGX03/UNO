@@ -112,6 +112,11 @@ public class Host implements Runnable {
 		}
 	}
 
+	/**
+	 * Informs all the clients that the game has ended
+	 * and shuts down the threads
+	 * @throws IOException When something goes wrong during sending
+	 */
 	private void end() throws IOException {
 		for (Handler handler : this.handler) {
 			handler.end();
