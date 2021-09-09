@@ -34,8 +34,8 @@ public class Update implements Serializable {
 	public final Card topCard;
 
 	/**
-	 * How many card all the other players have
-	 * Done as short to save space and I don't think any player will have more than 60000 cards
+	 * How many cards all the other players have.
+	 * Done as short to save space, and I don't think any player will have more than 60000 cards
 	 */
 	public final short[] cardNumbers;
 
