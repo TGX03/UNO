@@ -68,12 +68,12 @@ public class Update implements Serializable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Update update = (Update) o;
-		return turn == update.turn && player.equals(update.player) && topCard.equals(update.topCard) && Arrays.equals(cardNumbers, update.cardNumbers);
+		return turn == update.turn && ended == update.ended && player.equals(update.player) && topCard.equals(update.topCard) && Arrays.equals(cardNumbers, update.cardNumbers);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hash(turn, player, topCard);
+		int result = Objects.hash(turn, ended, player, topCard);
 		result = 31 * result + Arrays.hashCode(cardNumbers);
 		return result;
 	}
