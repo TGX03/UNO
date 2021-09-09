@@ -176,6 +176,7 @@ public class Game {
 
 	/**
 	 * Returns the amount of players in this game
+	 *
 	 * @return How many players are in this game
 	 */
 	public int playerCount() {

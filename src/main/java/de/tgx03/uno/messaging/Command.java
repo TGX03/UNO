@@ -63,6 +63,30 @@ public class Command implements Serializable {
 		this.cardNumber = cardNumber;
 	}
 
+	@Override
+	public int hashCode() {
+		if (this.type == CommandType.NORMAL || this.type == CommandType.JUMP) {
+			return Objects.hash(type, cardNumber);
+		} else if (this.type == CommandType.SELECT_COLOR) {
+			return Objects.hash(type, cardNumber, color);
+		} else {
+			return Objects.hash(type);
+		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Command c) {
+			if (this.type == CommandType.JUMP || this.type == CommandType.NORMAL) {
+				return this.type == c.type && this.cardNumber == c.cardNumber;
+			} else if (this.type == CommandType.SELECT_COLOR) {
+				return this.type == c.type && this.cardNumber == c.cardNumber && this.color == c.color;
+			} else {
+				return this.type == c.type;
+			}
+		} else return false;
+	}
+
 	/**
 	 * An enum representing which kind of command is being transmitted
 	 */
@@ -88,29 +112,5 @@ public class Command implements Serializable {
 		 * When a player wants to pick up a card
 		 */
 		TAKE_CARD
-	}
-
-	@Override
-	public int hashCode() {
-		if (this.type == CommandType.NORMAL || this.type == CommandType.JUMP) {
-			return Objects.hash(type, cardNumber);
-		} else if (this.type == CommandType.SELECT_COLOR) {
-			return Objects.hash(type, cardNumber, color);
-		} else {
-			return Objects.hash(type);
-		}
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Command c) {
-			if (this.type == CommandType.JUMP || this.type == CommandType.NORMAL) {
-				return this.type == c.type && this.cardNumber == c.cardNumber;
-			} else if (this.type == CommandType.SELECT_COLOR) {
-				return this.type == c.type && this.cardNumber == c.cardNumber && this.color == c.color;
-			} else {
-				return this.type == c.type;
-			}
-		} else return false;
 	}
 }

@@ -115,6 +115,7 @@ public class Host implements Runnable {
 	/**
 	 * Informs all the clients that the game has ended
 	 * and shuts down the threads
+	 *
 	 * @throws IOException When something goes wrong during sending
 	 */
 	private void end() throws IOException {
@@ -196,7 +197,8 @@ public class Host implements Runnable {
 			} while (!game.hasEnded());
 			try {
 				Host.this.end();
-			} catch (IOException ignored) {}
+			} catch (IOException ignored) {
+			}
 		}
 
 		/**
@@ -216,6 +218,7 @@ public class Host implements Runnable {
 
 		/**
 		 * Sends a last update informing all clients that the round has ended
+		 *
 		 * @throws IOException When something goes wrong during send operation
 		 */
 		public void end() throws IOException {
