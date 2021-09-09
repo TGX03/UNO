@@ -121,7 +121,9 @@ public class Client implements Runnable {
 	 * @param receiver The class requesting to get updated
 	 */
 	public void registerReceiver(ClientUpdate receiver) {
-		this.receivers.add(receiver);
+		synchronized (this.receivers) {
+			this.receivers.add(receiver);
+		}
 	}
 
 	@Override
