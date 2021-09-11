@@ -199,6 +199,7 @@ public class Host implements Runnable {
 				Host.this.end();
 			} catch (IOException ignored) {
 			}
+			System.out.println("Shutting down host thread");
 		}
 
 		/**

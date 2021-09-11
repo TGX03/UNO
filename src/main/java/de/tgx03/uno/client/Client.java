@@ -160,5 +160,6 @@ public class Client implements Runnable {
 				e.printStackTrace();
 			}
 		} while (!ended);
+		System.out.println("Shutting down client thread");
 	}
 }
