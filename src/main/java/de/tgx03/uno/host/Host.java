@@ -39,7 +39,7 @@ public class Host implements Runnable {
 	public Host(int port, Rules rules) throws IOException {
 		serverSocket = new ServerSocket(port);
 		this.rules = rules;
-		Thread accepter = new Thread(this);
+		Thread accepter = new Thread(this, "Host-Main");
 		accepter.setDaemon(true);
 		accepter.start();
 	}
@@ -56,7 +56,7 @@ public class Host implements Runnable {
 	public void run() {
 
 		// Take in new players
-		new Thread(this::waitForClients).start();
+		new Thread(this::waitForClients, "Host-Accepter").start();
 
 		// Wait for the round to start
 		synchronized (this) {
@@ -88,8 +88,8 @@ public class Host implements Runnable {
 				Socket socket = serverSocket.accept();
 				if (!start) {
 					Handler handler = new Handler(socket, currentID);
+					new Thread(handler, "Host-Receiver " + currentID).start();
 					currentID++;
-					new Thread(handler).start();
 					this.handler.add(handler);
 				}
 			} catch (IOException e) {
