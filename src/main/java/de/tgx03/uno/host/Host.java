@@ -83,7 +83,7 @@ public class Host implements Runnable {
 	 */
 	private void waitForClients() {
 		int currentID = 0;  // Used to get the ID for each new connection
-		while (!start) {
+		do {
 			try {
 				Socket socket = serverSocket.accept();
 				if (!start) {
@@ -95,7 +95,7 @@ public class Host implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		} while (!start);
 	}
 
 	/**
