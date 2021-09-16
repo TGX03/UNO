@@ -209,8 +209,11 @@ public class Host implements Runnable {
 		 * @throws IOException When something goes wrong during send operation
 		 */
 		public void update(short[] cardCount) throws IOException {
-			boolean turn = game.getCurrentPlayer() == this.id;
-			Update update = new Update(turn, game.getPlayer(this.id), game.getTopCard(), cardCount);
+			Update update;
+			synchronized (game) {
+				boolean turn = game.getCurrentPlayer() == this.id;
+				update = new Update(turn, game.getPlayer(this.id), game.getTopCard(), cardCount);
+			}
 			synchronized (output) {
 				output.reset();
 				output.writeObject(update);
@@ -223,7 +226,10 @@ public class Host implements Runnable {
 		 * @throws IOException When something goes wrong during send operation
 		 */
 		public void end() throws IOException {
-			Update update = new Update(false, true, game.getPlayer(this.id), game.getTopCard(), new short[game.playerCount()]);
+			Update update;
+			synchronized (game) {
+				update = new Update(false, true, game.getPlayer(this.id), game.getTopCard(), new short[game.playerCount()]);
+			}
 			synchronized (output) {
 				output.reset();
 				output.writeObject(update);
@@ -237,13 +243,15 @@ public class Host implements Runnable {
 		 * @return Whether the operation succeeded
 		 */
 		private boolean selectColor(Command order) {
-			Player player = game.getPlayer(this.id);
-			Card card = player.getCards()[order.cardNumber];
-			if (card instanceof ColorChooser) {
-				((ColorChooser) card).setColor(order.color);
-				return true;
-			} else {
-				return false;
+			synchronized (game) {
+				Player player = game.getPlayer(this.id);
+				Card card = player.getCards()[order.cardNumber];
+				if (card instanceof ColorChooser) {
+					((ColorChooser) card).setColor(order.color);
+					return true;
+				} else {
+					return false;
+				}
 			}
 		}
 	}
