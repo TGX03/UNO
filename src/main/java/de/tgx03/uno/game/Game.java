@@ -37,7 +37,6 @@ public class Game {
 		players = new Player[playerCount];
 		for (int i = 0; i < playerCount; i++) {
 			players[i] = new Player();
-			players[i].initialize();
 			players[i].updateTop(top);
 		}
 

@@ -20,10 +20,9 @@ public class Player implements Serializable {
 	private transient Card top; // Transient as clients already gets this other ways
 
 	/**
-	 * Gives this player 7 cards to start a game
+	 * Creates a player and gives it 7 cards to start the game
 	 */
-	protected void initialize() {
-		cards.clear();
+	public Player() {
 		for (int i = 0; i < 7; i++) {
 			cards.add(Card.generateCard());
 		}
