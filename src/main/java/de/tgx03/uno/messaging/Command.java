@@ -87,6 +87,20 @@ public class Command implements Serializable {
 		} else return false;
 	}
 
+	@Override
+	public String toString() {
+		String result;
+		switch (this.type) {
+			case NORMAL -> result = "Lay down card number " + cardNumber;
+			case JUMP -> result = "Jump with card number " + cardNumber;
+			case TAKE_CARD -> result = "Player picks up a card";
+			case ACCEPT -> result = "Player accepts the penalty";
+			case SELECT_COLOR -> result = "Player changes color of card " + cardNumber + " to " + this.color;
+			default -> result = "";
+		}
+		return result;
+	}
+
 	/**
 	 * An enum representing which kind of command is being transmitted
 	 */
