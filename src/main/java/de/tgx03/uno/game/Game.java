@@ -164,6 +164,11 @@ public class Game {
 		return top;
 	}
 
+	/**
+	 * Determines whether this game has finished by checking if any player still has some cards left
+	 *
+	 * @return If the game has finished
+	 */
 	public synchronized boolean hasEnded() {
 		for (Player player : players) {
 			if (!player.won()) {
