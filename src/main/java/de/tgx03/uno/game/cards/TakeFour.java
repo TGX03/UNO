@@ -42,12 +42,14 @@ public class TakeFour extends ColorChooser {
 		} else return false;
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public String toString() {
 		return "Wild Take Four";
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public TakeFour clone() {
 		TakeFour result = new TakeFour();
 		result.setColor(this.color);

@@ -50,12 +50,14 @@ public class Skip extends Card {
 		return false;
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public String toString() {
 		return color.name() + " Skip";
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public Skip clone() {
 		return new Skip(this.color);
 	}

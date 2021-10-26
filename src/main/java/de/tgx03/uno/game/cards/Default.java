@@ -61,12 +61,14 @@ public class Default extends Card {
 		return false;
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public String toString() {
 		return color.name() + " " + value;
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public Default clone() {
 		return new Default(this.color, this.value);
 	}

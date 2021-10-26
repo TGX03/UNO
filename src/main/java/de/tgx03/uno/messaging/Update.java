@@ -44,10 +44,10 @@ public class Update implements Serializable {
 	/**
 	 * Creates a new update
 	 *
-	 * @param turn   Whether it's this clients turn
-	 * @param player The player object representing this player
-	 * @param topCard   The card on top of the pile
-	 * @param count  How many cards the other players have
+	 * @param turn    Whether it's this clients turn
+	 * @param player  The player object representing this player
+	 * @param topCard The card on top of the pile
+	 * @param count   How many cards the other players have
 	 */
 	public Update(boolean turn, @NotNull Player player, @NotNull Card topCard, @NotNull short[] count) {
 		this.turn = turn;

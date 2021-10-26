@@ -50,12 +50,14 @@ public class Reverse extends Card {
 		return false;
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public String toString() {
 		return color.name() + " Reverse";
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public Reverse clone() {
 		return new Reverse(this.color);
 	}

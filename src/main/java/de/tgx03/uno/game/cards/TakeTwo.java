@@ -51,12 +51,14 @@ public class TakeTwo extends Card {
 		return false;
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public String toString() {
 		return color.name() + " TakeTwo";
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public TakeTwo clone() {
 		return new TakeTwo(this.color);
 	}

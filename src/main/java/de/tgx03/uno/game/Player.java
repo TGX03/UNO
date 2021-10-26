@@ -129,7 +129,8 @@ public class Player implements Serializable {
 		return cards.hashCode();
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public String toString() {
 		return cards.toString();
 	}

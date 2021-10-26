@@ -40,7 +40,8 @@ public class Rules implements Serializable, Cloneable {
 		this.forceContinue = forceContinue;
 	}
 
-	@Override @NotNull
+	@Override
+	@NotNull
 	public Rules clone() {
 		return new Rules(this.jumping, this.stacking, this.forceContinue);
 	}
