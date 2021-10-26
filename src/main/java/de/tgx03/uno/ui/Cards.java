@@ -43,7 +43,7 @@ public final class Cards {
 		try {
 			transcoder.transcode(in, null);
 		} catch (TranscoderException e) {
-			e.printStackTrace();
+			ExceptionDialog.showException(e);
 		}
 		WILD = SwingFXUtils.toFXImage(transcoder.img, null);
 
@@ -53,7 +53,7 @@ public final class Cards {
 		try {
 			transcoder.transcode(in, null);
 		} catch (TranscoderException e) {
-			e.printStackTrace();
+			ExceptionDialog.showException(e);
 		}
 		TAKEFOUR = SwingFXUtils.toFXImage(transcoder.img, null);
 
@@ -128,7 +128,7 @@ public final class Cards {
 					transcoder.transcode(in, null);
 					target[i] = SwingFXUtils.toFXImage(transcoder.img, null);
 				} catch (TranscoderException e) {
-					e.printStackTrace();
+					ExceptionDialog.showException(e);
 				}
 			}
 
@@ -139,7 +139,7 @@ public final class Cards {
 				transcoder.transcode(in, null);
 				target[10] = SwingFXUtils.toFXImage(transcoder.img, null);
 			} catch (TranscoderException e) {
-				e.printStackTrace();
+				ExceptionDialog.showException(e);
 			}
 
 			// Transcode the skip card
@@ -150,7 +150,7 @@ public final class Cards {
 				target[11] = SwingFXUtils.toFXImage(transcoder.img, null);
 
 			} catch (TranscoderException e) {
-				e.printStackTrace();
+				ExceptionDialog.showException(e);
 			}
 
 			// Transcode the take two card
@@ -161,7 +161,7 @@ public final class Cards {
 				target[12] = SwingFXUtils.toFXImage(transcoder.img, null);
 
 			} catch (TranscoderException e) {
-				e.printStackTrace();
+				ExceptionDialog.showException(e);
 			}
 		}
 	}

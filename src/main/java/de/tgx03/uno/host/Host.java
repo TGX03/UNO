@@ -163,6 +163,7 @@ public class Host implements Runnable {
 				// Read orders and process them
 				try {
 					Command order = (Command) input.readObject();
+					System.out.println("Received command from player " + this.id + " \"" + order.toString() + "\"");
 					boolean success = false;
 					synchronized (game) {
 						switch (order.type) {
