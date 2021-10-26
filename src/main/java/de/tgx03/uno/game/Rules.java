@@ -1,5 +1,8 @@
 package de.tgx03.uno.game;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -37,13 +40,13 @@ public class Rules implements Serializable, Cloneable {
 		this.forceContinue = forceContinue;
 	}
 
-	@Override
+	@Override @NotNull
 	public Rules clone() {
 		return new Rules(this.jumping, this.stacking, this.forceContinue);
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Rules rules = (Rules) o;

@@ -1,5 +1,8 @@
 package de.tgx03.uno.game.cards;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serial;
 
 /**
@@ -13,38 +16,38 @@ public class TakeFour extends ColorChooser {
 	private Color color = Color.BLACK;
 
 	@Override
-	public boolean place(Card below) {
+	public boolean place(@NotNull Card below) {
 		return true;
 	}
 
 	@Override
-	public boolean jump(Card below) {
+	public boolean jump(@NotNull Card below) {
 		return false;
 	}
 
 	@Override
-	public Color color() {
+	public @NotNull Color color() {
 		return color;
 	}
 
 	@Override
-	public void setColor(Color color) {
+	public void setColor(@NotNull Color color) {
 		this.color = color;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (o instanceof TakeFour) {
 			return ((TakeFour) o).color == this.color;
 		} else return false;
 	}
 
-	@Override
+	@Override @NotNull
 	public String toString() {
 		return "Wild Take Four";
 	}
 
-	@Override
+	@Override @NotNull
 	public TakeFour clone() {
 		TakeFour result = new TakeFour();
 		result.setColor(this.color);

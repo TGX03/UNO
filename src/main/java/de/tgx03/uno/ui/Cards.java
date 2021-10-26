@@ -7,6 +7,7 @@ import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.image.BufferedImage;
 
@@ -76,7 +77,8 @@ public final class Cards {
 	 * @param card The card to get the image for
 	 * @return The corresponding image
 	 */
-	public static Image getCard(Card card) {
+	@NotNull
+	public static Image getCard(@NotNull Card card) {
 
 		// Get the position in the corresponding array
 		int number;

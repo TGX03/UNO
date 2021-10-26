@@ -1,5 +1,8 @@
 package de.tgx03.uno.game.cards;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serial;
 
 /**
@@ -20,40 +23,40 @@ public class TakeTwo extends Card {
 	 *
 	 * @param color The color of the new card
 	 */
-	public TakeTwo(Color color) {
+	public TakeTwo(@NotNull Color color) {
 		if (color == Color.BLACK) throw new IllegalArgumentException();
 		this.color = color;
 	}
 
 	@Override
-	public boolean place(Card below) {
+	public boolean place(@NotNull Card below) {
 		return below.color() == this.color || below instanceof TakeTwo;
 	}
 
 	@Override
-	public boolean jump(Card below) {
+	public boolean jump(@NotNull Card below) {
 		return below.color() == this.color && below instanceof TakeTwo;
 	}
 
 	@Override
-	public Color color() {
+	public @NotNull Color color() {
 		return color;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (o instanceof TakeTwo) {
 			return ((TakeTwo) o).color == this.color;
 		}
 		return false;
 	}
 
-	@Override
+	@Override @NotNull
 	public String toString() {
 		return color.name() + " TakeTwo";
 	}
 
-	@Override
+	@Override @NotNull
 	public TakeTwo clone() {
 		return new TakeTwo(this.color);
 	}

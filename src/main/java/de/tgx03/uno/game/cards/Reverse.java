@@ -1,5 +1,8 @@
 package de.tgx03.uno.game.cards;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serial;
 
 /**
@@ -20,39 +23,39 @@ public class Reverse extends Card {
 	 *
 	 * @param color The color of the new card
 	 */
-	public Reverse(Color color) {
+	public Reverse(@NotNull Color color) {
 		this.color = color;
 	}
 
 	@Override
-	public boolean place(Card below) {
+	public boolean place(@NotNull Card below) {
 		return below.color() == this.color || below instanceof Reverse;
 	}
 
 	@Override
-	public boolean jump(Card below) {
+	public boolean jump(@NotNull Card below) {
 		return below.color() == this.color && below instanceof Reverse;
 	}
 
 	@Override
-	public Color color() {
+	public @NotNull Color color() {
 		return color;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (o instanceof Reverse) {
 			return ((Reverse) o).color == this.color;
 		}
 		return false;
 	}
 
-	@Override
+	@Override @NotNull
 	public String toString() {
 		return color.name() + " Reverse";
 	}
 
-	@Override
+	@Override @NotNull
 	public Reverse clone() {
 		return new Reverse(this.color);
 	}

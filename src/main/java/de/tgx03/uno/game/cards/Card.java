@@ -1,5 +1,7 @@
 package de.tgx03.uno.game.cards;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Random;
@@ -21,6 +23,7 @@ public abstract class Card implements Serializable, Cloneable {
 	 *
 	 * @return A new card
 	 */
+	@NotNull
 	public static Card generateCard() {
 		int code = rand.nextInt(108);
 		if (code < 19) {
@@ -75,7 +78,7 @@ public abstract class Card implements Serializable, Cloneable {
 	 * @param below The card this card shall be put on top of
 	 * @return Whether it's legal
 	 */
-	public abstract boolean place(Card below);
+	public abstract boolean place(@NotNull Card below);
 
 	/**
 	 * Determines whether a card can be thrown in when it's not the player turn
@@ -83,15 +86,17 @@ public abstract class Card implements Serializable, Cloneable {
 	 * @param below The card this card shall be thrown on top of
 	 * @return Whether it's legal
 	 */
-	public abstract boolean jump(Card below);
+	public abstract boolean jump(@NotNull Card below);
 
 	/**
 	 * Returns the color of this card
 	 *
 	 * @return The color of this card
 	 */
+	@NotNull
 	public abstract Color color();
 
 	@Override
+	@NotNull
 	public abstract Card clone();
 }

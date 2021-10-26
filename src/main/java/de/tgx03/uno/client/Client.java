@@ -5,6 +5,7 @@ import de.tgx03.uno.game.cards.Card;
 import de.tgx03.uno.game.cards.Color;
 import de.tgx03.uno.messaging.Command;
 import de.tgx03.uno.messaging.Update;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,7 +34,7 @@ public class Client implements Runnable {
 	 * @param hostPort The port to connect to
 	 * @throws IOException If an error occurred when trying to establish the connection
 	 */
-	public Client(String host, int hostPort) throws IOException {
+	public Client(@NotNull String host, int hostPort) throws IOException {
 		Socket socket = new Socket(host, hostPort);
 		output = new ObjectOutputStream(socket.getOutputStream());
 		input = new ObjectInputStream(socket.getInputStream());
@@ -99,7 +100,7 @@ public class Client implements Runnable {
 	 * @param color      The desired color
 	 * @throws IOException When an error occurs during transmission
 	 */
-	public synchronized void selectColor(int cardNumber, Color color) throws IOException {
+	public synchronized void selectColor(int cardNumber, @NotNull Color color) throws IOException {
 		output.reset();
 		Command command = new Command(color, cardNumber);
 		output.writeObject(command);
@@ -120,7 +121,7 @@ public class Client implements Runnable {
 	 *
 	 * @param receiver The class requesting to get updated
 	 */
-	public void registerReceiver(ClientUpdate receiver) {
+	public void registerReceiver(@NotNull ClientUpdate receiver) {
 		synchronized (this.receivers) {
 			this.receivers.add(receiver);
 		}

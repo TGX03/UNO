@@ -1,6 +1,8 @@
 package de.tgx03.uno.game;
 
 import de.tgx03.uno.game.cards.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A class representing a game of Uno
@@ -19,14 +21,16 @@ public class Game {
 
 	/**
 	 * Creates a new game of UNO
+	 * If null rules are supplied, everything is enabled
 	 *
 	 * @param playerCount The number of players in this game
 	 * @param rules       The selected rules this game should be played with
 	 */
-	public Game(int playerCount, Rules rules) {
+	public Game(int playerCount, @Nullable Rules rules) {
 
 		// Store the rules
-		this.rules = rules;
+		if (rules != null) this.rules = rules;
+		else this.rules = new Rules(true, true, true);
 
 		// If the card on top is a card that chooses colors, get a new one cause fuck it, I'm not implementing that
 		do {
@@ -140,6 +144,7 @@ public class Game {
 	 * @param id The number of the requested player
 	 * @return The corresponding player
 	 */
+	@NotNull
 	public Player getPlayer(int id) {
 		return players[id];
 	}
@@ -160,6 +165,7 @@ public class Game {
 	/**
 	 * @return The card currently on top
 	 */
+	@NotNull
 	public Card getTopCard() {
 		return top;
 	}

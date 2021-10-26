@@ -7,6 +7,8 @@ import de.tgx03.uno.game.cards.Card;
 import de.tgx03.uno.game.cards.ColorChooser;
 import de.tgx03.uno.messaging.Command;
 import de.tgx03.uno.messaging.Update;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -36,7 +38,7 @@ public class Host implements Runnable {
 	 * @param rules The rules of the game
 	 * @throws IOException When something goes wrong while starting the server
 	 */
-	public Host(int port, Rules rules) throws IOException {
+	public Host(int port, @Nullable Rules rules) throws IOException {
 		serverSocket = new ServerSocket(port);
 		this.rules = rules;
 		Thread accepter = new Thread(this, "Host-Main");
@@ -140,7 +142,7 @@ public class Host implements Runnable {
 		 * @param id     The ID of the player this handler is responsible for
 		 * @throws IOException When a stream couldn't be opened
 		 */
-		public Handler(Socket socket, int id) throws IOException {
+		public Handler(@NotNull Socket socket, int id) throws IOException {
 			this.id = id;
 			this.input = new ObjectInputStream(socket.getInputStream());
 			this.output = new ObjectOutputStream(socket.getOutputStream());
@@ -209,7 +211,7 @@ public class Host implements Runnable {
 		 * @param cardCount How many cards all the players have
 		 * @throws IOException When something goes wrong during send operation
 		 */
-		public void update(short[] cardCount) throws IOException {
+		public void update(@NotNull short[] cardCount) throws IOException {
 			Update update;
 			synchronized (game) {
 				boolean turn = game.getCurrentPlayer() == this.id;
@@ -243,7 +245,7 @@ public class Host implements Runnable {
 		 * @param order The order informing this host of the operation
 		 * @return Whether the operation succeeded
 		 */
-		private boolean selectColor(Command order) {
+		private boolean selectColor(@NotNull Command order) {
 			synchronized (game) {
 				Player player = game.getPlayer(this.id);
 				Card card = player.getCards()[order.cardNumber];

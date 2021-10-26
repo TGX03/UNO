@@ -2,6 +2,8 @@ package de.tgx03.uno.messaging;
 
 import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.cards.Card;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -44,14 +46,14 @@ public class Update implements Serializable {
 	 *
 	 * @param turn   Whether it's this clients turn
 	 * @param player The player object representing this player
-	 * @param card   The card on top of the pile
+	 * @param topCard   The card on top of the pile
 	 * @param count  How many cards the other players have
 	 */
-	public Update(boolean turn, Player player, Card card, short[] count) {
+	public Update(boolean turn, @NotNull Player player, @NotNull Card topCard, @NotNull short[] count) {
 		this.turn = turn;
 		this.ended = false;
 		this.player = player;
-		this.topCard = card;
+		this.topCard = topCard;
 		this.cardNumbers = count;
 	}
 
@@ -64,7 +66,7 @@ public class Update implements Serializable {
 	 * @param card   The card on top of the pile
 	 * @param count  How many cards the other players have
 	 */
-	public Update(boolean turn, boolean ended, Player player, Card card, short[] count) {
+	public Update(boolean turn, boolean ended, @NotNull Player player, @NotNull Card card, @NotNull short[] count) {
 		this.turn = turn;
 		this.ended = ended;
 		this.player = player;
@@ -73,7 +75,7 @@ public class Update implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Update update = (Update) o;

@@ -1,5 +1,7 @@
 package de.tgx03.uno.game.cards;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serial;
 
 /**
@@ -15,5 +17,5 @@ public abstract class ColorChooser extends Card {
 	 *
 	 * @param color The chosen color
 	 */
-	public abstract void setColor(Color color);
+	public abstract void setColor(@NotNull Color color);
 }

@@ -1,6 +1,8 @@
 package de.tgx03.uno.messaging;
 
 import de.tgx03.uno.game.cards.Color;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -44,7 +46,7 @@ public class Command implements Serializable {
 	 * @param type       The type of command to be created
 	 * @param cardNumber Which card shall be used for the operation. When taking a penalty or a new card, this gets ignored
 	 */
-	public Command(CommandType type, int cardNumber) {
+	public Command(@NotNull CommandType type, int cardNumber) {
 		this.type = type;
 		this.cardNumber = cardNumber;
 		color = null;
@@ -57,7 +59,7 @@ public class Command implements Serializable {
 	 * @param color      The color to give to the black card
 	 * @param cardNumber Which card the color shall be given to
 	 */
-	public Command(Color color, int cardNumber) {
+	public Command(@NotNull Color color, int cardNumber) {
 		this.type = CommandType.SELECT_COLOR;
 		this.color = color;
 		this.cardNumber = cardNumber;
@@ -75,7 +77,7 @@ public class Command implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (o instanceof Command c) {
 			if (this.type == CommandType.JUMP || this.type == CommandType.NORMAL) {
 				return this.type == c.type && this.cardNumber == c.cardNumber;

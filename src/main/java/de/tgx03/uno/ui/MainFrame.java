@@ -23,6 +23,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -68,7 +70,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	}
 
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(@NotNull Stage stage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("/MainFrame.fxml"));
 		stage.setTitle("UNO");
 		stage.setScene(new Scene(root));
@@ -81,7 +83,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param event ignored
 	 */
-	public synchronized void createHost(ActionEvent event) {
+	public synchronized void createHost(@Nullable ActionEvent event) {
 
 		// Show the window requesting the port from the user
 		TextInputDialog dialog = new TextInputDialog();
@@ -124,7 +126,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param e ignored
 	 */
-	public synchronized void startHost(ActionEvent e) {
+	public synchronized void startHost(@Nullable ActionEvent e) {
 		host.start();
 		cardList.getSelectionModel().selectedIndexProperty().addListener(this);
 		startGame.setDisable(true);
@@ -136,7 +138,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param e ignored
 	 */
-	public synchronized void createClient(ActionEvent e) {
+	public synchronized void createClient(@Nullable ActionEvent e) {
 		try {
 
 			// Create the client and register with it
@@ -159,7 +161,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param e ignored
 	 */
-	public synchronized void playCard(ActionEvent e) {
+	public synchronized void playCard(@Nullable ActionEvent e) {
 		int selected = cardList.getSelectionModel().getSelectedIndex();
 		try {
 			client.play(selected);
@@ -174,7 +176,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param e ignored
 	 */
-	public synchronized void jumpCard(ActionEvent e) {
+	public synchronized void jumpCard(@Nullable ActionEvent e) {
 		int selected = cardList.getSelectionModel().getSelectedIndex();
 		try {
 			client.jump(selected);
@@ -189,7 +191,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param e ignored
 	 */
-	public synchronized void acceptCards(ActionEvent e) {
+	public synchronized void acceptCards(@Nullable ActionEvent e) {
 		try {
 			client.acceptCards();
 		} catch (IOException ex) {
@@ -203,7 +205,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param e ignored
 	 */
-	public synchronized void takeCard(ActionEvent e) {
+	public synchronized void takeCard(@Nullable ActionEvent e) {
 		try {
 			client.takeCard();
 		} catch (IOException ex) {
@@ -217,7 +219,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param e ignored
 	 */
-	public synchronized void selectColor(ActionEvent e) {
+	public synchronized void selectColor(@Nullable ActionEvent e) {
 		int selectedColor = colorPicker.getSelectionModel().getSelectedIndex();
 		int selectedCard = cardList.getSelectionModel().getSelectedIndex();
 		try {
@@ -238,6 +240,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @return The created ruleset
 	 */
+	@Nullable
 	private Rules createRules() {
 		return new RuleDialog().showAndWait();
 	}
@@ -254,7 +257,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	}
 
 	@Override
-	public synchronized void update(Update update) {
+	public synchronized void update(@NotNull Update update) {
 
 		// Get the images of the cards
 		Card[] cards = update.player.getCards();
@@ -285,7 +288,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	}
 
 	@Override
-	public synchronized void changed(ObservableValue<? extends Number> observableValue, Number number1, Number number2) {
+	public synchronized void changed(@Nullable ObservableValue<? extends Number> observableValue, @Nullable Number number1, @NotNull Number number2) {
 		// Updates the color shown in the combo box
 		if (number2.intValue() > 0) {
 			Player player = client.getPlayer();

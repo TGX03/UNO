@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,7 +24,7 @@ public final class ExceptionDialog {
 	 *
 	 * @param e The exception to show
 	 */
-	public static void showException(Exception e) {
+	public static void showException(@NotNull Exception e) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle("Error");
 		alert.setHeaderText("An exception occurred");

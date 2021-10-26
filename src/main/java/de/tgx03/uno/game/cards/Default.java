@@ -1,5 +1,8 @@
 package de.tgx03.uno.game.cards;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Serial;
 
 /**
@@ -25,7 +28,7 @@ public class Default extends Card {
 	 * @param color The color of the new card
 	 * @param value The number of the new card
 	 */
-	public Default(Color color, byte value) {
+	public Default(@NotNull Color color, byte value) {
 		if (color == Color.BLACK || value < 0 || value >= 10) {
 			throw new IllegalArgumentException();
 		}
@@ -34,36 +37,36 @@ public class Default extends Card {
 	}
 
 	@Override
-	public boolean place(Card below) {
+	public boolean place(@NotNull Card below) {
 		if (below.color() == this.color) {
 			return true;
 		} else return below instanceof Default && ((Default) below).value == this.value;
 	}
 
 	@Override
-	public boolean jump(Card below) {
+	public boolean jump(@NotNull Card below) {
 		return this.equals(below);
 	}
 
 	@Override
-	public Color color() {
+	public @NotNull Color color() {
 		return this.color;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (o instanceof Default) {
 			return ((Default) o).color == this.color && ((Default) o).value == this.value;
 		}
 		return false;
 	}
 
-	@Override
+	@Override @NotNull
 	public String toString() {
 		return color.name() + " " + value;
 	}
 
-	@Override
+	@Override @NotNull
 	public Default clone() {
 		return new Default(this.color, this.value);
 	}

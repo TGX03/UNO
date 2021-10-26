@@ -1,5 +1,7 @@
 package de.tgx03.uno.game.cards;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serial;
 
 /**
@@ -13,17 +15,17 @@ public class ChooseColor extends ColorChooser {
 	private Color color = Color.BLACK;
 
 	@Override
-	public boolean place(Card below) {
+	public boolean place(@NotNull Card below) {
 		return true;
 	}
 
 	@Override
-	public boolean jump(Card below) {
+	public boolean jump(@NotNull Card below) {
 		return false;
 	}
 
 	@Override
-	public Color color() {
+	public @NotNull Color color() {
 		return color;
 	}
 

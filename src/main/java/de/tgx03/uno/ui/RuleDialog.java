@@ -7,6 +7,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A window requesting the rules for a game of UNO
@@ -21,6 +22,7 @@ public class RuleDialog {
 	 *
 	 * @return The created rules
 	 */
+	@NotNull
 	public Rules showAndWait() {
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);

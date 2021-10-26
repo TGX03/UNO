@@ -1,6 +1,8 @@
 package de.tgx03.uno.game;
 
 import de.tgx03.uno.game.cards.Card;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -36,6 +38,7 @@ public class Player implements Serializable {
 	 * @param cardNumber The number of the card to play
 	 * @return The card at the given position if operation succeeded
 	 */
+	@Nullable
 	public Card playCard(int cardNumber) {
 		if (cardNumber < cards.size() && cards.get(cardNumber).place(top)) {
 			return cards.remove(cardNumber);
@@ -52,6 +55,7 @@ public class Player implements Serializable {
 	 * @param cardNumber The number of the card to jump in
 	 * @return The card at the given position if operation succeeded
 	 */
+	@Nullable
 	public Card jumpCard(int cardNumber) {
 		if (cardNumber < cards.size() && cards.get(cardNumber).jump(top)) {
 			return cards.remove(cardNumber);
@@ -72,7 +76,7 @@ public class Player implements Serializable {
 	 *
 	 * @param card The new card
 	 */
-	protected void updateTop(Card card) {
+	protected void updateTop(@NotNull Card card) {
 		this.top = card;
 	}
 
@@ -99,6 +103,7 @@ public class Player implements Serializable {
 	 *
 	 * @return All the cards of this player
 	 */
+	@NotNull
 	public Card[] getCards() {
 		return cards.toArray(new Card[0]);
 	}
@@ -110,12 +115,12 @@ public class Player implements Serializable {
 	 * @param cardNumber Where to place the card
 	 * @param card       The card to give back
 	 */
-	protected void giveCard(int cardNumber, Card card) {
+	protected void giveCard(int cardNumber, @NotNull Card card) {
 		cards.add(cardNumber, card);
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		return o == this;
 	}
 
@@ -124,7 +129,7 @@ public class Player implements Serializable {
 		return cards.hashCode();
 	}
 
-	@Override
+	@Override @NotNull
 	public String toString() {
 		return cards.toString();
 	}
