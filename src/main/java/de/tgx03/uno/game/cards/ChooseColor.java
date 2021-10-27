@@ -47,7 +47,7 @@ public class ChooseColor extends ColorChooser {
 	}
 
 	@Override
-	public ChooseColor clone() {
+	public @NotNull ChooseColor clone() {
 		ChooseColor result = new ChooseColor();
 		result.setColor(this.color);
 		return result;
