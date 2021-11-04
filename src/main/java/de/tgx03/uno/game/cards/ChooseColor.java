@@ -2,6 +2,9 @@ package de.tgx03.uno.game.cards;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
@@ -56,5 +59,15 @@ public class ChooseColor extends ColorChooser {
 	@Override
 	public int hashCode() {
 		return 52 + color.ordinal();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeByte(color.getValue());
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		this.color = Color.getByValue(in.readByte());
 	}
 }

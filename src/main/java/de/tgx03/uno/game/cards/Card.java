@@ -1,20 +1,34 @@
 package de.tgx03.uno.game.cards;
 
 import org.jetbrains.annotations.NotNull;
+import sun.misc.Unsafe;
 
+import java.io.Externalizable;
 import java.io.Serial;
-import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Random;
 
 /**
  * The basic implementation of a game card
  */
-public abstract class Card implements Serializable, Cloneable {
+public abstract class Card implements Externalizable, Cloneable {
 
+	protected static final Unsafe UNSAFE;
 	@Serial
 	private static final long serialVersionUID = 3828684409287282936L;
-
 	private static final Random rand = new Random();
+
+	static {
+		Unsafe result = null;
+		try {
+			Field field = Unsafe.class.getDeclaredField("theUnsafe");
+			field.setAccessible(true);
+			result = (Unsafe) field.get(null);
+		} catch (NoSuchFieldException | IllegalAccessException exception) {
+			exception.printStackTrace();
+		}
+		UNSAFE = result;
+	}
 
 	/**
 	 * Generates a new card in accordance with a normal uno deck

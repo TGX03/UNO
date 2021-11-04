@@ -2,18 +2,45 @@ package de.tgx03.uno.game;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sun.misc.Unsafe;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
  * All the rules that can be changed for a game of UNO
  */
-public class Rules implements Serializable, Cloneable {
+public class Rules implements Externalizable, Cloneable {
 
 	@Serial
 	private static final long serialVersionUID = 5037643636101348351L;
+	private static final Unsafe UNSAFE;
+	private static final long JUMP_OFFSET;
+	private static final long STACK_OFFSET;
+	private static final long FORCE_OFFSET;
+
+	static {
+		Unsafe unsafe = null;
+		long jump = -1L;
+		long stack = -1L;
+		long force = -1L;
+		try {
+			Field field = Unsafe.class.getDeclaredField("theUnsafe");
+			field.setAccessible(true);
+			unsafe = (Unsafe) field.get(null);
+			jump = unsafe.objectFieldOffset(Rules.class.getDeclaredField("jumping"));
+			stack = unsafe.objectFieldOffset(Rules.class.getDeclaredField("stacking"));
+			force = unsafe.objectFieldOffset(Rules.class.getDeclaredField("forceContinue"));
+
+		} catch (NoSuchFieldException | IllegalAccessException exception) {
+			exception.printStackTrace();
+		}
+		UNSAFE = unsafe;
+		JUMP_OFFSET = jump;
+		STACK_OFFSET = stack;
+		FORCE_OFFSET = force;
+	}
 
 	/**
 	 * Whether throwing in when a player has exactly the same card as is lying on the pile
@@ -28,6 +55,15 @@ public class Rules implements Serializable, Cloneable {
 	 * Whether a player has to pick up cards until he is able to play
 	 */
 	public final boolean forceContinue;
+
+	/**
+	 * Creates new Rules with all special rules disabled
+	 */
+	public Rules() {
+		jumping = false;
+		stacking = false;
+		forceContinue = false;
+	}
 
 	/**
 	 * @param jumping       Whether throwing in when a player has exactly the same card as is lying on the pile is allowed
@@ -57,5 +93,19 @@ public class Rules implements Serializable, Cloneable {
 	@Override
 	public int hashCode() {
 		return Objects.hash(jumping, stacking, forceContinue);
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeBoolean(jumping);
+		out.writeBoolean(stacking);
+		out.writeBoolean(forceContinue);
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		UNSAFE.putBoolean(this, JUMP_OFFSET, in.readBoolean());
+		UNSAFE.putBoolean(this, STACK_OFFSET, in.readBoolean());
+		UNSAFE.putBoolean(this, FORCE_OFFSET, in.readBoolean());
 	}
 }

@@ -3,9 +3,10 @@ package de.tgx03.uno.game;
 import de.tgx03.uno.game.cards.Card;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sun.misc.Unsafe;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +14,27 @@ import java.util.List;
  * A class representing a single Player
  * holding cards
  */
-public class Player implements Serializable {
+public class Player implements Externalizable {
 
 	@Serial
 	private static final long serialVersionUID = -1301404883505022064L;
+	private static final Unsafe UNSAFE;
+	private static final long LIST_OFFSET;
+
+	static {
+		Unsafe unsafe = null;
+		long list = -1L;
+		try {
+			Field field = Unsafe.class.getDeclaredField("theUnsafe");
+			field.setAccessible(true);
+			unsafe = (Unsafe) field.get(null);
+			list = unsafe.objectFieldOffset(Player.class.getDeclaredField("cards"));
+		} catch (NoSuchFieldException | IllegalAccessException exception) {
+			exception.printStackTrace();
+		}
+		UNSAFE = unsafe;
+		LIST_OFFSET = list;
+	}
 
 	private final List<Card> cards = new ArrayList<>(7);
 	private transient Card top; // Transient as clients already gets this other ways
@@ -133,5 +151,15 @@ public class Player implements Serializable {
 	@NotNull
 	public String toString() {
 		return cards.toString();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeObject(this.cards);
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		UNSAFE.putObject(this, LIST_OFFSET, in.readObject());
 	}
 }

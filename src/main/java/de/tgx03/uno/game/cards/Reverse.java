@@ -3,6 +3,9 @@ package de.tgx03.uno.game.cards;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
@@ -12,11 +15,31 @@ public class Reverse extends Card {
 
 	@Serial
 	private static final long serialVersionUID = 467179758413513210L;
+	private static final long COLOR_OFFSET;
+
+	static {
+		long offset = -1L;
+		try {
+			offset = UNSAFE.objectFieldOffset(Reverse.class.getField("color"));
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+		COLOR_OFFSET = offset;
+	}
 
 	/**
 	 * The color of this card
 	 */
 	public final Color color;
+
+	/**
+	 * Default constructor for serialization.
+	 * Initializes an invalid card, that will probably cause some kind of error
+	 * unless the fields get assigned valid values.
+	 */
+	public Reverse() {
+		this.color = null;
+	}
 
 	/**
 	 * Creates a new reverse card with the provided color
@@ -65,5 +88,15 @@ public class Reverse extends Card {
 	@Override
 	public int hashCode() {
 		return 40 + this.color.ordinal();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeByte(color.getValue());
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException {
+		UNSAFE.putObject(this, COLOR_OFFSET, Color.getByValue(in.readByte()));
 	}
 }

@@ -3,6 +3,9 @@ package de.tgx03.uno.game.cards;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
@@ -12,6 +15,21 @@ public class Default extends Card {
 
 	@Serial
 	private static final long serialVersionUID = -807259155534165108L;
+	private static final long COLOR_OFFSET;
+	private static final long VALUE_OFFSET;
+
+	static {
+		long color = -1L;
+		long value = -1L;
+		try {
+			color = UNSAFE.objectFieldOffset(Default.class.getField("color"));
+			value = UNSAFE.objectFieldOffset(Default.class.getField("value"));
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+		COLOR_OFFSET = color;
+		VALUE_OFFSET = value;
+	}
 
 	/**
 	 * The color of this card
@@ -21,6 +39,16 @@ public class Default extends Card {
 	 * The number on this card
 	 */
 	public final byte value;
+
+	/**
+	 * Default constructor for serialization.
+	 * Initializes an invalid card, that will probably cause some kind of error
+	 * unless the fields get assigned valid values.
+	 */
+	public Default() {
+		this.color = null;
+		this.value = -1;
+	}
 
 	/**
 	 * Creates a new card
@@ -83,5 +111,17 @@ public class Default extends Card {
 		}
 		start = start + this.value;
 		return start;
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeByte(this.value);
+		out.writeByte(this.color.getValue());
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException {
+		UNSAFE.putByte(this, VALUE_OFFSET, in.readByte());
+		UNSAFE.putObject(this, COLOR_OFFSET, Color.getByValue(in.readByte()));
 	}
 }

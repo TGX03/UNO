@@ -3,18 +3,44 @@ package de.tgx03.uno.messaging;
 import de.tgx03.uno.game.cards.Color;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sun.misc.Unsafe;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
  * A class representing a command the client sends to the host
  */
-public class Command implements Serializable {
+public class Command implements Externalizable {
 
 	@Serial
 	private static final long serialVersionUID = -569083254883826234L;
+	private static final Unsafe UNSAFE;
+	private static final long TYPE_OFFSET;
+	private static final long NUMBER_OFFSET;
+	private static final long COLOR_OFFSET;
+
+	static {
+		Unsafe unsafe = null;
+		long type = -1L;
+		long number = -1L;
+		long color = -1L;
+		try {
+			Field field = Unsafe.class.getDeclaredField("theUnsafe");
+			field.setAccessible(true);
+			unsafe = (Unsafe) field.get(null);
+			type = unsafe.objectFieldOffset(Command.class.getDeclaredField("type"));
+			number = unsafe.objectFieldOffset(Command.class.getDeclaredField("cardNumber"));
+			color = unsafe.objectFieldOffset(Command.class.getDeclaredField("color"));
+		} catch (NoSuchFieldException | IllegalAccessException exception) {
+			exception.printStackTrace();
+		}
+		UNSAFE = unsafe;
+		TYPE_OFFSET = type;
+		NUMBER_OFFSET = number;
+		COLOR_OFFSET = color;
+	}
 
 	/**
 	 * The type of command being transmitted
@@ -101,6 +127,31 @@ public class Command implements Serializable {
 			default -> result = "";
 		}
 		return result;
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeObject(this.type);
+		switch (this.type) {
+			case NORMAL, JUMP -> out.writeInt(cardNumber);
+			case SELECT_COLOR -> {
+				out.writeInt(cardNumber);
+				out.writeByte(color.getValue());
+			}
+		}
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		CommandType type = (CommandType) in.readObject();
+		UNSAFE.putObject(this, TYPE_OFFSET, type);
+		switch (type) {
+			case NORMAL, JUMP -> UNSAFE.putInt(this, NUMBER_OFFSET, in.readInt());
+			case SELECT_COLOR -> {
+				UNSAFE.putInt(this, NUMBER_OFFSET, in.readInt());
+				UNSAFE.putObject(this, COLOR_OFFSET, Color.getByValue(in.readByte()));
+			}
+		}
 	}
 
 	/**
