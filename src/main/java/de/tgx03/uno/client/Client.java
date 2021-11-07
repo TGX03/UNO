@@ -139,6 +139,7 @@ public class Client implements Runnable {
 
 	/**
 	 * Removes a receiver to not receive any further updates from this client
+	 *
 	 * @param receiver The client to remove
 	 */
 	public void removeReceiver(@NotNull ClientUpdate receiver) {
@@ -149,6 +150,7 @@ public class Client implements Runnable {
 
 	/**
 	 * Informs the receivers of this client that an exception occurred
+	 *
 	 * @param exception The exception that occurred
 	 */
 	private void handleException(Exception exception) {

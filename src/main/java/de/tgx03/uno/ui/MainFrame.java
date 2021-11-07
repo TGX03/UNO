@@ -246,6 +246,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	 * Ends the game
 	 * If this is the host, it tries to gracefully exit by only informing the host
 	 * If this is a client, the client just gets killed
+	 *
 	 * @param e ignored
 	 */
 	public synchronized void endGame(@Nullable ActionEvent e) {

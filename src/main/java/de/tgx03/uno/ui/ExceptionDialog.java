@@ -1,7 +1,10 @@
 package de.tgx03.uno.ui;
 
 import javafx.application.Platform;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +39,7 @@ public final class ExceptionDialog {
 
 	/**
 	 * Shows an exception and asks whether the user wants to continue with the execution or to abort
+	 *
 	 * @param exception
 	 * @return
 	 */
@@ -76,6 +80,7 @@ public final class ExceptionDialog {
 
 	/**
 	 * Creates a string holding the stacktrace of an exception
+	 *
 	 * @param exception The requested exception
 	 * @return The stacktrace of that exception
 	 */
@@ -88,7 +93,8 @@ public final class ExceptionDialog {
 
 	/**
 	 * Creates the basic alert from an exception and its stacktrace
-	 * @param exception The exception to show
+	 *
+	 * @param exception  The exception to show
 	 * @param stacktrace The stacktrace of the excption
 	 * @return The created Alert
 	 */

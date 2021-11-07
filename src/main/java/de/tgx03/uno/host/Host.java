@@ -132,7 +132,8 @@ public class Host implements Runnable {
 		kill = true;
 		try {
 			this.end();
-		} catch (IOException ignored) {}
+		} catch (IOException ignored) {
+		}
 	}
 
 	/**

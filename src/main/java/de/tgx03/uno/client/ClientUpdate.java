@@ -18,6 +18,7 @@ public interface ClientUpdate {
 	/**
 	 * Gives client UIs the option to handle exceptions that may occur during transmission
 	 * Doesn't need to be implemented
+	 *
 	 * @param exception The exception that occured
 	 */
 	void handleException(@NotNull Exception exception);
