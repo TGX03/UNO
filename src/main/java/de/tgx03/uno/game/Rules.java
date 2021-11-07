@@ -103,7 +103,7 @@ public class Rules implements Externalizable, Cloneable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+	public void readExternal(ObjectInput in) throws IOException {
 		UNSAFE.putBoolean(this, JUMP_OFFSET, in.readBoolean());
 		UNSAFE.putBoolean(this, STACK_OFFSET, in.readBoolean());
 		UNSAFE.putBoolean(this, FORCE_OFFSET, in.readBoolean());

@@ -62,6 +62,7 @@ public class Reverse extends Card {
 
 	@Override
 	public @NotNull Color color() {
+		assert color != null;
 		return color;
 	}
 
@@ -76,22 +77,26 @@ public class Reverse extends Card {
 	@Override
 	@NotNull
 	public String toString() {
+		assert color != null;
 		return color.name() + " Reverse";
 	}
 
 	@Override
 	@NotNull
 	public Reverse clone() {
+		assert this.color != null;
 		return new Reverse(this.color);
 	}
 
 	@Override
 	public int hashCode() {
+		assert this.color != null;
 		return 40 + this.color.ordinal();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
+		assert color != null;
 		out.writeByte(color.getValue());
 	}
 

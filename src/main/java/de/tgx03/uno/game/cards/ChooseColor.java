@@ -33,7 +33,7 @@ public class ChooseColor extends ColorChooser {
 	}
 
 	@Override
-	public void setColor(Color color) {
+	public void setColor(@NotNull Color color) {
 		this.color = color;
 	}
 
@@ -67,7 +67,7 @@ public class ChooseColor extends ColorChooser {
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+	public void readExternal(ObjectInput in) throws IOException {
 		this.color = Color.getByValue(in.readByte());
 	}
 }

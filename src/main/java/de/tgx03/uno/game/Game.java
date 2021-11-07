@@ -30,7 +30,7 @@ public class Game {
 
 		// Store the rules
 		if (rules != null) this.rules = rules;
-		else this.rules = new Rules(true, true, true);
+		else this.rules = new Rules();
 
 		// If the card on top is a card that chooses colors, get a new one cause fuck it, I'm not implementing that
 		do {

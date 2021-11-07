@@ -290,12 +290,14 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	public synchronized void update(@NotNull Update update) {
 
 		// Get the images of the cards
+		assert update.player != null;
 		Card[] cards = update.player.getCards();
 		ImageView[] images = new ImageView[cards.length];
 		for (int i = 0; i < cards.length; i++) {
 			images[i] = new ImageView(Cards.getCard(cards[i]));
 		}
 
+		assert update.topCard != null;
 		topCard.setImage(Cards.getCard(update.topCard));    // Update the top card
 		enable(update.turn);    // Enable or disable the buttons
 

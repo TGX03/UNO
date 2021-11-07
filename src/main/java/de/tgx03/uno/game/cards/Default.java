@@ -78,6 +78,7 @@ public class Default extends Card {
 
 	@Override
 	public @NotNull Color color() {
+		assert this.color != null;
 		return this.color;
 	}
 
@@ -92,18 +93,21 @@ public class Default extends Card {
 	@Override
 	@NotNull
 	public String toString() {
+		assert color != null;
 		return color.name() + " " + value;
 	}
 
 	@Override
 	@NotNull
 	public Default clone() {
+		assert this.color != null;
 		return new Default(this.color, this.value);
 	}
 
 	@Override
 	public int hashCode() {
 		int start = 0;
+		assert color != null;
 		switch (color) {
 			case GREEN -> start = 10;
 			case RED -> start = 20;
@@ -116,6 +120,7 @@ public class Default extends Card {
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeByte(this.value);
+		assert this.color != null;
 		out.writeByte(this.color.getValue());
 	}
 

@@ -136,6 +136,7 @@ public class Command implements Externalizable {
 			case NORMAL, JUMP -> out.writeInt(cardNumber);
 			case SELECT_COLOR -> {
 				out.writeInt(cardNumber);
+				assert color != null;
 				out.writeByte(color.getValue());
 			}
 		}

@@ -70,7 +70,7 @@ public class TakeFour extends ColorChooser {
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+	public void readExternal(ObjectInput in) throws IOException {
 		this.color = Color.getByValue(in.readByte());
 	}
 }

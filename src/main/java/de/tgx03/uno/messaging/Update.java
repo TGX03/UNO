@@ -126,7 +126,11 @@ public class Update implements Externalizable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Update update = (Update) o;
-		return turn == update.turn && ended == update.ended && player.equals(update.player) && topCard.equals(update.topCard) && Arrays.equals(cardNumbers, update.cardNumbers);
+		if (turn != update.turn || ended != update.ended) return false;
+		assert player != null;
+		if (!player.equals(update.player)) return false;
+		assert topCard != null;
+		return topCard.equals(update.topCard) && Arrays.equals(cardNumbers, update.cardNumbers);
 	}
 
 	@Override

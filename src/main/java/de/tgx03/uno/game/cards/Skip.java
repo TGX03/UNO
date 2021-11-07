@@ -62,6 +62,7 @@ public class Skip extends Card {
 
 	@Override
 	public @NotNull Color color() {
+		assert color != null;
 		return color;
 	}
 
@@ -76,22 +77,26 @@ public class Skip extends Card {
 	@Override
 	@NotNull
 	public String toString() {
+		assert color != null;
 		return color.name() + " Skip";
 	}
 
 	@Override
 	@NotNull
 	public Skip clone() {
+		assert this.color != null;
 		return new Skip(this.color);
 	}
 
 	@Override
 	public int hashCode() {
+		assert this.color != null;
 		return 44 + this.color.ordinal();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
+		assert this.color != null;
 		out.writeByte(this.color.getValue());
 	}
 

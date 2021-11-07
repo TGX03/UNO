@@ -32,16 +32,14 @@ public final class ExceptionDialog {
 
 		String exceptionText = parseStacktrace(e);
 
-		Platform.runLater(() -> {
-			createAlert(e, exceptionText);
-		});
+		Platform.runLater(() -> createAlert(e, exceptionText));
 	}
 
 	/**
 	 * Shows an exception and asks whether the user wants to continue with the execution or to abort
 	 *
-	 * @param exception
-	 * @return
+	 * @param exception The exception to show
+	 * @return The option the user selected
 	 */
 	public static Answer showExceptionAnswer(Exception exception) {
 

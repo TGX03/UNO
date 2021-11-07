@@ -63,6 +63,7 @@ public class TakeTwo extends Card {
 
 	@Override
 	public @NotNull Color color() {
+		assert color != null;
 		return color;
 	}
 
@@ -77,29 +78,33 @@ public class TakeTwo extends Card {
 	@Override
 	@NotNull
 	public String toString() {
+		assert color != null;
 		return color.name() + " TakeTwo";
 	}
 
 	@Override
 	@NotNull
 	public TakeTwo clone() {
+		assert this.color != null;
 		return new TakeTwo(this.color);
 	}
 
 	@Override
 	public int hashCode() {
 		int start = 48;
+		assert this.color != null;
 		start = start + this.color.ordinal();
 		return start;
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
+		assert this.color != null;
 		out.writeByte(this.color.getValue());
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+	public void readExternal(ObjectInput in) throws IOException {
 		UNSAFE.putObject(this, COLOR_OFFSET, Color.getByValue(in.readByte()));
 	}
 }
