@@ -8,6 +8,7 @@ import de.tgx03.uno.game.cards.Card;
 import de.tgx03.uno.game.cards.Color;
 import de.tgx03.uno.game.cards.ColorChooser;
 import de.tgx03.uno.host.Host;
+import de.tgx03.uno.host.HostExceptionHandler;
 import de.tgx03.uno.messaging.Update;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -29,10 +30,10 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.Optional;
 
-public class MainFrame extends Application implements ClientUpdate, ChangeListener<Number> {
+public class MainFrame extends Application implements ClientUpdate, HostExceptionHandler, ChangeListener<Number> {
 
-	private static final ObservableList<String> normalColors = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow");
-	private static final ObservableList<String> choosableColors = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow", "Black");
+	private static final ObservableList<String> NORMAL_COLORS = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow");
+	private static final ObservableList<String> AVAILABLE_COLORS = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow", "Black");
 
 	@FXML
 	private ListView<ImageView> cardList;
@@ -42,6 +43,8 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	private MenuItem startGame;
 	@FXML
 	private MenuItem joinGame;
+	@FXML
+	private MenuItem end;
 	@FXML
 	private ImageView topCard;
 	@FXML
@@ -101,6 +104,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 				Rules rules = createRules();
 				try {
 					host = new Host(port, rules);   // Create the host
+					host.registerExceptionHandler(this);
 
 					// Disable the buttons
 					createHost.setDisable(true);
@@ -132,6 +136,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 		host.start();
 		cardList.getSelectionModel().selectedIndexProperty().addListener(this);
 		startGame.setDisable(true);
+		end.setDisable(false);
 	}
 
 	/**
@@ -238,6 +243,28 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	}
 
 	/**
+	 * Ends the game
+	 * If this is the host, it tries to gracefully exit by only informing the host
+	 * If this is a client, the client just gets killed
+	 * @param e ignored
+	 */
+	public synchronized void endGame(@Nullable ActionEvent e) {
+		if (host == null) {
+			client.kill();
+		} else {
+			host.kill();
+			host.removeExceptionHandler(this);
+			host = null;
+		}
+		client.removeReceiver(this);
+		client = null;
+		end.setDisable(true);
+		startGame.setDisable(false);
+		joinGame.setDisable(false);
+		clear();
+	}
+
+	/**
 	 * Launch a Dialog requesting the rules for a new game from the player
 	 *
 	 * @return The created ruleset
@@ -291,6 +318,31 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 		});
 	}
 
+	/**
+	 * Clears everything currently displayed and thereby prepares for a new game
+	 */
+	private synchronized void clear() {
+		topCard.setImage(null);
+		enable(false);
+
+		Platform.runLater(() -> {
+			colorText.setText("");
+
+			cardList.getItems().clear();
+			cardList.refresh();
+
+			counter.getItems().clear();
+			counter.refresh();
+		});
+	}
+
+	@Override
+	public synchronized void handleException(@NotNull Exception exception) {
+		if (ExceptionDialog.showExceptionAnswer(exception) == ExceptionDialog.Answer.END_CONNECTION) {
+			endGame(null);
+		}
+	}
+
 	@Override
 	public synchronized void changed(@Nullable ObservableValue<? extends Number> observableValue, @Nullable Number number1, @NotNull Number number2) {
 		// Updates the color shown in the combo box
@@ -300,11 +352,11 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 			if (card instanceof ColorChooser) {
 				colorPicker.setDisable(false);
 				setColor.setDisable(false);
-				colorPicker.setItems(choosableColors);
+				colorPicker.setItems(AVAILABLE_COLORS);
 			} else {
 				colorPicker.setDisable(true);
 				setColor.setDisable(false);
-				colorPicker.setItems(normalColors);
+				colorPicker.setItems(NORMAL_COLORS);
 			}
 			SelectionModel<String> selector = colorPicker.getSelectionModel();
 			switch (card.color()) {

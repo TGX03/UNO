@@ -26,6 +26,7 @@ public class Client implements Runnable {
 
 	private Player player;
 	private Card topCard;
+	private boolean ended = false;
 
 	/**
 	 * Creates a new client that is connected to the host and interfaces with it
@@ -107,6 +108,15 @@ public class Client implements Runnable {
 	}
 
 	/**
+	 * Informs this client that the game is to be ended.
+	 * The client actually only shuts down when either a new update is received
+	 * or an error occurs during last transmission
+	 */
+	public synchronized void kill() {
+		ended = true;
+	}
+
+	/**
 	 * Returns the player object of this client
 	 *
 	 * @return The player of this client
@@ -127,6 +137,26 @@ public class Client implements Runnable {
 		}
 	}
 
+	/**
+	 * Removes a receiver to not receive any further updates from this client
+	 * @param receiver The client to remove
+	 */
+	public void removeReceiver(@NotNull ClientUpdate receiver) {
+		synchronized (this.receivers) {
+			this.receivers.remove(receiver);
+		}
+	}
+
+	/**
+	 * Informs the receivers of this client that an exception occurred
+	 * @param exception The exception that occurred
+	 */
+	private void handleException(Exception exception) {
+		for (ClientUpdate receiver : receivers) {
+			receiver.handleException(exception);
+		}
+	}
+
 	@Override
 	public String toString() {
 		Card[] cards = player.getCards();
@@ -143,7 +173,6 @@ public class Client implements Runnable {
 	 */
 	@Override
 	public void run() {
-		boolean ended = false;
 		do {
 			try {
 				Update update = (Update) input.readObject();
@@ -158,7 +187,7 @@ public class Client implements Runnable {
 					ended = true;
 				}
 			} catch (IOException | ClassCastException | ClassNotFoundException e) {
-				e.printStackTrace();
+				handleException(e);
 			}
 		} while (!ended);
 		System.out.println("Shutting down client thread");

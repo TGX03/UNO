@@ -26,8 +26,10 @@ public class Host implements Runnable {
 	private final ServerSocket serverSocket;
 	private final Rules rules;
 	private final List<Handler> handler = new ArrayList<>();
+	private final List<HostExceptionHandler> exceptionHandlers = new ArrayList<>(1);
 
 	private boolean start = false;
+	private boolean kill = false;
 	private Game game;
 
 	/**
@@ -54,6 +56,18 @@ public class Host implements Runnable {
 		notifyAll();
 	}
 
+	public void registerExceptionHandler(@NotNull HostExceptionHandler handler) {
+		synchronized (exceptionHandlers) {
+			exceptionHandlers.add(handler);
+		}
+	}
+
+	public void removeExceptionHandler(@NotNull HostExceptionHandler handler) {
+		synchronized (exceptionHandlers) {
+			exceptionHandlers.remove(handler);
+		}
+	}
+
 	@Override
 	public void run() {
 
@@ -76,7 +90,7 @@ public class Host implements Runnable {
 		try {
 			update();
 		} catch (IOException e) {
-			e.printStackTrace();
+			handleException(e);
 		}
 	}
 
@@ -95,7 +109,7 @@ public class Host implements Runnable {
 					this.handler.add(handler);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				handleException(e);
 			}
 		} while (!start);
 	}
@@ -114,6 +128,13 @@ public class Host implements Runnable {
 		}
 	}
 
+	public void kill() {
+		kill = true;
+		try {
+			this.end();
+		} catch (IOException ignored) {}
+	}
+
 	/**
 	 * Informs all the clients that the game has ended
 	 * and shuts down the threads
@@ -123,6 +144,12 @@ public class Host implements Runnable {
 	private void end() throws IOException {
 		for (Handler handler : this.handler) {
 			handler.end();
+		}
+	}
+
+	private synchronized void handleException(Exception e) {
+		for (HostExceptionHandler exceptionHandler : exceptionHandlers) {
+			exceptionHandler.handleException(e);
 		}
 	}
 
@@ -156,7 +183,8 @@ public class Host implements Runnable {
 				while (!start) {
 					try {
 						Host.this.wait();
-					} catch (InterruptedException ignored) {
+					} catch (InterruptedException exception) {
+						handleException(exception);
 					}
 				}
 			}
@@ -195,12 +223,15 @@ public class Host implements Runnable {
 						Host.this.update();
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					handleException(e);
 				}
-			} while (!game.hasEnded());
-			try {
-				Host.this.end();
-			} catch (IOException ignored) {
+			} while (!game.hasEnded() && !kill);
+			if (!kill) {
+				try {
+					Host.this.end();
+				} catch (IOException e) {
+					handleException(e);
+				}
 			}
 			System.out.println("Shutting down host thread");
 		}

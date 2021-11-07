@@ -43,6 +43,7 @@
             <MenuItem fx:id="createHost" mnemonicParsing="false" onAction="#createHost" text="Create Host" />
             <MenuItem fx:id="startGame" disable="true" mnemonicParsing="false" onAction="#startHost" text="Start Host Game" />
             <MenuItem fx:id="joinGame" mnemonicParsing="false" onAction="#createClient" text="Join Game" />
+         <MenuItem fx:id="end" disable="true" mnemonicParsing="false" onAction="#endGame" text="End Game" />
         </Menu>
     </MenuBar>
     <AnchorPane VBox.vgrow="ALWAYS">
