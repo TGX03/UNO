@@ -39,7 +39,7 @@
 
 <VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.tgx03.uno.ui.MainFrame">
     <MenuBar VBox.vgrow="NEVER">
-        <Menu mnemonicParsing="false" text="Start">
+        <Menu mnemonicParsing="false" text="Game">
             <MenuItem fx:id="createHost" mnemonicParsing="false" onAction="#createHost" text="Create Host" />
             <MenuItem fx:id="startGame" disable="true" mnemonicParsing="false" onAction="#startHost" text="Start Host Game" />
             <MenuItem fx:id="joinGame" mnemonicParsing="false" onAction="#createClient" text="Join Game" />
