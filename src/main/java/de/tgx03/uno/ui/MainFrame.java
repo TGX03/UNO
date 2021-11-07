@@ -56,6 +56,8 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	private Button setColor;
 	@FXML
 	private ListView<String> counter;
+	@FXML
+	private Label colorText;
 
 	private Host host;
 	private Client client;
@@ -270,6 +272,8 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 		enable(update.turn);    // Enable or disable the buttons
 
 		Platform.runLater(() -> {
+
+			colorText.setText(update.topCard.color().toString());   // Update the displayed color
 
 			// Clear the listview and add the new images to it
 			ObservableList<ImageView> list = cardList.getItems();

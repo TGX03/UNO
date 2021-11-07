@@ -49,7 +49,12 @@
         <SplitPane dividerPositions="0.5" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                 <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <ImageView fx:id="topCard" fitHeight="174.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+               <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                  <children>
+                          <ImageView fx:id="topCard" fitHeight="174.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                     <Label fx:id="colorText" alignment="TOP_CENTER" />
+                  </children>
+               </VBox>
                     <VBox>
                         <Button fx:id="play" disable="true" mnemonicParsing="false" onAction="#playCard" text="Play">
                             <VBox.margin>
