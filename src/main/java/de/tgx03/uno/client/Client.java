@@ -143,9 +143,11 @@ public class Client implements Runnable {
 	 * @param receiver The client to remove
 	 */
 	public void removeReceiver(@NotNull ClientUpdate receiver) {
-		synchronized (this.receivers) {
-			this.receivers.remove(receiver);
-		}
+		new Thread(() -> {
+			synchronized (this.receivers) {
+				this.receivers.remove(receiver);
+			}
+		}).start();
 	}
 
 	/**
@@ -154,8 +156,10 @@ public class Client implements Runnable {
 	 * @param exception The exception that occurred
 	 */
 	private void handleException(Exception exception) {
-		for (ClientUpdate receiver : receivers) {
-			receiver.handleException(exception);
+		synchronized (this.receivers) {
+			for (ClientUpdate receiver : receivers) {
+				receiver.handleException(exception);
+			}
 		}
 	}
 

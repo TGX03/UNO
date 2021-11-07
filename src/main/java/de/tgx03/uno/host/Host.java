@@ -63,9 +63,11 @@ public class Host implements Runnable {
 	}
 
 	public void removeExceptionHandler(@NotNull HostExceptionHandler handler) {
-		synchronized (exceptionHandlers) {
-			exceptionHandlers.remove(handler);
-		}
+		new Thread(() -> {
+			synchronized (exceptionHandlers) {
+				exceptionHandlers.remove(handler);
+			}
+		}).start();
 	}
 
 	@Override
@@ -149,8 +151,10 @@ public class Host implements Runnable {
 	}
 
 	private synchronized void handleException(Exception e) {
-		for (HostExceptionHandler exceptionHandler : exceptionHandlers) {
-			exceptionHandler.handleException(e);
+		synchronized (this.exceptionHandlers) {
+			for (HostExceptionHandler exceptionHandler : exceptionHandlers) {
+				exceptionHandler.handleException(e);
+			}
 		}
 	}
 
