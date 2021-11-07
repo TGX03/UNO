@@ -246,7 +246,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	}
 
 	/**
-	 * Enables or disables the buttons depending on whether it'S currently the turn of this player
+	 * Enables or disables the buttons depending on whether it's currently the turn of this player
 	 *
 	 * @param turn Whether it's this clients turn
 	 */
