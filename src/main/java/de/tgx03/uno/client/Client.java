@@ -186,8 +186,10 @@ public class Client implements Runnable {
 					player = update.player;
 					topCard = update.topCard;
 				}
-				for (ClientUpdate receiver : receivers) {
-					receiver.update(update);
+				synchronized (this.receivers) {
+					for (ClientUpdate receiver : receivers) {
+						receiver.update(update);
+					}
 				}
 				if (update.ended) {
 					ended = true;

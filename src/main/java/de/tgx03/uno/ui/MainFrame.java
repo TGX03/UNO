@@ -289,36 +289,40 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	@Override
 	public synchronized void update(@NotNull Update update) {
 
-		// Get the images of the cards
-		assert update.player != null;
-		Card[] cards = update.player.getCards();
-		ImageView[] images = new ImageView[cards.length];
-		for (int i = 0; i < cards.length; i++) {
-			images[i] = new ImageView(Cards.getCard(cards[i]));
-		}
-
-		assert update.topCard != null;
-		topCard.setImage(Cards.getCard(update.topCard));    // Update the top card
-		enable(update.turn);    // Enable or disable the buttons
-
-		Platform.runLater(() -> {
-
-			colorText.setText(update.topCard.color().toString());   // Update the displayed color
-
-			// Clear the listview and add the new images to it
-			ObservableList<ImageView> list = cardList.getItems();
-			list.clear();
-			list.addAll(images);
-			cardList.refresh();
-
-			// Update the list showing how many cards the other players have
-			ObservableList<String> counts = counter.getItems();
-			counts.clear();
-			for (int i = 0; i < update.cardNumbers.length; i++) {
-				counts.add((i + 1) + ": \t" + update.cardNumbers[i]);
+		if (update.ended) {
+			endGame(null);
+		} else {
+			// Get the images of the cards
+			assert update.player != null;
+			Card[] cards = update.player.getCards();
+			ImageView[] images = new ImageView[cards.length];
+			for (int i = 0; i < cards.length; i++) {
+				images[i] = new ImageView(Cards.getCard(cards[i]));
 			}
-			counter.refresh();
-		});
+
+			assert update.topCard != null;
+			topCard.setImage(Cards.getCard(update.topCard));    // Update the top card
+			enable(update.turn);    // Enable or disable the buttons
+
+			Platform.runLater(() -> {
+
+				colorText.setText(update.topCard.color().toString());   // Update the displayed color
+
+				// Clear the listview and add the new images to it
+				ObservableList<ImageView> list = cardList.getItems();
+				list.clear();
+				list.addAll(images);
+				cardList.refresh();
+
+				// Update the list showing how many cards the other players have
+				ObservableList<String> counts = counter.getItems();
+				counts.clear();
+				for (int i = 0; i < update.cardNumbers.length; i++) {
+					counts.add((i + 1) + ": \t" + update.cardNumbers[i]);
+				}
+				counter.refresh();
+			});
+		}
 	}
 
 	/**
