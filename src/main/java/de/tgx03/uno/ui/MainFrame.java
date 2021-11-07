@@ -250,7 +250,9 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	 * @param e ignored
 	 */
 	public synchronized void endGame(@Nullable ActionEvent e) {
-		if (host == null) {
+		if (host == null && client == null) {
+			return;
+		} else if (host == null) {
 			client.kill();
 		} else {
 			host.kill();
