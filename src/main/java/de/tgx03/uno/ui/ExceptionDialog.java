@@ -41,7 +41,7 @@ public final class ExceptionDialog {
 	 * @param exception The exception to show
 	 * @return The option the user selected
 	 */
-	public static Answer showExceptionAnswer(Exception exception) {
+	public static Answer showExceptionAnswer(@NotNull Exception exception) {
 
 		String exceptionText = parseStacktrace(exception);
 		final Container container = new Container();
@@ -82,7 +82,7 @@ public final class ExceptionDialog {
 	 * @param exception The requested exception
 	 * @return The stacktrace of that exception
 	 */
-	private static String parseStacktrace(Exception exception) {
+	private static String parseStacktrace(@NotNull Exception exception) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		exception.printStackTrace(pw);
