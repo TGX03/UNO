@@ -32,7 +32,7 @@ public final class ExceptionDialog {
 
 		String exceptionText = parseStacktrace(e);
 
-		Platform.runLater(() -> createAlert(e, exceptionText));
+		Platform.runLater(() -> createAlert(e, exceptionText).showAndWait());
 	}
 
 	/**
