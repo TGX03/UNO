@@ -28,7 +28,7 @@ public final class ExceptionDialog {
 	 *
 	 * @param e The exception to show
 	 */
-	public static void showException(@NotNull Exception e) {
+	public synchronized static void showException(@NotNull Exception e) {
 
 		String exceptionText = parseStacktrace(e);
 
@@ -41,7 +41,7 @@ public final class ExceptionDialog {
 	 * @param exception The exception to show
 	 * @return The option the user selected
 	 */
-	public static Answer showExceptionAnswer(@NotNull Exception exception) {
+	public synchronized static Answer showExceptionAnswer(@NotNull Exception exception) {
 
 		String exceptionText = parseStacktrace(exception);
 		final Container container = new Container();
