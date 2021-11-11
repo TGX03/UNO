@@ -115,7 +115,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 					client = new Client("localhost", port);
 					client.registerReceiver(this);
 				} catch (IOException e) {
-					ExceptionDialog.showException(e);
+					handleException(e);
 				}
 			} catch (NumberFormatException e) { // When the user doesn't enter a valid number
 				Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -158,7 +158,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 			createHost.setDisable(true);
 			joinGame.setDisable(true);
 		} catch (Exception ex) {
-			ExceptionDialog.showException(ex);
+			handleException(ex);
 		}
 	}
 
@@ -173,7 +173,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		try {
 			client.play(selected);
 		} catch (IOException ex) {
-			ExceptionDialog.showException(ex);
+			handleException(ex);
 		}
 	}
 
@@ -188,7 +188,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		try {
 			client.jump(selected);
 		} catch (IOException ex) {
-			ExceptionDialog.showException(ex);
+			handleException(ex);
 		}
 	}
 
@@ -202,7 +202,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		try {
 			client.acceptCards();
 		} catch (IOException ex) {
-			ExceptionDialog.showException(ex);
+			handleException(ex);
 		}
 	}
 
@@ -216,7 +216,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		try {
 			client.takeCard();
 		} catch (IOException ex) {
-			ExceptionDialog.showException(ex);
+			handleException(ex);
 		}
 	}
 
@@ -238,7 +238,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 				case 4 -> client.selectColor(selectedCard, Color.BLACK);
 			}
 		} catch (IOException ex) {
-			ExceptionDialog.showException(ex);
+			handleException(ex);
 		}
 	}
 
@@ -347,8 +347,10 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 
 	@Override
 	public synchronized void handleException(@NotNull Exception exception) {
-		if (ExceptionDialog.showExceptionAnswer(exception) == ExceptionDialog.Answer.END_CONNECTION) {
+		if ((client != null || host != null) && ExceptionDialog.showExceptionAnswer(exception) == ExceptionDialog.Answer.END_CONNECTION) {
 			endGame(null);
+		} else {
+			ExceptionDialog.showException(exception);
 		}
 	}
 
