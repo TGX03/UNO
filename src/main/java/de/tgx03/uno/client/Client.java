@@ -13,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The client of a UNO-Game. It only holds information of its assigned player
@@ -199,5 +200,18 @@ public class Client implements Runnable {
 			}
 		} while (!ended);
 		System.out.println("Shutting down client thread");
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Client c) {
+			return output == c.output && input == c.input && player == c.player;
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(input, output, player);
 	}
 }

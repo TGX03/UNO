@@ -4,6 +4,9 @@ import de.tgx03.uno.game.cards.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * A class representing a game of Uno
  * It stores the players, the current card on top
@@ -290,5 +293,23 @@ public class Game {
 		for (Player player : players) {
 			player.updateTop(top);
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Game g && g.players.length == this.players.length) {
+			for (int i = 0; i < this.players.length; i++) {
+				if (this.players[i] != g.players[i]) return false;
+			}
+			return this.rules.equals(g.rules);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(rules);
+		result = 31 * result + Arrays.hashCode(players);
+		return result;
 	}
 }

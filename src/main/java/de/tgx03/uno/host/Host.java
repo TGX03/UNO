@@ -17,6 +17,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A class representing the server of a game of UNO
@@ -293,5 +294,18 @@ public class Host implements Runnable {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Host h) {
+			return this.serverSocket.equals(h.serverSocket) && this.rules.equals(h.rules) && (this.game != null && this.game.equals(h.game));
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(serverSocket, rules, game);
 	}
 }
