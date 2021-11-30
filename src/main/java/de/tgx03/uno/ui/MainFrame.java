@@ -420,7 +420,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 						try {
 							exceptionQueue.wait();
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							handleException(e);
 						}
 					}
 					handleInternalException(exceptionQueue.remove());
