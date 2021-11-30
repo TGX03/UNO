@@ -28,12 +28,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Optional;
+import java.util.Queue;
 
 public class MainFrame extends Application implements ClientUpdate, HostExceptionHandler, ChangeListener<Number> {
 
 	private static final ObservableList<String> NORMAL_COLORS = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow");
 	private static final ObservableList<String> AVAILABLE_COLORS = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow", "Black");
+	private static final int maxExceptions = 5;
+
+	private final Queue<Exception> exceptionQueue = new LinkedList<>();
 
 	@FXML
 	private ListView<ImageView> cardList;
@@ -80,6 +85,9 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		stage.setTitle("UNO");
 		stage.setScene(new Scene(root));
 		stage.show();
+		Thread exceptionHandler = new Thread(new ExceptionHandler());
+		exceptionHandler.setDaemon(true);
+		exceptionHandler.start();
 	}
 
 	/**
@@ -115,7 +123,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 					client = new Client("localhost", port);
 					client.registerReceiver(this);
 				} catch (IOException e) {
-					handleException(e);
+					handleInternalException(e);
 				}
 			} catch (NumberFormatException e) { // When the user doesn't enter a valid number
 				Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -158,7 +166,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 			createHost.setDisable(true);
 			joinGame.setDisable(true);
 		} catch (Exception ex) {
-			handleException(ex);
+			handleInternalException(ex);
 		}
 	}
 
@@ -173,7 +181,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		try {
 			client.play(selected);
 		} catch (IOException ex) {
-			handleException(ex);
+			handleInternalException(ex);
 		}
 	}
 
@@ -188,7 +196,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		try {
 			client.jump(selected);
 		} catch (IOException ex) {
-			handleException(ex);
+			handleInternalException(ex);
 		}
 	}
 
@@ -202,7 +210,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		try {
 			client.acceptCards();
 		} catch (IOException ex) {
-			handleException(ex);
+			handleInternalException(ex);
 		}
 	}
 
@@ -216,7 +224,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		try {
 			client.takeCard();
 		} catch (IOException ex) {
-			handleException(ex);
+			handleInternalException(ex);
 		}
 	}
 
@@ -238,7 +246,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 				case 4 -> client.selectColor(selectedCard, Color.BLACK);
 			}
 		} catch (IOException ex) {
-			handleException(ex);
+			handleInternalException(ex);
 		}
 	}
 
@@ -345,12 +353,31 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 		});
 	}
 
-	@Override
-	public synchronized void handleException(@NotNull Exception exception) {
+	/**
+	 * Handles exceptions that were directly caused by user interaction, or after they were removed from the queue
+	 *
+	 * @param exception The exception to handle
+	 */
+	private synchronized void handleInternalException(@NotNull Exception exception) {
 		if ((client != null || host != null) && ExceptionDialog.showExceptionAnswer(exception) == ExceptionDialog.Answer.END_CONNECTION) {
 			endGame(null);
 		} else {
 			ExceptionDialog.showException(exception);
+		}
+	}
+
+	@Override
+	public void handleException(@NotNull Exception exception) {
+		synchronized (this.exceptionQueue) {
+			while(this.exceptionQueue.size() > maxExceptions) {
+				try {
+					this.exceptionQueue.wait();
+				} catch (InterruptedException e) {
+					new Thread(() -> handleException(e)).start();   // This just spells disaster
+				}
+			}
+			this.exceptionQueue.add(exception);
+			this.exceptionQueue.notifyAll();
 		}
 	}
 
@@ -378,5 +405,29 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 				case BLACK -> selector.select(4);
 			}
 		}
+	}
+
+	/**
+	 * A class providing the runnable for handling incoming exceptions
+	 */
+	private class ExceptionHandler implements Runnable {
+
+		@Override
+		public void run() {
+			while (true) {
+				synchronized (exceptionQueue) {
+					while (exceptionQueue.isEmpty()) {
+						try {
+							exceptionQueue.wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					handleInternalException(exceptionQueue.remove());
+					exceptionQueue.notifyAll();
+				}
+			}
+		}
+
 	}
 }
