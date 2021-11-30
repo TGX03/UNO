@@ -36,6 +36,7 @@ public class Skip extends Card {
 	 * Default constructor for serialization.
 	 * Initializes an invalid card, that will probably cause some kind of error
 	 * unless the fields get assigned valid values.
+	 *
 	 * @deprecated Only to be used during deserialization
 	 */
 	@Deprecated

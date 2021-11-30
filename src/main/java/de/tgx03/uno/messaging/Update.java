@@ -79,6 +79,7 @@ public class Update implements Externalizable {
 	 * Default constructor for serialization.
 	 * Initializes an invalid update, that will probably cause some kind of error
 	 * unless the fields get assigned valid values.
+	 *
 	 * @deprecated Only to be used during deserialization
 	 */
 	@Deprecated

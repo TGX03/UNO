@@ -159,6 +159,19 @@ public class Host implements Runnable {
 		}
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Host h) {
+			return this.serverSocket.equals(h.serverSocket) && this.rules.equals(h.rules) && (this.game != null && this.game.equals(h.game));
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(serverSocket, rules, game);
+	}
+
 	/**
 	 * A class handling the connection with a client
 	 */
@@ -294,18 +307,5 @@ public class Host implements Runnable {
 				}
 			}
 		}
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Host h) {
-			return this.serverSocket.equals(h.serverSocket) && this.rules.equals(h.rules) && (this.game != null && this.game.equals(h.game));
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(serverSocket, rules, game);
 	}
 }

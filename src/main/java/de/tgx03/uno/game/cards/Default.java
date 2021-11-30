@@ -44,6 +44,7 @@ public class Default extends Card {
 	 * Default constructor for serialization.
 	 * Initializes an invalid card, that will probably cause some kind of error
 	 * unless the fields get assigned valid values.
+	 *
 	 * @deprecated Not to be used, only for deserialization
 	 */
 	@Deprecated

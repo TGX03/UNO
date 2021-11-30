@@ -369,7 +369,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	@Override
 	public void handleException(@NotNull Exception exception) {
 		synchronized (this.exceptionQueue) {
-			while(this.exceptionQueue.size() > maxExceptions) {
+			while (this.exceptionQueue.size() > maxExceptions) {
 				try {
 					this.exceptionQueue.wait();
 				} catch (InterruptedException e) {
