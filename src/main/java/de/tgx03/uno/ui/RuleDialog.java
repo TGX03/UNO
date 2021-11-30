@@ -14,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RuleDialog {
 
+	/**
+	 * The (hopefully) created ruleset.
+	 */
 	private Rules rules;
 
 	/**
