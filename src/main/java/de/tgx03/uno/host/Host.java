@@ -24,13 +24,34 @@ import java.util.Objects;
  */
 public class Host implements Runnable {
 
+	/**
+	 * The server socket that accepts new connections.
+	 */
 	private final ServerSocket serverSocket;
+	/**
+	 * The rules of the game to use once the game gets started.
+	 */
 	private final Rules rules;
+	/**
+	 * A list of all the handlers connecting to the clients.
+	 */
 	private final List<Handler> handler = new ArrayList<>();
+	/**
+	 * The handlers for exceptions that may occur during operation.
+	 */
 	private final List<HostExceptionHandler> exceptionHandlers = new ArrayList<>(1);
 
+	/**
+	 * Whether the game shall be started.
+	 */
 	private boolean start = false;
+	/**
+	 * Whether the game shall be stopped.
+	 */
 	private boolean kill = false;
+	/**
+	 * The game instance this host deals with.
+	 */
 	private Game game;
 
 	/**
@@ -195,8 +216,17 @@ public class Host implements Runnable {
 	 */
 	private class Handler implements Runnable {
 
+		/**
+		 * The ID of the player this handler represents.
+		 */
 		private final int id;
+		/**
+		 * The input stream for receiving commands from the client.
+		 */
 		private final ObjectInputStream input;
+		/**
+		 * The output stream for sending updates to the client.
+		 */
 		private final ObjectOutputStream output;
 
 		/**

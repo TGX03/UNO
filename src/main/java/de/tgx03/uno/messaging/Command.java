@@ -28,6 +28,9 @@ public class Command implements Externalizable {
 	 * THe offset of the number field. Used during deserialization with Unsafe.
 	 */
 	private static final long NUMBER_OFFSET;
+	/**
+	 * The offset of the color field. Used during deserialization with Unsafe.
+	 */
 	private static final long COLOR_OFFSET;
 
 	static {

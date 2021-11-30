@@ -17,7 +17,13 @@ public class Player implements Externalizable {
 	@Serial
 	private static final long serialVersionUID = -1301404883505022064L;
 
+	/**
+	 * All the cards this player currently has.
+	 */
 	private final List<Card> cards = new ArrayList<>(7);
+	/**
+	 * The card currently on top of the pile.
+	 */
 	private transient Card top; // Transient as clients already gets this other ways
 
 	/**

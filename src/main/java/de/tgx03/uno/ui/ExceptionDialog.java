@@ -19,6 +19,10 @@ import java.util.Optional;
  */
 public final class ExceptionDialog {
 
+	/**
+	 * Not to be used.
+	 * @throws IllegalAccessException No.
+	 */
 	private ExceptionDialog() throws IllegalAccessException {
 		throw new IllegalAccessException();
 	}
@@ -136,8 +140,14 @@ public final class ExceptionDialog {
 		END_CONNECTION
 	}
 
+	/**
+	 * A class used for synchronization when waiting for the user to select an action.
+	 */
 	private static class Container {
 
+		/**
+		 * The result after questioning the user.
+		 */
 		private Answer answer;
 
 	}

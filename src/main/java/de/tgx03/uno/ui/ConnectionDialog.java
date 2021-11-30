@@ -16,7 +16,13 @@ import java.io.IOException;
  */
 public class ConnectionDialog {
 
+	/**
+	 * The (hopefully) created client.
+	 */
 	private Client client;
+	/**
+	 * Whether a valid port was entered.
+	 */
 	private boolean validPort = true;
 
 	/**

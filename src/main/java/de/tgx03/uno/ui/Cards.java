@@ -85,6 +85,10 @@ public final class Cards {
 		}
 	}
 
+	/**
+	 * Private cause utility class.
+	 * @throws IllegalAccessException No.
+	 */
 	private Cards() throws IllegalAccessException {
 		throw new IllegalAccessException("Not instantiable");
 	}
@@ -134,6 +138,9 @@ public final class Cards {
 		}
 	}
 
+	/**
+	 * A class responsible for transcoding the images in a separate threads.
+	 */
 	private record Transcoder(String color, Image[] target) implements Runnable {
 
 		@Override
@@ -191,6 +198,9 @@ public final class Cards {
 	 */
 	private static class BufferedImageTranscoder extends ImageTranscoder {
 
+		/**
+		 * The created image.
+		 */
 		private BufferedImage img;
 
 		@Override

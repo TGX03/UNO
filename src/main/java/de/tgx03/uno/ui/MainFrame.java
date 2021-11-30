@@ -37,40 +37,97 @@ import java.util.Queue;
  */
 public class MainFrame extends Application implements ClientUpdate, HostExceptionHandler, ChangeListener<Number> {
 
+	/**
+	 * The name of the normal colors available for cards.
+	 */
 	private static final ObservableList<String> NORMAL_COLORS = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow");
+	/**
+	 * All the available color including black.
+	 */
 	private static final ObservableList<String> AVAILABLE_COLORS = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow", "Black");
+	/**
+	 * The maximum number of exceptions to keep in the queue.
+	 */
 	private static final int maxExceptions = 5;
 
+	/**
+	 * The exception queue.
+	 */
 	private final Queue<Exception> exceptionQueue = new LinkedList<>();
 
+	/**
+	 * A visual representation of all the cards this player currently has.
+	 */
 	@FXML
 	private ListView<ImageView> cardList;
+	/**
+	 * The button to create a new host.
+	 */
 	@FXML
 	private MenuItem createHost;
+	/**
+	 * The button to start the game.
+	 */
 	@FXML
 	private MenuItem startGame;
+	/**
+	 * The button to join another game.
+	 */
 	@FXML
 	private MenuItem joinGame;
+	/**
+	 * The button to end a game.
+	 */
 	@FXML
 	private MenuItem end;
+	/**
+	 * The representation of the card currently on top.
+	 */
 	@FXML
 	private ImageView topCard;
+	/**
+	 * The combo box allowing for the choosing of the color of a wild card.
+	 */
 	@FXML
 	private ComboBox<String> colorPicker;
+	/**
+	 * The button to play the selected card the normal way.
+	 */
 	@FXML
 	private Button play;
+	/**
+	 * The button to accept a penalty that has been stacked up.
+	 */
 	@FXML
 	private Button accept;
+	/**
+	 * The button to pick up a card if you can't play any of your current cards.
+	 */
 	@FXML
 	private Button take;
+	/**
+	 * The button to confirm a selected color for a wild card.
+	 */
 	@FXML
 	private Button setColor;
+	/**
+	 * The list of how many cards the other players currently hold.
+	 */
 	@FXML
 	private ListView<String> counter;
+	/**
+	 * The color of the current top Card. Useful if a wild card is on top.
+	 */
 	@FXML
 	private Label colorText;
 
+	/**
+	 * The host object if it has been created.
+	 */
 	private Host host;
+	/**
+	 * The client object of the game.
+	 */
 	private Client client;
 
 	/**
