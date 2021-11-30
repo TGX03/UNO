@@ -9,15 +9,27 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
- * All the rules that can be changed for a game of UNO
+ * All the rules that can be changed for a game of UNO.
  */
 public class Rules implements Externalizable, Cloneable {
 
 	@Serial
 	private static final long serialVersionUID = 5037643636101348351L;
+	/**
+	 * The Unsafe used for deserialization of final fields.
+	 */
 	private static final Unsafe UNSAFE;
+	/**
+	 * The offset of the jump field. Used for deserialization with Unsafe.
+	 */
 	private static final long JUMP_OFFSET;
+	/**
+	 * The offset of the stack field. Used for deserialization with Unsafe.
+	 */
 	private static final long STACK_OFFSET;
+	/**
+	 * The offset of the force field. Used for deserialization with Unsafe.
+	 */
 	private static final long FORCE_OFFSET;
 
 	static {
@@ -44,20 +56,20 @@ public class Rules implements Externalizable, Cloneable {
 
 	/**
 	 * Whether throwing in when a player has exactly the same card as is lying on the pile
-	 * is allowed
+	 * is allowed.
 	 */
 	public final boolean jumping;
 	/**
-	 * Whether stacking penalty cards is allowed
+	 * Whether stacking penalty cards is allowed.
 	 */
 	public final boolean stacking;
 	/**
-	 * Whether a player has to pick up cards until he is able to play
+	 * Whether a player has to pick up cards until he is able to play.
 	 */
 	public final boolean forceContinue;
 
 	/**
-	 * Creates new Rules with all special rules disabled
+	 * Creates new Rules with all special rules disabled.
 	 */
 	public Rules() {
 		jumping = false;
@@ -66,9 +78,9 @@ public class Rules implements Externalizable, Cloneable {
 	}
 
 	/**
-	 * @param jumping       Whether throwing in when a player has exactly the same card as is lying on the pile is allowed
-	 * @param stacking      Whether stacking penalty cards is allowed
-	 * @param forceContinue Whether a player has to pick up cards until he is able to play
+	 * @param jumping       Whether throwing in when a player has exactly the same card as is lying on the pile is allowed.
+	 * @param stacking      Whether stacking penalty cards is allowed.
+	 * @param forceContinue Whether a player has to pick up cards until he is able to play.
 	 */
 	public Rules(boolean jumping, boolean stacking, boolean forceContinue) {
 		this.jumping = jumping;

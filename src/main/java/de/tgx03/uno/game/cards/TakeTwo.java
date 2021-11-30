@@ -9,12 +9,15 @@ import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
- * A take two card
+ * A take two card.
  */
 public class TakeTwo extends Card {
 
 	@Serial
 	private static final long serialVersionUID = 3572737636745065895L;
+	/**
+	 * The offset of the color field. Used during deserialization with Unsafe.
+	 */
 	private static final long COLOR_OFFSET;
 
 	static {
@@ -28,7 +31,7 @@ public class TakeTwo extends Card {
 	}
 
 	/**
-	 * The color of this card
+	 * The color of this card.
 	 */
 	public final Color color;
 
@@ -37,7 +40,7 @@ public class TakeTwo extends Card {
 	 * Initializes an invalid card, that will probably cause some kind of error
 	 * unless the fields get assigned valid values.
 	 *
-	 * @deprecated Only to be used during deserialization
+	 * @deprecated Only to be used during deserialization.
 	 */
 	@Deprecated
 	public TakeTwo() {
@@ -45,9 +48,9 @@ public class TakeTwo extends Card {
 	}
 
 	/**
-	 * Creates a new take two card with the provided color
+	 * Creates a new take two card with the provided color.
 	 *
-	 * @param color The color of the new card
+	 * @param color The color of the new card.
 	 */
 	public TakeTwo(@NotNull Color color) {
 		if (color == Color.BLACK) throw new IllegalArgumentException();

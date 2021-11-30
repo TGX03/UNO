@@ -15,7 +15,7 @@ import java.io.StringWriter;
 import java.util.Optional;
 
 /**
- * Shows a dialog presenting the user with the stacktrace of an exception
+ * Shows a dialog presenting the user with the stacktrace of an exception.
  */
 public final class ExceptionDialog {
 
@@ -24,9 +24,9 @@ public final class ExceptionDialog {
 	}
 
 	/**
-	 * Quickly show an exception that doesn't allow any kind of interaction from the user
+	 * Quickly show an exception that doesn't allow any kind of interaction from the user.
 	 *
-	 * @param e The exception to show
+	 * @param e The exception to show.
 	 */
 	public synchronized static void showException(@NotNull Exception e) {
 
@@ -36,10 +36,10 @@ public final class ExceptionDialog {
 	}
 
 	/**
-	 * Shows an exception and asks whether the user wants to continue with the execution or to abort
+	 * Shows an exception and asks whether the user wants to continue with the execution or to abort.
 	 *
-	 * @param exception The exception to show
-	 * @return The option the user selected
+	 * @param exception The exception to show.
+	 * @return The option the user selected.
 	 */
 	public synchronized static Answer showExceptionAnswer(@NotNull Exception exception) {
 
@@ -77,10 +77,10 @@ public final class ExceptionDialog {
 	}
 
 	/**
-	 * Creates a string holding the stacktrace of an exception
+	 * Creates a string holding the stacktrace of an exception.
 	 *
-	 * @param exception The requested exception
-	 * @return The stacktrace of that exception
+	 * @param exception The requested exception.
+	 * @return The stacktrace of that exception.
 	 */
 	private static String parseStacktrace(@NotNull Exception exception) {
 		StringWriter sw = new StringWriter();
@@ -90,11 +90,11 @@ public final class ExceptionDialog {
 	}
 
 	/**
-	 * Creates the basic alert from an exception and its stacktrace
+	 * Creates the basic alert from an exception and its stacktrace.
 	 *
-	 * @param exception  The exception to show
-	 * @param stacktrace The stacktrace of the excption
-	 * @return The created Alert
+	 * @param exception  The exception to show.
+	 * @param stacktrace The stacktrace of the exception.
+	 * @return The created Alert.
 	 */
 	private static Alert createAlert(@NotNull Exception exception, @Nullable String stacktrace) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -123,15 +123,15 @@ public final class ExceptionDialog {
 	}
 
 	/**
-	 * The choices the user has when he sees a dialog
+	 * The choices the user has when he sees a dialog.
 	 */
 	public enum Answer {
 		/**
-		 * The host should carry on
+		 * The host should carry on.
 		 */
 		IGNORE,
 		/**
-		 * The User selected to kill the game
+		 * The User selected to kill the game.
 		 */
 		END_CONNECTION
 	}

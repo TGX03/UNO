@@ -9,13 +9,19 @@ import java.lang.reflect.Field;
 import java.util.Random;
 
 /**
- * The basic implementation of a game card
+ * The basic implementation of a game card.
  */
 public abstract class Card implements Externalizable, Cloneable {
 
+	/**
+	 * The Unsafe object required for Cards with final fields as those can't even be set using reflection.
+	 */
 	protected static final Unsafe UNSAFE;
 	@Serial
 	private static final long serialVersionUID = 3828684409287282936L;
+	/**
+	 * The number generator used for generating new cards.
+	 */
 	private static final Random rand = new Random();
 
 	static {
@@ -31,11 +37,11 @@ public abstract class Card implements Externalizable, Cloneable {
 	}
 
 	/**
-	 * Generates a new card in accordance with a normal uno deck
-	 * However as they are newly generated it's possible for cards
-	 * to exist more often than in a real game
+	 * Generates a new card in accordance with a normal uno deck.
+	 * However, as they are newly generated, it's possible for cards
+	 * to exist more often than in a real game.
 	 *
-	 * @return A new card
+	 * @return A new card.
 	 */
 	@NotNull
 	public static Card generateCard() {
@@ -62,10 +68,10 @@ public abstract class Card implements Externalizable, Cloneable {
 	}
 
 	/**
-	 * Transforms a number to a color
+	 * Transforms a number to a color.
 	 *
-	 * @param code The number to convert, must be lower than 8
-	 * @return The corresponding color
+	 * @param code The number to convert, must be lower than 8.
+	 * @return The corresponding color.
 	 */
 	private static Color chooseSpecialColor(int code) {
 		code = code / 2;
@@ -87,25 +93,25 @@ public abstract class Card implements Externalizable, Cloneable {
 	}
 
 	/**
-	 * Determines whether a card can be normally placed on top of another card
+	 * Determines whether a card can be normally placed on top of another card.
 	 *
-	 * @param below The card this card shall be put on top of
-	 * @return Whether it's legal
+	 * @param below The card this card shall be put on top of.
+	 * @return Whether it's legal.
 	 */
 	public abstract boolean place(@NotNull Card below);
 
 	/**
-	 * Determines whether a card can be thrown in when it's not the player turn
+	 * Determines whether a card can be thrown in when it's not the player turn.
 	 *
-	 * @param below The card this card shall be thrown on top of
-	 * @return Whether it's legal
+	 * @param below The card this card shall be thrown on top of.
+	 * @return Whether it's legal.
 	 */
 	public abstract boolean jump(@NotNull Card below);
 
 	/**
-	 * Returns the color of this card
+	 * Returns the color of this card.
 	 *
-	 * @return The color of this card
+	 * @return The color of this card.
 	 */
 	@NotNull
 	public abstract Color color();

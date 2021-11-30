@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * A class representing a single Player
- * holding cards
+ * holding cards.
  */
 public class Player implements Externalizable {
 
@@ -21,7 +21,7 @@ public class Player implements Externalizable {
 	private transient Card top; // Transient as clients already gets this other ways
 
 	/**
-	 * Creates a player and gives it 7 cards to start the game
+	 * Creates a player and gives it 7 cards to start the game.
 	 */
 	public Player() {
 		for (int i = 0; i < 7; i++) {
@@ -30,12 +30,12 @@ public class Player implements Externalizable {
 	}
 
 	/**
-	 * Lets this player play a card
+	 * Lets this player play a card.
 	 * The card is returned as a result and removed from this player
-	 * if successful
+	 * if successful.
 	 *
-	 * @param cardNumber The number of the card to play
-	 * @return The card at the given position if operation succeeded
+	 * @param cardNumber The number of the card to play.
+	 * @return The card at the given position if operation succeeded.
 	 */
 	@Nullable
 	public Card playCard(int cardNumber) {
@@ -47,12 +47,12 @@ public class Player implements Externalizable {
 	}
 
 	/**
-	 * Tries to throw in a card
+	 * Tries to throw in a card.
 	 * The card is returned as a result and removed from this player
-	 * if successful
+	 * if successful.
 	 *
-	 * @param cardNumber The number of the card to jump in
-	 * @return The card at the given position if operation succeeded
+	 * @param cardNumber The number of the card to jump in.
+	 * @return The card at the given position if operation succeeded.
 	 */
 	@Nullable
 	public Card jumpCard(int cardNumber) {
@@ -64,43 +64,43 @@ public class Player implements Externalizable {
 	}
 
 	/**
-	 * Lets this player take another card
+	 * Lets this player take another card.
 	 */
 	public void drawCard() {
 		cards.add(Card.generateCard());
 	}
 
 	/**
-	 * Informs this player that a new card is on top of the pile
+	 * Informs this player that a new card is on top of the pile.
 	 *
-	 * @param card The new card
+	 * @param card The new card.
 	 */
 	protected void updateTop(@NotNull Card card) {
 		this.top = card;
 	}
 
 	/**
-	 * Returns how many cards this player is currently holding
+	 * Returns how many cards this player is currently holding.
 	 *
-	 * @return How many cards this player has
+	 * @return How many cards this player has.
 	 */
 	public int cardCount() {
 		return cards.size();
 	}
 
 	/**
-	 * Whether this player has finished the game
+	 * Whether this player has finished the game.
 	 *
-	 * @return Whether the player has played all his cards
+	 * @return Whether the player has played all his cards.
 	 */
 	public boolean won() {
 		return cards.size() == 0;
 	}
 
 	/**
-	 * Returns all the cards this player is currently holding
+	 * Returns all the cards this player is currently holding.
 	 *
-	 * @return All the cards of this player
+	 * @return All the cards of this player.
 	 */
 	@NotNull
 	public Card[] getCards() {
@@ -108,11 +108,11 @@ public class Player implements Externalizable {
 	}
 
 	/**
-	 * Gives a specific card to this player
-	 * Gets used to give back a black card
+	 * Gives a specific card to this player.
+	 * Gets used to give back a black card.
 	 *
-	 * @param cardNumber Where to place the card
-	 * @param card       The card to give back
+	 * @param cardNumber Where to place the card.
+	 * @param card       The card to give back.
 	 */
 	protected void giveCard(int cardNumber, @NotNull Card card) {
 		cards.add(cardNumber, card);

@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * A class responsible for getting the hostname and port of a game server
+ * A class responsible for getting the hostname and port of a game server.
  */
 public class ConnectionDialog {
 
@@ -21,9 +21,9 @@ public class ConnectionDialog {
 
 	/**
 	 * Requests the data for a client from the user
-	 * and then sets up the client and returns it
+	 * and then sets up the client and returns it.
 	 *
-	 * @return The created client
+	 * @return The created client.
 	 */
 	public Client createClient() {
 		Stage stage = new Stage();

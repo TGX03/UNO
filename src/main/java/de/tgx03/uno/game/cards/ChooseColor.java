@@ -8,13 +8,17 @@ import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
- * A class representing the wild card
+ * A class representing the wild card.
  */
 public class ChooseColor extends ColorChooser {
 
 	@Serial
 	private static final long serialVersionUID = -2223262444434498162L;
 
+	/**
+	 * The color this card currently represents.
+	 * Needs to be changed before the card is actually played.
+	 */
 	private Color color = Color.BLACK;
 
 	@Override

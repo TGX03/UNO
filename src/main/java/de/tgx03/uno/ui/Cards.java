@@ -12,15 +12,33 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.image.BufferedImage;
 
 /**
- * The class responsible for providing the images representing the cards
+ * The class responsible for providing the images representing the cards.
  */
 public final class Cards {
 
+	/**
+	 * The images representing all the red cards.
+	 */
 	private static final Image[] RED = new Image[13];
+	/**
+	 * The images representing all green cards.
+	 */
 	private static final Image[] GREEN = new Image[13];
+	/**
+	 * The images representing all the yellow cards.
+	 */
 	private static final Image[] YELLOW = new Image[13];
+	/**
+	 * The images representing all the blue cards.
+	 */
 	private static final Image[] BLUE = new Image[13];
+	/**
+	 * The image of the wild card.
+	 */
 	private static final Image WILD;
+	/**
+	 * The image of the wild take four card.
+	 */
 	private static final Image TAKEFOUR;
 
 	// Initializes the images before first usage
@@ -72,10 +90,10 @@ public final class Cards {
 	}
 
 	/**
-	 * Returns the image corresponding to the provided card
+	 * Returns the image corresponding to the provided card.
 	 *
-	 * @param card The card to get the image for
-	 * @return The corresponding image
+	 * @param card The card to get the image for.
+	 * @return The corresponding image.
 	 */
 	@NotNull
 	public static Image getCard(@NotNull Card card) {
@@ -169,7 +187,7 @@ public final class Cards {
 	}
 
 	/**
-	 * I just copied this from the internet, I have no idea what exactly this does
+	 * I just copied this from the internet, I have no idea what exactly this does.
 	 */
 	private static class BufferedImageTranscoder extends ImageTranscoder {
 

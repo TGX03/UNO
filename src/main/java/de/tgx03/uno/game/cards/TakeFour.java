@@ -9,13 +9,17 @@ import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
- * A class representing the wild take four card
+ * A class representing the wild take four card.
  */
 public class TakeFour extends ColorChooser {
 
 	@Serial
 	private static final long serialVersionUID = 1773201801357025228L;
 
+	/**
+	 * The color this TakeFour currently represents.
+	 * Needs to be changed before the card is actually played.
+	 */
 	private Color color = Color.BLACK;
 
 	@Override

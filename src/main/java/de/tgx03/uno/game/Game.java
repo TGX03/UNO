@@ -8,26 +8,44 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * A class representing a game of Uno
+ * A class representing a game of Uno.
  * It stores the players, the current card on top
- * And performs all the checks for legal moves
- * and executes them
+ * and performs all the checks for legal moves
+ * and executes them.
  */
 public class Game {
 
+	/**
+	 * ALl the players in this game.
+	 */
 	private final Player[] players;
+	/**
+	 * The rules that apply to this game
+	 */
 	private final Rules rules;
+	/**
+	 * The card currently on top of the pile.
+	 */
 	private Card top;
+	/**
+	 * The number of the player who's currently playing.
+	 */
 	private int currentPlayer = 0;
+	/**
+	 * Which direction the game is currently going in.
+	 */
 	private boolean reversed = false;
+	/**
+	 * How many cards are currently to be picked up once a player accepts a penalty.
+	 */
 	private int stack = 0;
 
 	/**
-	 * Creates a new game of UNO
-	 * If null rules are supplied, everything is enabled
+	 * Creates a new game of UNO.
+	 * If null rules are supplied, everything is disabled.
 	 *
-	 * @param playerCount The number of players in this game
-	 * @param rules       The selected rules this game should be played with
+	 * @param playerCount The number of players in this game.
+	 * @param rules       The selected rules this game should be played with.
 	 */
 	public Game(int playerCount, @Nullable Rules rules) {
 
@@ -54,11 +72,11 @@ public class Game {
 	}
 
 	/**
-	 * Tries to play a card and return whether it was successful
-	 * It automatically does that for the current player
+	 * Tries to play a card and return whether it was successful.
+	 * It automatically does that for the current player.
 	 *
-	 * @param cardNumber The number of the number in the current players stack
-	 * @return Whether the current player did play this card
+	 * @param cardNumber The number of the number in the current players stack.
+	 * @return Whether the current player did play this card.
 	 */
 	public synchronized boolean playCard(int cardNumber) {
 		if (stack > 0) return mustStack(cardNumber);
@@ -66,12 +84,12 @@ public class Game {
 	}
 
 	/**
-	 * Tries to throw in a card of the selected player even though it's not his turn
-	 * Returns whether the move was legal and executed
+	 * Tries to throw in a card of the selected player even though it's not his turn.
+	 * Returns whether the move was legal and executed.
 	 *
-	 * @param player     The player wishing to jump
-	 * @param cardNumber Which player wishes to jump
-	 * @return Whether the move was executed
+	 * @param player     The player wishing to jump.
+	 * @param cardNumber Which card the player wants to jump with.
+	 * @return Whether the move was executed.
 	 */
 	public synchronized boolean jump(int player, int cardNumber) {
 
@@ -102,9 +120,9 @@ public class Game {
 	}
 
 	/**
-	 * The current player accepts his card penalty and picks up the cards
+	 * The current player accepts his card penalty and picks up the cards.
 	 *
-	 * @return Whether any card were picked up
+	 * @return Whether a card was picked up.
 	 */
 	public synchronized boolean acceptCards() {
 
@@ -123,7 +141,7 @@ public class Game {
 	}
 
 	/**
-	 * The current player picks up a card
+	 * The current player picks up a card.
 	 */
 	public synchronized void takeCard() {
 		players[currentPlayer].drawCard();
@@ -133,19 +151,19 @@ public class Game {
 	}
 
 	/**
-	 * Get the number of the player whose turn its right now
+	 * Get the number of the player whose turn its right now.
 	 *
-	 * @return The number of the current player
+	 * @return The number of the current player.
 	 */
 	public int getCurrentPlayer() {
 		return this.currentPlayer;
 	}
 
 	/**
-	 * Get the player with the given number
+	 * Get the player with the given number.
 	 *
-	 * @param id The number of the requested player
-	 * @return The corresponding player
+	 * @param id The number of the requested player.
+	 * @return The corresponding player object.
 	 */
 	@NotNull
 	public Player getPlayer(int id) {
@@ -153,9 +171,9 @@ public class Game {
 	}
 
 	/**
-	 * Get how many cards each player has
+	 * Get how many cards each player has.
 	 *
-	 * @return The card count of each player
+	 * @return The card count of each player.
 	 */
 	public synchronized short[] getCardCount() {
 		short[] count = new short[players.length];
@@ -166,7 +184,7 @@ public class Game {
 	}
 
 	/**
-	 * @return The card currently on top
+	 * @return The card currently on top.
 	 */
 	@NotNull
 	public Card getTopCard() {
@@ -174,9 +192,9 @@ public class Game {
 	}
 
 	/**
-	 * Determines whether this game has finished by checking if any player still has some cards left
+	 * Determines whether this game has finished by checking if any player still has some cards left.
 	 *
-	 * @return If the game has finished
+	 * @return If the game has finished.
 	 */
 	public synchronized boolean hasEnded() {
 		for (Player player : players) {
@@ -188,19 +206,19 @@ public class Game {
 	}
 
 	/**
-	 * Returns the amount of players in this game
+	 * Returns the amount of players in this game.
 	 *
-	 * @return How many players are in this game
+	 * @return How many players are in this game.
 	 */
 	public int playerCount() {
 		return players.length;
 	}
 
 	/**
-	 * Plays a card the normal way without any penalties in the game
+	 * Plays a card the normal way without any penalties in the game.
 	 *
-	 * @param cardNumber The number of the card to play
-	 * @return Whether the card was played
+	 * @param cardNumber The number of the card to play.
+	 * @return Whether the card was played.
 	 */
 	private synchronized boolean normalPlay(int cardNumber) {
 
@@ -234,10 +252,10 @@ public class Game {
 	}
 
 	/**
-	 * Plays a card when take cards have been played
+	 * Plays a card when take cards have been played.
 	 *
-	 * @param cardNumber The card of the current player to be played
-	 * @return Whether it was successful
+	 * @param cardNumber The card of the current player to be played.
+	 * @return Whether it was successful.
 	 */
 	private synchronized boolean mustStack(int cardNumber) {
 
@@ -268,7 +286,7 @@ public class Game {
 	}
 
 	/**
-	 * Go to the next player
+	 * Go to the next player.
 	 */
 	private synchronized void nextPlayer() {
 		if (!this.hasEnded()) {
@@ -287,7 +305,7 @@ public class Game {
 	}
 
 	/**
-	 * Give the new top card to all the players
+	 * Give the new top card to all the players.
 	 */
 	private synchronized void updateTop() {
 		for (Player player : players) {

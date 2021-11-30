@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A class representing the server of a game of UNO
+ * A class representing the server of a game of UNO.
  */
 public class Host implements Runnable {
 
@@ -35,11 +35,11 @@ public class Host implements Runnable {
 
 	/**
 	 * Creates a new server that listens on the provided port
-	 * for clients
+	 * for clients.
 	 *
-	 * @param port  The port this server should listen on
-	 * @param rules The rules of the game
-	 * @throws IOException When something goes wrong while starting the server
+	 * @param port  The port this server should listen on.
+	 * @param rules The rules of the game.
+	 * @throws IOException When something goes wrong while starting the server.
 	 */
 	public Host(int port, @Nullable Rules rules) throws IOException {
 		serverSocket = new ServerSocket(port);
@@ -50,19 +50,29 @@ public class Host implements Runnable {
 	}
 
 	/**
-	 * Starts the round
+	 * Starts the round.
 	 */
 	public synchronized void start() {
 		start = true;
 		notifyAll();
 	}
 
+	/**
+	 * Registers a new object that wishes to handle exceptions that may occur during this hosts execution.
+	 *
+	 * @param handler The object to be registered as exception handler.
+	 */
 	public void registerExceptionHandler(@NotNull HostExceptionHandler handler) {
 		synchronized (exceptionHandlers) {
 			exceptionHandlers.add(handler);
 		}
 	}
 
+	/**
+	 * Removes an exception handler that no longer wishes to be informed of exceptions.
+	 *
+	 * @param handler The handler to remove.
+	 */
 	public void removeExceptionHandler(@NotNull HostExceptionHandler handler) {
 		new Thread(() -> {
 			synchronized (exceptionHandlers) {
@@ -98,7 +108,7 @@ public class Host implements Runnable {
 	}
 
 	/**
-	 * Accepts new clients and sets up the connections with them
+	 * Accepts new clients and sets up the connections with them.
 	 */
 	private void waitForClients() {
 		int currentID = 0;  // Used to get the ID for each new connection
@@ -118,9 +128,9 @@ public class Host implements Runnable {
 	}
 
 	/**
-	 * Informs all the clients of an update to the game
+	 * Informs all the clients of an update to the game.
 	 *
-	 * @throws IOException When something went wrong while sendig the update
+	 * @throws IOException When something went wrong while sendig the update.
 	 */
 	private void update() throws IOException {
 		synchronized (game) {
@@ -131,6 +141,9 @@ public class Host implements Runnable {
 		}
 	}
 
+	/**
+	 * Tries to terminate this host and end the round.
+	 */
 	public void kill() {
 		kill = true;
 		try {
@@ -141,9 +154,9 @@ public class Host implements Runnable {
 
 	/**
 	 * Informs all the clients that the game has ended
-	 * and shuts down the threads
+	 * and shuts down the threads.
 	 *
-	 * @throws IOException When something goes wrong during sending
+	 * @throws IOException When something goes wrong during sending.
 	 */
 	private void end() throws IOException {
 		for (Handler handler : this.handler) {
@@ -151,6 +164,11 @@ public class Host implements Runnable {
 		}
 	}
 
+	/**
+	 * Gives an exception that occurred to all the registered handlers.
+	 *
+	 * @param e The exception to forward.
+	 */
 	private synchronized void handleException(Exception e) {
 		synchronized (this.exceptionHandlers) {
 			for (HostExceptionHandler exceptionHandler : exceptionHandlers) {
@@ -173,7 +191,7 @@ public class Host implements Runnable {
 	}
 
 	/**
-	 * A class handling the connection with a client
+	 * A class handling the connection with a client.
 	 */
 	private class Handler implements Runnable {
 
@@ -182,11 +200,11 @@ public class Host implements Runnable {
 		private final ObjectOutputStream output;
 
 		/**
-		 * Creates a new handler
+		 * Creates a new handler.
 		 *
-		 * @param socket The socket of this handler
-		 * @param id     The ID of the player this handler is responsible for
-		 * @throws IOException When a stream couldn't be opened
+		 * @param socket The socket of this handler.
+		 * @param id     The ID of the player this handler is responsible for.
+		 * @throws IOException When a stream couldn't be opened.
 		 */
 		public Handler(@NotNull Socket socket, int id) throws IOException {
 			this.id = id;
@@ -256,10 +274,10 @@ public class Host implements Runnable {
 		}
 
 		/**
-		 * Sends an update to the client of this handler
+		 * Sends an update to the client of this handler.
 		 *
-		 * @param cardCount How many cards all the players have
-		 * @throws IOException When something goes wrong during send operation
+		 * @param cardCount How many cards all the players have.
+		 * @throws IOException When something goes wrong during send operation.
 		 */
 		public void update(@NotNull short[] cardCount) throws IOException {
 			Update update;
@@ -274,9 +292,9 @@ public class Host implements Runnable {
 		}
 
 		/**
-		 * Sends a last update informing all clients that the round has ended
+		 * Sends a last update informing all clients that the round has ended.
 		 *
-		 * @throws IOException When something goes wrong during send operation
+		 * @throws IOException When something goes wrong during send operation.
 		 */
 		public void end() throws IOException {
 			Update update;
@@ -290,10 +308,10 @@ public class Host implements Runnable {
 		}
 
 		/**
-		 * Sets the color of a wild card this player holds
+		 * Sets the color of a wild card this player holds.
 		 *
-		 * @param order The order informing this host of the operation
-		 * @return Whether the operation succeeded
+		 * @param order The order informing this host of the operation.
+		 * @return Whether the operation succeeded.
 		 */
 		private boolean selectColor(@NotNull Command order) {
 			synchronized (game) {

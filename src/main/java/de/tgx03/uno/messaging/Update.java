@@ -12,17 +12,35 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * A class providing clients with new data after the state of the game has changed
+ * A class providing clients with new data after the state of the game has changed.
  */
 public class Update implements Externalizable {
 
 	@Serial
 	private static final long serialVersionUID = 1959833843176392241L;
+	/**
+	 * The Unsafe used during deserialization.
+	 */
 	private static final Unsafe UNSAFE;
+	/**
+	 * The offset of the turn field. Used during deserialization with Unsafe.
+	 */
 	private static final long TURN_OFFSET;
+	/**
+	 * The offset of the end field. Used during deserialization with Unsafe.
+	 */
 	private static final long END_OFFSET;
+	/**
+	 * The offset of the player field. Used during deserialization with Unsafe.
+	 */
 	private static final long PLAYER_OFFSET;
+	/**
+	 * The offset of the topCard field. Used during deserialization with Unsafe.
+	 */
 	private static final long CARD_OFFSET;
+	/**
+	 * The offset of the cardCount field. Used during deserialization with Unsafe.
+	 */
 	private static final long COUNT_OFFSET;
 
 	static {
@@ -53,25 +71,24 @@ public class Update implements Externalizable {
 	}
 
 	/**
-	 * Whether it's this player turn
+	 * Whether it's this player turn.
 	 */
 	public final boolean turn;
 	/**
-	 * Whether the game has ended because no players hold any more cards
+	 * Whether the game has ended because no players hold any more cards.
 	 */
 	public final boolean ended;
 	/**
-	 * The updated player object corresponding to this player
+	 * The updated player object corresponding to this player.
 	 */
 	public final Player player;
 	/**
-	 * The card on top of the pile
+	 * The card on top of the pile.
 	 */
 	public final Card topCard;
-
 	/**
 	 * How many cards all the other players have.
-	 * Done as short to save space, and I don't think any player will have more than 60000 cards
+	 * Done as short to save space, and I don't think any player will have more than 30000 cards.
 	 */
 	public final short[] cardNumbers;
 
@@ -80,7 +97,7 @@ public class Update implements Externalizable {
 	 * Initializes an invalid update, that will probably cause some kind of error
 	 * unless the fields get assigned valid values.
 	 *
-	 * @deprecated Only to be used during deserialization
+	 * @deprecated Only to be used during deserialization.
 	 */
 	@Deprecated
 	public Update() {
@@ -92,12 +109,12 @@ public class Update implements Externalizable {
 	}
 
 	/**
-	 * Creates a new update
+	 * Creates a new update.
 	 *
-	 * @param turn    Whether it's this clients turn
-	 * @param player  The player object representing this player
-	 * @param topCard The card on top of the pile
-	 * @param count   How many cards the other players have
+	 * @param turn    Whether it's this clients turn.
+	 * @param player  The player object representing this player.
+	 * @param topCard The card on top of the pile.
+	 * @param count   How many cards the other players have.
 	 */
 	public Update(boolean turn, @NotNull Player player, @NotNull Card topCard, @NotNull short[] count) {
 		this.turn = turn;
@@ -108,13 +125,13 @@ public class Update implements Externalizable {
 	}
 
 	/**
-	 * Creates a new update
+	 * Creates a new update.
 	 *
-	 * @param turn   Whether it's this clients turn
-	 * @param ended  Whether the game has ended
-	 * @param player The player object representing this player
-	 * @param card   The card on top of the pile
-	 * @param count  How many cards the other players have
+	 * @param turn   Whether it's this clients turn.
+	 * @param ended  Whether the game has ended.
+	 * @param player The player object representing this player.
+	 * @param card   The card on top of the pile.
+	 * @param count  How many cards the other players have.
 	 */
 	public Update(boolean turn, boolean ended, @NotNull Player player, @NotNull Card card, @NotNull short[] count) {
 		this.turn = turn;

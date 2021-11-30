@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A window requesting the rules for a game of UNO
+ * A window requesting the rules for a game of UNO.
  */
 public class RuleDialog {
 
@@ -18,9 +18,9 @@ public class RuleDialog {
 
 	/**
 	 * Shows the user a dialog and creates the ruleset
-	 * and then returns it
+	 * and then returns it.
 	 *
-	 * @return The created rules
+	 * @return The created rules.
 	 */
 	@NotNull
 	public Rules showAndWait() {

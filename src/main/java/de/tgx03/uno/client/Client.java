@@ -17,24 +17,45 @@ import java.util.Objects;
 
 /**
  * The client of a UNO-Game. It only holds information of its assigned player
- * and handles communication with the host
+ * and handles communication with the host.
  */
 public class Client implements Runnable {
 
+	/**
+	 * The input from the host were game updates are received.
+	 */
 	private final ObjectInputStream input;
+	/**
+	 * The output to the host where requests are sent through.
+	 */
 	private final ObjectOutputStream output;
+	/**
+	 * All the receivers that wish to be updated once the host sends an update.
+	 */
 	private final List<ClientUpdate> receivers = new ArrayList<>(1);
 
+	/**
+	 * The player object of this client.
+	 * Gets updated with every update from the host.
+	 */
 	private Player player;
+	/**
+	 * The card on top of the pile.
+	 * Gets updated with every update from the host.
+	 */
 	private Card topCard;
+	/**
+	 * Whether the round has ended.
+	 * Once set to true, the client thread shuts down.
+	 */
 	private boolean ended = false;
 
 	/**
-	 * Creates a new client that is connected to the host and interfaces with it
+	 * Creates a new client that is connected to the host and interfaces with it.
 	 *
-	 * @param host     The hostname of the server
-	 * @param hostPort The port to connect to
-	 * @throws IOException If an error occurred when trying to establish the connection
+	 * @param host     The hostname of the server.
+	 * @param hostPort The port to connect to.
+	 * @throws IOException If an error occurred when trying to establish the connection.
 	 */
 	public Client(@NotNull String host, int hostPort) throws IOException {
 		Socket socket = new Socket(host, hostPort);
@@ -46,12 +67,12 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Play the selected card normally
+	 * Play the selected card normally.
 	 * There is no response, whether the operation has actually succeeded
-	 * must be determined with the update
+	 * must be determined with the update.
 	 *
-	 * @param cardNumber The card to place
-	 * @throws IOException When an error occurs during transmission
+	 * @param cardNumber The card to place.
+	 * @throws IOException When an error occurs during transmission.
 	 */
 	public synchronized void play(int cardNumber) throws IOException {
 		output.reset();
@@ -64,8 +85,8 @@ public class Client implements Runnable {
 	 * There is no response, whether the operation has actually succeeded
 	 * must be determined with the update.
 	 *
-	 * @param cardNumber The card to throw
-	 * @throws IOException When an error occurs during transmission
+	 * @param cardNumber The card to throw.
+	 * @throws IOException When an error occurs during transmission.
 	 */
 	public synchronized void jump(int cardNumber) throws IOException {
 		output.reset();
@@ -74,9 +95,9 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Informs the host that the penalty cards get accepted by this client
+	 * Informs the host that the penalty cards get accepted by this client.
 	 *
-	 * @throws IOException When an error occurs during transmission
+	 * @throws IOException When an error occurs during transmission.
 	 */
 	public synchronized void acceptCards() throws IOException {
 		output.reset();
@@ -85,9 +106,9 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Requests the host to create a new card and add it to this player
+	 * Requests the host to create a new card and add it to this player.
 	 *
-	 * @throws IOException When an error occurs during transmission
+	 * @throws IOException When an error occurs during transmission.
 	 */
 	public synchronized void takeCard() throws IOException {
 		output.reset();
@@ -96,11 +117,11 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Informs the server which color a +4 or Wild Card should have
+	 * Informs the server which color a +4 or Wild Card should have.
 	 *
-	 * @param cardNumber The number of the card to set
-	 * @param color      The desired color
-	 * @throws IOException When an error occurs during transmission
+	 * @param cardNumber The number of the card to set.
+	 * @param color      The desired color.
+	 * @throws IOException When an error occurs during transmission.
 	 */
 	public synchronized void selectColor(int cardNumber, @NotNull Color color) throws IOException {
 		output.reset();
@@ -111,7 +132,7 @@ public class Client implements Runnable {
 	/**
 	 * Informs this client that the game is to be ended.
 	 * The client actually only shuts down when either a new update is received
-	 * or an error occurs during last transmission
+	 * or an error occurs during last transmission.
 	 */
 	public synchronized void kill() {
 		ended = true;
@@ -128,9 +149,9 @@ public class Client implements Runnable {
 
 	/**
 	 * Allows another class to receive updates when this client receives
-	 * an update from the host
+	 * an update from the host.
 	 *
-	 * @param receiver The class requesting to get updated
+	 * @param receiver The class requesting to get updated.
 	 */
 	public void registerReceiver(@NotNull ClientUpdate receiver) {
 		synchronized (this.receivers) {
@@ -139,9 +160,9 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Removes a receiver to not receive any further updates from this client
+	 * Removes a receiver to not receive any further updates from this client.
 	 *
-	 * @param receiver The client to remove
+	 * @param receiver The client to remove.
 	 */
 	public void removeReceiver(@NotNull ClientUpdate receiver) {
 		new Thread(() -> {
@@ -152,9 +173,9 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Informs the receivers of this client that an exception occurred
+	 * Informs the receivers of this client that an exception occurred.
 	 *
-	 * @param exception The exception that occurred
+	 * @param exception The exception that occurred.
 	 */
 	private void handleException(Exception exception) {
 		synchronized (this.receivers) {
@@ -176,7 +197,7 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Basically the daemon waiting for updates from the server
+	 * Basically the daemon waiting for updates from the server.
 	 */
 	@Override
 	public void run() {

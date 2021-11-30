@@ -32,6 +32,9 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
 
+/**
+ * The main UI hosting most of the game elements and dealing with client and host.
+ */
 public class MainFrame extends Application implements ClientUpdate, HostExceptionHandler, ChangeListener<Number> {
 
 	private static final ObservableList<String> NORMAL_COLORS = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow");
@@ -71,9 +74,9 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	private Client client;
 
 	/**
-	 * Launches a new MainFrame
+	 * Launches a new MainFrame.
 	 *
-	 * @param args Gets sent to JavaFX
+	 * @param args Gets sent to JavaFX.
 	 */
 	public static void main(String[] args) {
 		launch(args);
@@ -91,8 +94,8 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Creates a new host
-	 * Gets triggered by the "New Game" button
+	 * Creates a new host.
+	 * Gets triggered by the "New Game" button.
 	 *
 	 * @param event ignored
 	 */
@@ -135,8 +138,8 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Starts the game
-	 * Gets used by the "Start Game" button
+	 * Starts the game.
+	 * Gets used by the "Start Game" button.
 	 *
 	 * @param e ignored
 	 */
@@ -148,8 +151,8 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Creates a new client that connects to a remote host
-	 * Gets used by the "Join Game" button
+	 * Creates a new client that connects to a remote host.
+	 * Gets used by the "Join Game" button.
 	 *
 	 * @param e ignored
 	 */
@@ -171,8 +174,8 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Tires to play the currently selected card
-	 * Gets used by the "Play" button
+	 * Tires to play the currently selected card.
+	 * Gets used by the "Play" button.
 	 *
 	 * @param e ignored
 	 */
@@ -186,8 +189,8 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Tries to jump in with the currently selected card
-	 * Gets used by the "Jump" button
+	 * Tries to jump in with the currently selected card.
+	 * Gets used by the "Jump" button.
 	 *
 	 * @param e ignored
 	 */
@@ -201,8 +204,8 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Accepts the penalty cards
-	 * Gets used by the "Accept Cards" button
+	 * Accepts the penalty cards.
+	 * Gets used by the "Accept Cards" button.
 	 *
 	 * @param e ignored
 	 */
@@ -215,8 +218,8 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Picks up a new card
-	 * Gets used by the "Take card" button
+	 * Picks up a new card.
+	 * Gets used by the "Take card" button.
 	 *
 	 * @param e ignored
 	 */
@@ -229,8 +232,8 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Selects the color of a black card
-	 * Gets called when the "Set" button is used and takes what is currently selected in the Combo Box
+	 * Selects the color of a black card.
+	 * Gets called when the "Set" button is used and takes what is currently selected in the Combo Box.
 	 *
 	 * @param e ignored
 	 */
@@ -251,9 +254,9 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Ends the game
-	 * If this is the host, it tries to gracefully exit by only informing the host
-	 * If this is a client, the client just gets killed
+	 * Ends the game.
+	 * If this is the host, it tries to gracefully exit by only informing the host.
+	 * If this is a client, the client just gets killed.
 	 *
 	 * @param e ignored
 	 */
@@ -276,9 +279,9 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Launch a Dialog requesting the rules for a new game from the player
+	 * Launch a Dialog requesting the rules for a new game from the player.
 	 *
-	 * @return The created ruleset
+	 * @return The created ruleset.
 	 */
 	@Nullable
 	private Rules createRules() {
@@ -286,9 +289,9 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Enables or disables the buttons depending on whether it's currently the turn of this player
+	 * Enables or disables the buttons depending on whether it's currently the turn of this player.
 	 *
-	 * @param turn Whether it's this clients turn
+	 * @param turn Whether it's this clients turn.
 	 */
 	private synchronized void enable(boolean turn) {
 		play.setDisable(!turn);
@@ -336,7 +339,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Clears everything currently displayed and thereby prepares for a new game
+	 * Clears everything currently displayed and thereby prepares for a new game.
 	 */
 	private synchronized void clear() {
 		topCard.setImage(null);
@@ -354,9 +357,9 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * Handles exceptions that were directly caused by user interaction, or after they were removed from the queue
+	 * Handles exceptions that were directly caused by user interaction, or after they were removed from the queue.
 	 *
-	 * @param exception The exception to handle
+	 * @param exception The exception to handle.
 	 */
 	private synchronized void handleInternalException(@NotNull Exception exception) {
 		if ((client != null || host != null) && ExceptionDialog.showExceptionAnswer(exception) == ExceptionDialog.Answer.END_CONNECTION) {
@@ -408,7 +411,7 @@ public class MainFrame extends Application implements ClientUpdate, HostExceptio
 	}
 
 	/**
-	 * A class providing the runnable for handling incoming exceptions
+	 * A class providing the runnable for handling incoming exceptions.
 	 */
 	private class ExceptionHandler implements Runnable {
 

@@ -9,12 +9,15 @@ import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
- * A class representing the skip card
+ * A class representing the skip card.
  */
 public class Skip extends Card {
 
 	@Serial
 	private static final long serialVersionUID = 8521656320247047647L;
+	/**
+	 * The offset of the color field. Used for deserialization with Unsafe.
+	 */
 	private static final long COLOR_OFFSET;
 
 	static {
@@ -28,7 +31,7 @@ public class Skip extends Card {
 	}
 
 	/**
-	 * The color of this skip card
+	 * The color of this skip card.
 	 */
 	public final Color color;
 
@@ -37,7 +40,7 @@ public class Skip extends Card {
 	 * Initializes an invalid card, that will probably cause some kind of error
 	 * unless the fields get assigned valid values.
 	 *
-	 * @deprecated Only to be used during deserialization
+	 * @deprecated Only to be used during deserialization.
 	 */
 	@Deprecated
 	public Skip() {
@@ -45,9 +48,9 @@ public class Skip extends Card {
 	}
 
 	/**
-	 * Creates a new skip card with the provided color
+	 * Creates a new skip card with the provided color.
 	 *
-	 * @param color The color of the new card
+	 * @param color The color of the new card.
 	 */
 	public Skip(@NotNull Color color) {
 		this.color = color;

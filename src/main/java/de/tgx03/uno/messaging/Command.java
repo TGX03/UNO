@@ -10,14 +10,23 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
- * A class representing a command the client sends to the host
+ * A class representing a command the client sends to the host.
  */
 public class Command implements Externalizable {
 
 	@Serial
 	private static final long serialVersionUID = -569083254883826234L;
+	/**
+	 * The Unsafe used for deserialization
+	 */
 	private static final Unsafe UNSAFE;
+	/**
+	 * The offset of the type field. Used during deserialization with Unsafe.
+	 */
 	private static final long TYPE_OFFSET;
+	/**
+	 * THe offset of the number field. Used during deserialization with Unsafe.
+	 */
 	private static final long NUMBER_OFFSET;
 	private static final long COLOR_OFFSET;
 
@@ -43,21 +52,21 @@ public class Command implements Externalizable {
 	}
 
 	/**
-	 * The type of command being transmitted
+	 * The type of command being transmitted.
 	 */
 	public final CommandType type;
 	/**
-	 * Which card of the player an operation shall be performed on
+	 * Which card of the player an operation shall be performed on.
 	 */
 	public final int cardNumber;
 	/**
 	 * In case the color of a black card shall be changed,
-	 * this variable contains the wished for color
+	 * this variable contains the wished for color.
 	 */
 	public final Color color;
 
 	/**
-	 * Creates a new command that requests a new card for the current player
+	 * Creates a new command that requests a new card for the current player.
 	 */
 	public Command() {
 		this.type = CommandType.TAKE_CARD;
@@ -66,11 +75,11 @@ public class Command implements Externalizable {
 	}
 
 	/**
-	 * Creates a new command that is used for performing play operations
-	 * When wanting to choose the color of a card, another constructor needs to be used
+	 * Creates a new command that is used for performing play operations.
+	 * When wanting to choose the color of a card, another constructor needs to be used.
 	 *
-	 * @param type       The type of command to be created
-	 * @param cardNumber Which card shall be used for the operation. When taking a penalty or a new card, this gets ignored
+	 * @param type       The type of command to be created.
+	 * @param cardNumber Which card shall be used for the operation. When taking a penalty or a new card, this gets ignored.
 	 */
 	public Command(@NotNull CommandType type, int cardNumber) {
 		this.type = type;
@@ -80,10 +89,10 @@ public class Command implements Externalizable {
 
 	/**
 	 * Creates a new command that requests to change the color
-	 * of a black card
+	 * of a black card.
 	 *
-	 * @param color      The color to give to the black card
-	 * @param cardNumber Which card the color shall be given to
+	 * @param color      The color to give to the black card.
+	 * @param cardNumber Which card the color shall be given to.
 	 */
 	public Command(@NotNull Color color, int cardNumber) {
 		this.type = CommandType.SELECT_COLOR;
@@ -156,28 +165,28 @@ public class Command implements Externalizable {
 	}
 
 	/**
-	 * An enum representing which kind of command is being transmitted
+	 * An enum representing which kind of command is being transmitted.
 	 */
 	public enum CommandType {
 		/**
-		 * When a card shall be played the normal way
+		 * When a card shall be played the normal way.
 		 */
 		NORMAL,
 		/**
 		 * When a card shall be thrown in
-		 * because the exact same card is lying on the pile
+		 * because the exact same card is lying on the pile.
 		 */
 		JUMP,
 		/**
-		 * When the current player decides to accept a penalty
+		 * When the current player decides to accept a penalty.
 		 */
 		ACCEPT,
 		/**
-		 * When the color of a black card is to be selected
+		 * When the color of a black card is to be selected.
 		 */
 		SELECT_COLOR,
 		/**
-		 * When a player wants to pick up a card
+		 * When a player wants to pick up a card.
 		 */
 		TAKE_CARD
 	}

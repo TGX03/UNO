@@ -9,13 +9,19 @@ import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
- * A standard UNO card
+ * A standard UNO card.
  */
 public class Default extends Card {
 
 	@Serial
 	private static final long serialVersionUID = -807259155534165108L;
+	/**
+	 * The offset of the color field, used during deserialization with Unsafe
+	 */
 	private static final long COLOR_OFFSET;
+	/**
+	 * The offset of the value field, used during deserialization with Unsafe
+	 */
 	private static final long VALUE_OFFSET;
 
 	static {
@@ -32,11 +38,11 @@ public class Default extends Card {
 	}
 
 	/**
-	 * The color of this card
+	 * The color of this card.
 	 */
 	public final Color color;
 	/**
-	 * The number on this card
+	 * The number on this card.
 	 */
 	public final byte value;
 
@@ -45,7 +51,7 @@ public class Default extends Card {
 	 * Initializes an invalid card, that will probably cause some kind of error
 	 * unless the fields get assigned valid values.
 	 *
-	 * @deprecated Not to be used, only for deserialization
+	 * @deprecated Not to be used, only for deserialization.
 	 */
 	@Deprecated
 	public Default() {
@@ -54,10 +60,10 @@ public class Default extends Card {
 	}
 
 	/**
-	 * Creates a new card
+	 * Creates a new card.
 	 *
-	 * @param color The color of the new card
-	 * @param value The number of the new card
+	 * @param color The color of the new card.
+	 * @param value The number of the new card.
 	 */
 	public Default(@NotNull Color color, byte value) {
 		if (color == Color.BLACK || value < 0 || value >= 10) {

@@ -9,12 +9,15 @@ import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
- * The card inverting the playing order
+ * The card inverting the playing order.
  */
 public class Reverse extends Card {
 
 	@Serial
 	private static final long serialVersionUID = 467179758413513210L;
+	/**
+	 * The offset of the color field. Used for deserialization with Unsafe.
+	 */
 	private static final long COLOR_OFFSET;
 
 	static {
@@ -28,7 +31,7 @@ public class Reverse extends Card {
 	}
 
 	/**
-	 * The color of this card
+	 * The color of this card.
 	 */
 	public final Color color;
 
@@ -37,7 +40,7 @@ public class Reverse extends Card {
 	 * Initializes an invalid card, that will probably cause some kind of error
 	 * unless the fields get assigned valid values.
 	 *
-	 * @deprecated Only to be used by deserialization
+	 * @deprecated Only to be used by deserialization.
 	 */
 	@Deprecated
 	public Reverse() {
@@ -45,9 +48,9 @@ public class Reverse extends Card {
 	}
 
 	/**
-	 * Creates a new reverse card with the provided color
+	 * Creates a new reverse card with the provided color.
 	 *
-	 * @param color The color of the new card
+	 * @param color The color of the new card.
 	 */
 	public Reverse(@NotNull Color color) {
 		this.color = color;
