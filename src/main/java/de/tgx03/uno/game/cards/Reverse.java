@@ -53,6 +53,7 @@ public class Reverse extends Card {
 	 * @param color The color of the new card.
 	 */
 	public Reverse(@NotNull Color color) {
+		if (color == Color.BLACK) throw new IllegalArgumentException();
 		this.color = color;
 	}
 

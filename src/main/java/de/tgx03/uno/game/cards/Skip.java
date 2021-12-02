@@ -53,6 +53,7 @@ public class Skip extends Card {
 	 * @param color The color of the new card.
 	 */
 	public Skip(@NotNull Color color) {
+		if (color == Color.BLACK) throw new IllegalArgumentException();
 		this.color = color;
 	}
 
