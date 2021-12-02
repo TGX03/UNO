@@ -21,6 +21,7 @@ public final class ExceptionDialog {
 
 	/**
 	 * Not to be used.
+	 *
 	 * @throws IllegalAccessException No.
 	 */
 	private ExceptionDialog() throws IllegalAccessException {

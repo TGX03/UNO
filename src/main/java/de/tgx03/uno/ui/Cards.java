@@ -87,6 +87,7 @@ public final class Cards {
 
 	/**
 	 * Private cause utility class.
+	 *
 	 * @throws IllegalAccessException No.
 	 */
 	private Cards() throws IllegalAccessException {
