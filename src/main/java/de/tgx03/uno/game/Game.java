@@ -16,6 +16,11 @@ import java.util.Objects;
 public class Game {
 
 	/**
+	 * How many cards each player gets at the start of a round.
+	 */
+	private static final int INITIAL_CARDS = 7;
+
+	/**
 	 * ALl the players in this game.
 	 */
 	private final Player[] players;
@@ -61,7 +66,7 @@ public class Game {
 		// Initialize the players with their cards
 		players = new Player[playerCount];
 		for (int i = 0; i < playerCount; i++) {
-			players[i] = new Player();
+			players[i] = new Player(INITIAL_CARDS);
 			players[i].updateTop(top);
 		}
 

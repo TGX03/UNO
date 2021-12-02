@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A class representing a single Player
@@ -20,17 +19,27 @@ public class Player implements Externalizable {
 	/**
 	 * All the cards this player currently has.
 	 */
-	private final List<Card> cards = new ArrayList<>(7);
+	private final ArrayList<Card> cards;
 	/**
 	 * The card currently on top of the pile.
 	 */
 	private transient Card top; // Transient as clients already gets this other ways
 
 	/**
-	 * Creates a player and gives it 7 cards to start the game.
+	 * Creates a player with no cards to start.
 	 */
 	public Player() {
-		for (int i = 0; i < 7; i++) {
+		cards = new ArrayList<>(0);
+	}
+
+	/**
+	 * Creates a player with a specified amount of cards to start.
+	 *
+	 * @param cardCount How many cards this player shall start with.
+	 */
+	public Player(int cardCount) {
+		cards = new ArrayList<>(cardCount);
+		for (int i = 0; i < cardCount; i++) {
 			cards.add(Card.generateCard());
 		}
 	}
@@ -152,6 +161,7 @@ public class Player implements Externalizable {
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 		int count = in.readInt();
 		this.cards.clear();
+		this.cards.ensureCapacity(count);
 		for (int i = 0; i < count; i++) {
 			this.cards.add((Card) in.readObject());
 		}
