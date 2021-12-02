@@ -64,7 +64,7 @@ public class TakeTwo extends Card {
 
 	@Override
 	public boolean jump(@NotNull Card below) {
-		return below.color() == this.color && below instanceof TakeTwo;
+		return this.equals(below);
 	}
 
 	@Override
@@ -75,8 +75,8 @@ public class TakeTwo extends Card {
 
 	@Override
 	public boolean equals(@Nullable Object o) {
-		if (o instanceof TakeTwo) {
-			return ((TakeTwo) o).color == this.color;
+		if (o instanceof TakeTwo t) {
+			return t.color == this.color;
 		}
 		return false;
 	}

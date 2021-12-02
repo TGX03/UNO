@@ -63,7 +63,7 @@ public class Skip extends Card {
 
 	@Override
 	public boolean jump(@NotNull Card below) {
-		return below.color() == this.color && below instanceof Skip;
+		return this.equals(below);
 	}
 
 	@Override
@@ -74,8 +74,8 @@ public class Skip extends Card {
 
 	@Override
 	public boolean equals(@Nullable Object o) {
-		if (o instanceof Skip) {
-			return ((Skip) o).color == this.color;
+		if (o instanceof Skip s) {
+			return s.color == this.color;
 		}
 		return false;
 	}

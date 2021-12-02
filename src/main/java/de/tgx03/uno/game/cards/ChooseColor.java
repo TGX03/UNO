@@ -43,8 +43,8 @@ public class ChooseColor extends ColorChooser {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof ChooseColor) {
-			return this.color == ((ChooseColor) o).color;
+		if (o instanceof ChooseColor c) {
+			return this.color == c.color;
 		} else return false;
 	}
 

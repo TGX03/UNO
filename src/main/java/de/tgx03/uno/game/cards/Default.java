@@ -77,7 +77,7 @@ public class Default extends Card {
 	public boolean place(@NotNull Card below) {
 		if (below.color() == this.color) {
 			return true;
-		} else return below instanceof Default && ((Default) below).value == this.value;
+		} else return below instanceof Default d && d.value == this.value;
 	}
 
 	@Override
@@ -93,8 +93,8 @@ public class Default extends Card {
 
 	@Override
 	public boolean equals(@Nullable Object o) {
-		if (o instanceof Default) {
-			return ((Default) o).color == this.color && ((Default) o).value == this.value;
+		if (o instanceof Default d) {
+			return d.color == this.color && d.value == this.value;
 		}
 		return false;
 	}
