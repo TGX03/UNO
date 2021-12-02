@@ -63,7 +63,7 @@ public class Reverse extends Card {
 	}
 
 	@Override
-	public boolean jump(@NotNull Card below) {
+	public boolean jump(@Nullable Card below) {
 		return this.equals(below);
 	}
 
@@ -102,13 +102,13 @@ public class Reverse extends Card {
 	}
 
 	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
+	public void writeExternal(@NotNull ObjectOutput out) throws IOException {
 		assert color != null;
 		out.writeByte(color.getValue());
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException {
+	public void readExternal(@NotNull ObjectInput in) throws IOException {
 		UNSAFE.putObject(this, COLOR_OFFSET, Color.getByValue(in.readByte()));
 	}
 }

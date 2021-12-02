@@ -23,12 +23,12 @@ public class TakeFour extends ColorChooser {
 	private Color color = Color.BLACK;
 
 	@Override
-	public boolean place(@NotNull Card below) {
+	public boolean place(@Nullable Card below) {
 		return true;
 	}
 
 	@Override
-	public boolean jump(@NotNull Card below) {
+	public boolean jump(@Nullable Card below) {
 		return false;
 	}
 
@@ -69,12 +69,12 @@ public class TakeFour extends ColorChooser {
 	}
 
 	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
+	public void writeExternal(@NotNull ObjectOutput out) throws IOException {
 		out.writeByte(color.getValue());
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException {
+	public void readExternal(@NotNull ObjectInput in) throws IOException {
 		this.color = Color.getByValue(in.readByte());
 	}
 }
