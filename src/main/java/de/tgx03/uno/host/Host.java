@@ -1,5 +1,6 @@
 package de.tgx03.uno.host;
 
+import de.tgx03.ExceptionHandler;
 import de.tgx03.uno.game.Game;
 import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.Rules;
@@ -39,7 +40,7 @@ public class Host implements Runnable {
 	/**
 	 * The handlers for exceptions that may occur during operation.
 	 */
-	private final List<HostExceptionHandler> exceptionHandlers = new ArrayList<>(1);
+	private final List<ExceptionHandler> exceptionHandlers = new ArrayList<>(1);
 
 	/**
 	 * Whether the game shall be started.
@@ -83,7 +84,7 @@ public class Host implements Runnable {
 	 *
 	 * @param handler The object to be registered as exception handler.
 	 */
-	public void registerExceptionHandler(@NotNull HostExceptionHandler handler) {
+	public void registerExceptionHandler(@NotNull ExceptionHandler handler) {
 		synchronized (exceptionHandlers) {
 			exceptionHandlers.add(handler);
 		}
@@ -94,7 +95,7 @@ public class Host implements Runnable {
 	 *
 	 * @param handler The handler to remove.
 	 */
-	public void removeExceptionHandler(@NotNull HostExceptionHandler handler) {
+	public void removeExceptionHandler(@NotNull ExceptionHandler handler) {
 		new Thread(() -> {
 			synchronized (exceptionHandlers) {
 				exceptionHandlers.remove(handler);
@@ -192,7 +193,7 @@ public class Host implements Runnable {
 	 */
 	private synchronized void handleException(Exception e) {
 		synchronized (this.exceptionHandlers) {
-			for (HostExceptionHandler exceptionHandler : exceptionHandlers) {
+			for (ExceptionHandler exceptionHandler : exceptionHandlers) {
 				exceptionHandler.handleException(e);
 			}
 		}

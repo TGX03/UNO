@@ -8,7 +8,7 @@ import de.tgx03.uno.game.cards.Card;
 import de.tgx03.uno.game.cards.Color;
 import de.tgx03.uno.game.cards.ColorChooser;
 import de.tgx03.uno.host.Host;
-import de.tgx03.uno.host.HostExceptionHandler;
+import de.tgx03.ExceptionHandler;
 import de.tgx03.uno.messaging.Update;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -35,7 +35,7 @@ import java.util.Queue;
 /**
  * The main UI hosting most of the game elements and dealing with client and host.
  */
-public class MainFrame extends Application implements ClientUpdate, HostExceptionHandler, ChangeListener<Number> {
+public class MainFrame extends Application implements ClientUpdate, ChangeListener<Number> {
 
 	/**
 	 * The name of the normal colors available for cards.

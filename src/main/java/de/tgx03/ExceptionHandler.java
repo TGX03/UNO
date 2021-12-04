@@ -1,12 +1,12 @@
-package de.tgx03.uno.host;
+package de.tgx03;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
  * An interface that declares any object as being able
- * to process exceptions that may occur during host operations.
+ * to process exceptions that may occur during another objects operations.
  */
-public interface HostExceptionHandler {
+public interface ExceptionHandler {
 
 	/**
 	 * Provides an object with an exception that occurred during host execution
