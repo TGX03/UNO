@@ -203,7 +203,7 @@ public class Game {
 	 */
 	public synchronized boolean hasEnded() {
 		for (Player player : players) {
-			if (!player.won()) {
+			if (!player.finished()) {
 				return false;
 			}
 		}
@@ -299,12 +299,12 @@ public class Game {
 				do {
 					currentPlayer--;
 					if (currentPlayer < 0) currentPlayer = players.length - 1;
-				} while (players[currentPlayer].won());
+				} while (players[currentPlayer].finished());
 			} else {
 				do {
 					currentPlayer++;
 					if (currentPlayer >= players.length) currentPlayer = 0;
-				} while (players[currentPlayer].won());
+				} while (players[currentPlayer].finished());
 			}
 		}
 	}
