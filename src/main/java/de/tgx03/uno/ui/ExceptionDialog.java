@@ -8,7 +8,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -69,6 +68,7 @@ public final class ExceptionDialog {
 				container.notifyAll();
 			}
 		});
+		// TODO: Check whether this even returns when the window is just closed and doesn't get stuck in synchronization
 		synchronized (container) {
 			while (container.answer == null) {
 				try {
@@ -87,6 +87,7 @@ public final class ExceptionDialog {
 	 * @param exception The requested exception.
 	 * @return The stacktrace of that exception.
 	 */
+	@NotNull
 	private static String parseStacktrace(@NotNull Exception exception) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
@@ -101,7 +102,8 @@ public final class ExceptionDialog {
 	 * @param stacktrace The stacktrace of the exception.
 	 * @return The created Alert.
 	 */
-	private static Alert createAlert(@NotNull Exception exception, @Nullable String stacktrace) {
+	@NotNull
+	private static Alert createAlert(@NotNull Exception exception, @NotNull String stacktrace) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle("Error");
 		alert.setHeaderText("An exception occurred");

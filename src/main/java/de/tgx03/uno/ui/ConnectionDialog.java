@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -31,6 +32,7 @@ public class ConnectionDialog {
 	 *
 	 * @return The created client.
 	 */
+	@Nullable
 	public Client createClient() {
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);

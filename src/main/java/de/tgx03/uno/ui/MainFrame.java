@@ -8,7 +8,6 @@ import de.tgx03.uno.game.cards.Card;
 import de.tgx03.uno.game.cards.Color;
 import de.tgx03.uno.game.cards.ColorChooser;
 import de.tgx03.uno.host.Host;
-import de.tgx03.ExceptionHandler;
 import de.tgx03.uno.messaging.Update;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -135,7 +134,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param args Gets sent to JavaFX.
 	 */
-	public static void main(String[] args) {
+	public static void main(@Nullable String[] args) {
 		launch(args);
 	}
 

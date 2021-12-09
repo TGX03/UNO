@@ -8,6 +8,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.image.BufferedImage;
 
@@ -142,7 +143,7 @@ public final class Cards {
 	/**
 	 * A class responsible for transcoding the images in a separate threads.
 	 */
-	private record Transcoder(String color, Image[] target) implements Runnable {
+	private record Transcoder(@NotNull String color, @NotNull Image[] target) implements Runnable {
 
 		@Override
 		public void run() {
@@ -205,12 +206,13 @@ public final class Cards {
 		private BufferedImage img;
 
 		@Override
+		@NotNull
 		public BufferedImage createImage(int width, int height) {
 			return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		}
 
 		@Override
-		public void writeImage(BufferedImage bufferedImage, TranscoderOutput transcoderOutput) {
+		public void writeImage(@NotNull BufferedImage bufferedImage, @Nullable TranscoderOutput transcoderOutput) {
 			this.img = bufferedImage;
 		}
 	}

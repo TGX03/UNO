@@ -150,7 +150,7 @@ public class Player implements Externalizable {
 	}
 
 	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
+	public void writeExternal(@NotNull ObjectOutput out) throws IOException {
 		out.writeInt(this.cards.size());
 		for (Card card : cards) {
 			out.writeObject(card);
@@ -158,7 +158,7 @@ public class Player implements Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+	public void readExternal(@NotNull ObjectInput in) throws IOException, ClassNotFoundException {
 		int count = in.readInt();
 		this.cards.clear();
 		this.cards.ensureCapacity(count);
