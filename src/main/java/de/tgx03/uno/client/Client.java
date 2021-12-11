@@ -136,6 +136,11 @@ public class Client implements Runnable {
 	 */
 	public synchronized void kill() {
 		ended = true;
+		try {
+			input.close();
+		} catch (IOException e) {
+			handleException(e);
+		}
 	}
 
 	/**
@@ -217,7 +222,7 @@ public class Client implements Runnable {
 					ended = true;
 				}
 			} catch (IOException | ClassCastException | ClassNotFoundException e) {
-				handleException(e);
+				if (!ended) handleException(e);
 			}
 		} while (!ended);
 		System.out.println("Shutting down client thread");

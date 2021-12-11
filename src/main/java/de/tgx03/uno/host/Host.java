@@ -336,6 +336,7 @@ public class Host implements Runnable {
 				output.reset();
 				output.writeObject(update);
 			}
+			input.close();
 		}
 
 		/**
