@@ -14,5 +14,5 @@ public interface ExceptionHandler {
 	 *
 	 * @param exception The exception that occurred.
 	 */
-	void handleException(@NotNull Exception exception);
+	void handleException(@NotNull Throwable exception);
 }

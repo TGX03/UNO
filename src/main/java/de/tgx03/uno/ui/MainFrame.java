@@ -52,7 +52,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	/**
 	 * The exception queue.
 	 */
-	private final Queue<Exception> exceptionQueue = new LinkedList<>();
+	private final Queue<Throwable> exceptionQueue = new LinkedList<>();
 
 	/**
 	 * A visual representation of all the cards this player currently has.
@@ -419,7 +419,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 *
 	 * @param exception The exception to handle.
 	 */
-	private synchronized void handleInternalException(@NotNull Exception exception) {
+	private synchronized void handleInternalException(@NotNull Throwable exception) {
 		if ((client != null || host != null) && ExceptionDialog.showExceptionAnswer(exception) == ExceptionDialog.Answer.END_CONNECTION) {
 			endGame(null);
 		} else {
@@ -428,7 +428,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	}
 
 	@Override
-	public void handleException(@NotNull Exception exception) {
+	public void handleException(@NotNull Throwable exception) {
 		synchronized (this.exceptionQueue) {
 			while (this.exceptionQueue.size() > maxExceptions) {
 				try {

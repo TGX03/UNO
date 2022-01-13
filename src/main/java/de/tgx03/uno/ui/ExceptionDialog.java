@@ -32,7 +32,7 @@ public final class ExceptionDialog {
 	 *
 	 * @param e The exception to show.
 	 */
-	public synchronized static void showException(@NotNull Exception e) {
+	public synchronized static void showException(@NotNull Throwable e) {
 
 		String exceptionText = parseStacktrace(e);
 
@@ -45,7 +45,7 @@ public final class ExceptionDialog {
 	 * @param exception The exception to show.
 	 * @return The option the user selected.
 	 */
-	public synchronized static Answer showExceptionAnswer(@NotNull Exception exception) {
+	public synchronized static Answer showExceptionAnswer(@NotNull Throwable exception) {
 
 		String exceptionText = parseStacktrace(exception);
 		final Container container = new Container();
@@ -88,7 +88,7 @@ public final class ExceptionDialog {
 	 * @return The stacktrace of that exception.
 	 */
 	@NotNull
-	private static String parseStacktrace(@NotNull Exception exception) {
+	private static String parseStacktrace(@NotNull Throwable exception) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		exception.printStackTrace(pw);
@@ -103,7 +103,7 @@ public final class ExceptionDialog {
 	 * @return The created Alert.
 	 */
 	@NotNull
-	private static Alert createAlert(@NotNull Exception exception, @NotNull String stacktrace) {
+	private static Alert createAlert(@NotNull Throwable exception, @NotNull String stacktrace) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle("Error");
 		alert.setHeaderText("An exception occurred");
