@@ -27,9 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Optional;
-import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * The main UI hosting most of the game elements and dealing with client and host.
@@ -44,15 +43,11 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 * All the available color including black.
 	 */
 	private static final ObservableList<String> AVAILABLE_COLORS = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow", "Black");
-	/**
-	 * The maximum number of exceptions to keep in the queue.
-	 */
-	private static final int maxExceptions = 5;
-
+	
 	/**
 	 * The exception queue.
 	 */
-	private final Queue<Throwable> exceptionQueue = new LinkedList<>();
+	private final ArrayBlockingQueue<Throwable> exceptionQueue = new ArrayBlockingQueue<>(5);
 
 	/**
 	 * A visual representation of all the cards this player currently has.
@@ -429,16 +424,10 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 
 	@Override
 	public void handleException(@NotNull Throwable exception) {
-		synchronized (this.exceptionQueue) {
-			while (this.exceptionQueue.size() > maxExceptions) {
-				try {
-					this.exceptionQueue.wait();
-				} catch (InterruptedException e) {
-					new Thread(() -> handleException(e)).start();   // This just spells disaster
-				}
-			}
-			this.exceptionQueue.add(exception);
-			this.exceptionQueue.notifyAll();
+		try {
+			this.exceptionQueue.put(exception);
+		} catch (InterruptedException e) {
+			handleException(e);
 		}
 	}
 
@@ -476,16 +465,10 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 		@Override
 		public void run() {
 			while (true) {
-				synchronized (exceptionQueue) {
-					while (exceptionQueue.isEmpty()) {
-						try {
-							exceptionQueue.wait();
-						} catch (InterruptedException e) {
-							handleException(e);
-						}
-					}
-					handleInternalException(exceptionQueue.remove());
-					exceptionQueue.notifyAll();
+				try {
+					handleInternalException(exceptionQueue.take());
+				} catch (InterruptedException ex) {
+					handleException(ex);
 				}
 			}
 		}
