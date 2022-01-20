@@ -383,8 +383,9 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 				// Update the list showing how many cards the other players have
 				ObservableList<String> counts = counter.getItems();
 				counts.clear();
+				counts.add("Stack:\t" + update.stack);
 				for (int i = 0; i < update.cardNumbers.length; i++) {
-					counts.add((i + 1) + ": \t" + update.cardNumbers[i]);
+					counts.add((i + 1) + ":\t" + update.cardNumbers[i]);
 				}
 				counter.refresh();
 			});

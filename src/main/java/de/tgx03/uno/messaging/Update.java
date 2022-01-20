@@ -42,6 +42,10 @@ public class Update implements Externalizable {
 	 * The offset of the cardCount field. Used during deserialization with Unsafe.
 	 */
 	private static final long COUNT_OFFSET;
+	/**
+	 * The offset of the stack field. Used during deserialization with Unsafe.
+	 */
+	private static final long STACK_OFFSET;
 
 	static {
 		Unsafe unsafe = null;
@@ -50,6 +54,7 @@ public class Update implements Externalizable {
 		long player = -1L;
 		long card = -1L;
 		long count = -1L;
+		long stack = -1L;
 		try {
 			Field field = Unsafe.class.getDeclaredField("theUnsafe");
 			field.setAccessible(true);
@@ -59,6 +64,7 @@ public class Update implements Externalizable {
 			player = unsafe.objectFieldOffset(Update.class.getDeclaredField("player"));
 			card = unsafe.objectFieldOffset(Update.class.getDeclaredField("topCard"));
 			count = unsafe.objectFieldOffset(Update.class.getDeclaredField("cardNumbers"));
+			stack = unsafe.objectFieldOffset(Update.class.getDeclaredField("stack"));
 		} catch (NoSuchFieldException | IllegalAccessException exception) {
 			exception.printStackTrace();
 		}
@@ -68,6 +74,7 @@ public class Update implements Externalizable {
 		PLAYER_OFFSET = player;
 		CARD_OFFSET = card;
 		COUNT_OFFSET = count;
+		STACK_OFFSET = stack;
 	}
 
 	/**
@@ -91,6 +98,10 @@ public class Update implements Externalizable {
 	 * Done as short to save space, and I don't think any player will have more than 30000 cards.
 	 */
 	public final short[] cardNumbers;
+	/**
+	 * How many cards are currently on the stack. Short as I hope no game ever results in more than 30000 cards on the stack. Otherwise poor fella.
+	 */
+	public final short stack;
 
 	/**
 	 * Default constructor for serialization.
@@ -106,6 +117,7 @@ public class Update implements Externalizable {
 		player = null;
 		topCard = null;
 		cardNumbers = new short[0];
+		stack = -1;
 	}
 
 	/**
@@ -116,12 +128,13 @@ public class Update implements Externalizable {
 	 * @param topCard The card on top of the pile.
 	 * @param count   How many cards the other players have.
 	 */
-	public Update(boolean turn, @NotNull Player player, @NotNull Card topCard, @NotNull short[] count) {
+	public Update(boolean turn, @NotNull Player player, @NotNull Card topCard, @NotNull short[] count, short stack) {
 		this.turn = turn;
 		this.ended = false;
 		this.player = player;
 		this.topCard = topCard;
 		this.cardNumbers = count;
+		this.stack = stack;
 	}
 
 	/**
@@ -133,24 +146,22 @@ public class Update implements Externalizable {
 	 * @param card   The card on top of the pile.
 	 * @param count  How many cards the other players have.
 	 */
-	public Update(boolean turn, boolean ended, @NotNull Player player, @NotNull Card card, @NotNull short[] count) {
+	public Update(boolean turn, boolean ended, @NotNull Player player, @NotNull Card card, @NotNull short[] count, short stack) {
 		this.turn = turn;
 		this.ended = ended;
 		this.player = player;
 		this.topCard = card;
 		this.cardNumbers = count;
+		this.stack = stack;
 	}
 
 	@Override
 	public boolean equals(@Nullable Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Update update = (Update) o;
-		if (turn != update.turn || ended != update.ended) return false;
-		assert player != null;
-		if (!player.equals(update.player)) return false;
-		assert topCard != null;
-		return topCard.equals(update.topCard) && Arrays.equals(cardNumbers, update.cardNumbers);
+		if (o instanceof Update u) {
+			assert this.player != null && u.player != null && this.topCard != null && u.topCard != null : "Guess somebody used the deprecated constructor";
+			return this.turn == u.turn && this.ended == u.ended && this.player.equals(u.player) && this.topCard.equals(u.topCard) && Arrays.equals(this.cardNumbers, u.cardNumbers) && this.stack == u.stack;
+		}
+		return false;
 	}
 
 	@Override
@@ -164,6 +175,7 @@ public class Update implements Externalizable {
 	public void writeExternal(@NotNull ObjectOutput out) throws IOException {
 		out.writeBoolean(turn);
 		out.writeBoolean(ended);
+		out.writeShort(stack);
 		out.writeObject(player);
 		out.writeObject(topCard);
 		out.writeObject(cardNumbers);
@@ -173,6 +185,7 @@ public class Update implements Externalizable {
 	public void readExternal(@NotNull ObjectInput in) throws IOException, ClassNotFoundException {
 		UNSAFE.putBoolean(this, TURN_OFFSET, in.readBoolean());
 		UNSAFE.putBoolean(this, END_OFFSET, in.readBoolean());
+		UNSAFE.putShort(this, STACK_OFFSET, in.readShort());
 		UNSAFE.putObject(this, PLAYER_OFFSET, in.readObject());
 		UNSAFE.putObject(this, CARD_OFFSET, in.readObject());
 		UNSAFE.putObject(this, COUNT_OFFSET, in.readObject());

@@ -312,7 +312,7 @@ public class Host implements Runnable {
 			Update update;
 			synchronized (game) {
 				boolean turn = game.getCurrentPlayer() == this.id;
-				update = new Update(turn, game.getPlayer(this.id), game.getTopCard(), cardCount);
+				update = new Update(turn, game.getPlayer(this.id), game.getTopCard(), cardCount, (short) game.getStackSize());
 			}
 			synchronized (output) {
 				output.reset();
@@ -328,7 +328,7 @@ public class Host implements Runnable {
 		public void end() throws IOException {
 			Update update;
 			synchronized (game) {
-				update = new Update(false, true, game.getPlayer(this.id), game.getTopCard(), new short[game.playerCount()]);
+				update = new Update(false, true, game.getPlayer(this.id), game.getTopCard(), new short[game.playerCount()], (short) game.getStackSize());
 			}
 			synchronized (output) {
 				output.reset();

@@ -148,6 +148,10 @@ public class Game {
 		}
 	}
 
+	public int getStackSize() {
+		return this.stack;
+	}
+
 	/**
 	 * Get the number of the player whose turn its right now.
 	 *
