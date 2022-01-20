@@ -68,6 +68,21 @@ public class Reverse extends Card {
 	}
 
 	@Override
+	public boolean changesDirection() {
+		return true;
+	}
+
+	@Override
+	public boolean skipNextPlayer() {
+		return false;
+	}
+
+	@Override
+	public int penalty() {
+		return 0;
+	}
+
+	@Override
 	public @NotNull Color color() {
 		assert color != null;
 		return color;

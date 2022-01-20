@@ -68,6 +68,21 @@ public class Skip extends Card {
 	}
 
 	@Override
+	public boolean changesDirection() {
+		return false;
+	}
+
+	@Override
+	public boolean skipNextPlayer() {
+		return true;
+	}
+
+	@Override
+	public int penalty() {
+		return 0;
+	}
+
+	@Override
 	public @NotNull Color color() {
 		assert color != null;
 		return color;

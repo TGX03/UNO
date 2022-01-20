@@ -68,6 +68,21 @@ public class TakeTwo extends Card {
 	}
 
 	@Override
+	public boolean changesDirection() {
+		return false;
+	}
+
+	@Override
+	public boolean skipNextPlayer() {
+		return false;
+	}
+
+	@Override
+	public int penalty() {
+		return 2;
+	}
+
+	@Override
 	public @NotNull Color color() {
 		assert color != null;
 		return color;

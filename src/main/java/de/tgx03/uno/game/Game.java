@@ -1,6 +1,8 @@
 package de.tgx03.uno.game;
 
-import de.tgx03.uno.game.cards.*;
+import de.tgx03.uno.game.cards.Card;
+import de.tgx03.uno.game.cards.Color;
+import de.tgx03.uno.game.cards.ColorChooser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,9 +73,7 @@ public class Game {
 		}
 
 		// Test for the various penalties that will apply to the first player
-		if (top instanceof Reverse) reversed = !reversed;
-		else if (top instanceof Skip) nextPlayer();
-		else if (top instanceof TakeTwo) stack = stack + 2;
+		applyPenalties();
 	}
 
 	/**
@@ -107,19 +107,9 @@ public class Game {
 		currentPlayer = player;
 		top = played;
 
-		// Apply the various penalties
-		if (played instanceof Reverse) {
-			reversed = !reversed;
-		} else if (played instanceof Skip) {
-			nextPlayer();
-		} else if (played instanceof TakeTwo) {
-			stack = stack + 2;
-		} else if (played instanceof TakeFour) {
-			stack = stack + 4;
-		}
-
 		// Update
 		updateTop();
+		applyPenalties();
 		nextPlayer();
 		return true;
 	}
@@ -237,19 +227,9 @@ public class Game {
 		}
 		top = played;
 
-		// Apply penalties
-		if (played instanceof Reverse) {
-			reversed = !reversed;
-		} else if (played instanceof Skip) {
-			nextPlayer();
-		} else if (played instanceof TakeTwo) {
-			stack = stack + 2;
-		} else if (played instanceof TakeFour) {
-			stack = stack + 4;
-		}
-
 		// Update
 		updateTop();
+		applyPenalties();
 		nextPlayer();
 		return true;
 	}
@@ -270,17 +250,11 @@ public class Game {
 		// Try to play card and check whether it's the correct type of card to stack
 		Card played = players[currentPlayer].playCard(cardNumber);
 		if (played == null) return false;
-		if ((top instanceof TakeTwo && played instanceof TakeTwo)) {
-			stack = stack + 2;
+		if (played.penalty() != 0 && top.penalty() == played.penalty()) {
 			top = played;
-			nextPlayer();
 			updateTop();
-			return true;
-		} else if (top instanceof TakeFour && played instanceof TakeFour) {
-			stack = stack + 4;
-			top = played;
+			applyPenalties();
 			nextPlayer();
-			updateTop();
 			return true;
 		} else {
 			players[currentPlayer].giveCard(cardNumber, played);
@@ -305,6 +279,12 @@ public class Game {
 				} while (players[currentPlayer].finished());
 			}
 		}
+	}
+
+	private synchronized void applyPenalties() {
+		stack = stack + top.penalty();
+		reversed = top.changesDirection() != reversed;  // This was a simplification provided by IntelliJ, hope it works
+		if (top.skipNextPlayer()) nextPlayer();
 	}
 
 	/**

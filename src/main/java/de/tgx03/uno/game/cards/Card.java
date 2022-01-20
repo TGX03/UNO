@@ -109,6 +109,30 @@ public abstract class Card implements Externalizable, Cloneable {
 	public abstract boolean jump(@NotNull Card below);
 
 	/**
+	 * Whether this card reverses the current order of the game.
+	 * In the base game gets only used by the Reverse card.
+	 *
+	 * @return Whether this card changed direction.
+	 */
+	public abstract boolean changesDirection();
+
+	/**
+	 * Whether this card results in the next player being skipped.
+	 * In the base game gets only used by the Skip card.
+	 *
+	 * @return Whether to skip the next player.
+	 */
+	public abstract boolean skipNextPlayer();
+
+	/**
+	 * Whether this card requires any penalty cards to be picked up by the next player
+	 * and if so how many.
+	 *
+	 * @return How many cards the next player needs to pick up.
+	 */
+	public abstract int penalty();
+
+	/**
 	 * Returns the color of this card.
 	 *
 	 * @return The color of this card.
