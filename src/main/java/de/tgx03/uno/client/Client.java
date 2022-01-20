@@ -170,11 +170,9 @@ public class Client implements Runnable {
 	 * @param receiver The client to remove.
 	 */
 	public void removeReceiver(@NotNull ClientUpdate receiver) {
-		new Thread(() -> {
-			synchronized (this.receivers) {
-				this.receivers.remove(receiver);
-			}
-		}).start();
+		synchronized (this.receivers) { // TODO: After not doing this in a separate thread, make sure it doesn't cause an isse
+			this.receivers.remove(receiver);
+		}
 	}
 
 	/**
