@@ -83,7 +83,8 @@ public class Reverse extends Card {
 	}
 
 	@Override
-	public @NotNull Color color() {
+	@NotNull
+	public Color color() {
 		assert color != null;
 		return color;
 	}

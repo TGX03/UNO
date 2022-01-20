@@ -303,7 +303,7 @@ public class Game {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (o instanceof Game g && g.players.length == this.players.length) {
 			for (int i = 0; i < this.players.length; i++) {
 				if (this.players[i] != g.players[i]) return false;

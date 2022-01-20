@@ -189,7 +189,7 @@ public class Host implements Runnable {
 	 *
 	 * @param e The exception to forward.
 	 */
-	private synchronized void handleException(Exception e) {
+	private synchronized void handleException(@NotNull Exception e) {
 		synchronized (this.exceptionHandlers) {
 			for (ExceptionHandler exceptionHandler : exceptionHandlers) {
 				exceptionHandler.handleException(e);
@@ -198,7 +198,7 @@ public class Host implements Runnable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (o instanceof Host h) {
 			return this.serverSocket.equals(h.serverSocket) && this.rules.equals(h.rules) && (this.game != null && this.game.equals(h.game));
 		}

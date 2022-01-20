@@ -48,7 +48,8 @@ public class TakeFour extends ColorChooser {
 	}
 
 	@Override
-	public @NotNull Color color() {
+	@NotNull
+	public Color color() {
 		return color;
 	}
 

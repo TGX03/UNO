@@ -73,6 +73,7 @@ public abstract class Card implements Externalizable, Cloneable {
 	 * @param code The number to convert, must be lower than 8.
 	 * @return The corresponding color.
 	 */
+	@NotNull
 	private static Color chooseSpecialColor(int code) {
 		code = code / 2;
 		switch (code) {

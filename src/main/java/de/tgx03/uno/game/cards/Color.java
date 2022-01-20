@@ -1,5 +1,7 @@
 package de.tgx03.uno.game.cards;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * All the possible colors for a card.
  */
@@ -15,6 +17,7 @@ public enum Color {
 	 * @param value The byte value representing the requested color.
 	 * @return The corresponding Enum object.
 	 */
+	@NotNull
 	public static Color getByValue(byte value) {
 		switch (value) {
 			case 0 -> {

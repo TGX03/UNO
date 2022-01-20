@@ -101,7 +101,8 @@ public class Default extends Card {
 	}
 
 	@Override
-	public @NotNull Color color() {
+	@NotNull
+	public Color color() {
 		assert this.color != null;
 		return this.color;
 	}

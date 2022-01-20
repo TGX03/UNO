@@ -6,6 +6,7 @@ import de.tgx03.uno.game.cards.Color;
 import de.tgx03.uno.messaging.Command;
 import de.tgx03.uno.messaging.Update;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -148,6 +149,7 @@ public class Client implements Runnable {
 	 *
 	 * @return The player of this client
 	 */
+	@Nullable
 	public Player getPlayer() {
 		return player;
 	}
@@ -169,7 +171,7 @@ public class Client implements Runnable {
 	 *
 	 * @param receiver The client to remove.
 	 */
-	public void removeReceiver(@NotNull ClientUpdate receiver) {
+	public void removeReceiver(@Nullable ClientUpdate receiver) {
 		synchronized (this.receivers) { // TODO: After not doing this in a separate thread, make sure it doesn't cause an isse
 			this.receivers.remove(receiver);
 		}
@@ -180,7 +182,7 @@ public class Client implements Runnable {
 	 *
 	 * @param exception The exception that occurred.
 	 */
-	private void handleException(Exception exception) {
+	private void handleException(@NotNull Exception exception) {
 		synchronized (this.receivers) {
 			for (ClientUpdate receiver : receivers) {
 				receiver.handleException(exception);
@@ -227,7 +229,7 @@ public class Client implements Runnable {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (o instanceof Client c) {
 			return output == c.output && input == c.input && player == c.player;
 		}

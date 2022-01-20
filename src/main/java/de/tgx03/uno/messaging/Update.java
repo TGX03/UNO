@@ -161,7 +161,7 @@ public class Update implements Externalizable {
 	}
 
 	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
+	public void writeExternal(@NotNull ObjectOutput out) throws IOException {
 		out.writeBoolean(turn);
 		out.writeBoolean(ended);
 		out.writeObject(player);
@@ -170,7 +170,7 @@ public class Update implements Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+	public void readExternal(@NotNull ObjectInput in) throws IOException, ClassNotFoundException {
 		UNSAFE.putBoolean(this, TURN_OFFSET, in.readBoolean());
 		UNSAFE.putBoolean(this, END_OFFSET, in.readBoolean());
 		UNSAFE.putObject(this, PLAYER_OFFSET, in.readObject());

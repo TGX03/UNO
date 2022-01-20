@@ -142,7 +142,7 @@ public class Command implements Externalizable {
 	}
 
 	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
+	public void writeExternal(@NotNull ObjectOutput out) throws IOException {
 		out.writeObject(this.type);
 		switch (this.type) {
 			case NORMAL, JUMP -> out.writeInt(cardNumber);
@@ -155,7 +155,7 @@ public class Command implements Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+	public void readExternal(@NotNull ObjectInput in) throws IOException, ClassNotFoundException {
 		CommandType type = (CommandType) in.readObject();
 		UNSAFE.putObject(this, TYPE_OFFSET, type);
 		switch (type) {

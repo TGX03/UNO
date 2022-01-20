@@ -48,7 +48,8 @@ public class ChooseColor extends ColorChooser {
 	}
 
 	@Override
-	public @NotNull Color color() {
+	@NotNull
+	public Color color() {
 		return color;
 	}
 
@@ -65,12 +66,14 @@ public class ChooseColor extends ColorChooser {
 	}
 
 	@Override
+	@NotNull
 	public String toString() {
 		return "Wild";
 	}
 
 	@Override
-	public @NotNull ChooseColor clone() {
+	@NotNull
+	public ChooseColor clone() {
 		ChooseColor result = new ChooseColor();
 		result.setColor(this.color);
 		return result;
