@@ -284,6 +284,9 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Apply the penalties in accordance with the card currently lying on top.
+	 */
 	private synchronized void applyPenalties() {
 		stack = stack + top.penalty();
 		reversed = top.changesDirection() != reversed;  // This was a simplification provided by IntelliJ, hope it works
