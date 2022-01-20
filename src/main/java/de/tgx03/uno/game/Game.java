@@ -231,11 +231,9 @@ public class Game {
 		Card played = players[currentPlayer].playCard(cardNumber);
 		if (played == null) return false;
 		// Check whether a black card got played by accident and return it if so
-		if (played instanceof ColorChooser) {
-			if (played.color() == Color.BLACK) {
-				players[currentPlayer].giveCard(cardNumber, played);
-				return false;
-			}
+		if (played.color() == Color.BLACK) {
+			players[currentPlayer].giveCard(cardNumber, played);
+			return false;
 		}
 		top = played;
 
