@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * A class representing a game of Uno.
@@ -60,10 +61,12 @@ public class Game {
 		if (rules != null) this.rules = rules;
 		else this.rules = new Rules();
 
-		// If the card on top is a card that chooses colors, get a new one cause fuck it, I'm not implementing that
-		do {
-			top = Card.generateCard();
-		} while (top instanceof ColorChooser);
+		top = Card.generateCard();
+		if (top.color() == Color.BLACK) {   // If the top card is a color chooser, randomly select a color.
+			byte colorValue = (byte) (new Random().nextInt(4) + 1);
+			ColorChooser chooser = (ColorChooser) this.top;
+			chooser.setColor(Color.getByValue(colorValue));
+		}
 
 		// Initialize the players with their cards
 		players = new Player[playerCount];
