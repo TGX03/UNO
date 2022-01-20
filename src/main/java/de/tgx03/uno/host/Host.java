@@ -96,11 +96,9 @@ public class Host implements Runnable {
 	 * @param handler The handler to remove.
 	 */
 	public void removeExceptionHandler(@NotNull ExceptionHandler handler) {
-		new Thread(() -> {
-			synchronized (exceptionHandlers) {
-				exceptionHandlers.remove(handler);
-			}
-		}).start();
+		synchronized (exceptionHandlers) {  // TODO: Check the issue that occurs when not doing this in a separate thread.
+			exceptionHandlers.remove(handler);
+		}
 	}
 
 	@Override
