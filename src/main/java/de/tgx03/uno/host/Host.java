@@ -45,11 +45,11 @@ public class Host implements Runnable {
 	/**
 	 * Whether the game shall be started.
 	 */
-	private boolean start = false;
+	private volatile boolean start = false;
 	/**
 	 * Whether the game shall be stopped.
 	 */
-	private boolean kill = false;
+	private volatile boolean kill = false;
 	/**
 	 * The game instance this host deals with.
 	 */
