@@ -16,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +77,11 @@ public class Host implements Runnable {
 	 */
 	public synchronized void start() {
 		start = true;
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			handleException(e);
+		}
 		notifyAll();
 	}
 
@@ -103,23 +109,13 @@ public class Host implements Runnable {
 
 	@Override
 	public void run() {
-
-		// Take in new players
-		new Thread(this::waitForClients, "Host-Accepter").start();
-
-		// Wait for the round to start
-		synchronized (this) {
-			while (!start) {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		waitForClients();
 
 		// Set up the game and inform the clients of it
-		game = new Game(handler.size(), rules);
+		synchronized (this) {
+			game = new Game(handler.size(), rules);
+			notifyAll();
+		}
 		try {
 			update();
 		} catch (IOException e) {
@@ -141,10 +137,14 @@ public class Host implements Runnable {
 					currentID++;
 					this.handler.add(handler);
 				}
+			} catch (SocketException e) {
+				if (!start) {
+					handleException(e);
+				}
 			} catch (IOException e) {
 				handleException(e);
 			}
-		} while (!start);
+		} while (!start && !kill);
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class Host implements Runnable {
 
 			// Wait until the game starts
 			synchronized (Host.this) {
-				while (!start) {
+				while (!start || Host.this.game == null) {
 					try {
 						Host.this.wait();
 					} catch (InterruptedException exception) {
