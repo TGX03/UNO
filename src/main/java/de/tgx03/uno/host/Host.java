@@ -255,7 +255,7 @@ public class Host implements Runnable {
 				}
 			}
 
-			do {
+			while (!game.hasEnded() && !kill) {
 				// Read orders and process them
 				try {
 					Command order = (Command) input.readObject();
@@ -291,7 +291,7 @@ public class Host implements Runnable {
 				} catch (Exception e) {
 					handleException(e);
 				}
-			} while (!game.hasEnded() && !kill);
+			}
 			if (!kill) {
 				try {
 					Host.this.end();
