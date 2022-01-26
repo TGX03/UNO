@@ -43,7 +43,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 * All the available color including black.
 	 */
 	private static final ObservableList<String> AVAILABLE_COLORS = FXCollections.observableArrayList("Blue", "Green", "Red", "Yellow", "Black");
-	
+
 	/**
 	 * The exception queue.
 	 */
