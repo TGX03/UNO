@@ -102,7 +102,7 @@ public class Host implements Runnable {
 	 * @param handler The handler to remove.
 	 */
 	public void removeExceptionHandler(@NotNull ExceptionHandler handler) {
-		synchronized (exceptionHandlers) {  // TODO: Check the issue that occurs when not doing this in a separate thread.
+		synchronized (exceptionHandlers) {  // TODO: When removing an exception handler while handling an exception a concurrent modification exception occurs.
 			exceptionHandlers.remove(handler);
 		}
 	}
