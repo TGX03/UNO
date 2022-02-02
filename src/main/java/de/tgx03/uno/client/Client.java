@@ -172,7 +172,7 @@ public class Client implements Runnable {
 	 * @param receiver The client to remove.
 	 */
 	public void removeReceiver(@Nullable ClientUpdate receiver) {
-		synchronized (this.receivers) { // TODO: After not doing this in a separate thread, make sure it doesn't cause an isse
+		synchronized (this.receivers) {
 			this.receivers.remove(receiver);
 		}
 	}
@@ -184,8 +184,8 @@ public class Client implements Runnable {
 	 */
 	private void handleException(@NotNull Exception exception) {
 		synchronized (this.receivers) {
-			for (ClientUpdate receiver : receivers) {
-				receiver.handleException(exception);
+			for (int i = 0; i < this.receivers.size(); i++) {
+				this.receivers.get(i).handleException(exception);
 			}
 		}
 	}
