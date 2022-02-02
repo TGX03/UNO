@@ -184,9 +184,7 @@ public class Client implements Runnable {
 	 */
 	private void handleException(@NotNull Exception exception) {
 		synchronized (this.receivers) {
-			for (int i = 0; i < this.receivers.size(); i++) {
-				this.receivers.get(i).handleException(exception);
-			}
+			this.receivers.parallelStream().forEach(x -> x.handleException(exception));
 		}
 	}
 

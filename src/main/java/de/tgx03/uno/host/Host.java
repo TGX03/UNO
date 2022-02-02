@@ -191,9 +191,7 @@ public class Host implements Runnable {
 	 */
 	private synchronized void handleException(@NotNull Exception e) {
 		synchronized (this.exceptionHandlers) {
-			for (int i = 0; i < this.exceptionHandlers.size(); i++) {
-				this.exceptionHandlers.get(i).handleException(e);
-			}
+			this.exceptionHandlers.parallelStream().forEach(x -> x.handleException(e));
 		}
 	}
 
