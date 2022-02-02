@@ -338,7 +338,8 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 */
 	@Nullable
 	private Rules createRules() {
-		return new RuleDialog().showAndWait();
+		Optional<Rules> result = new RuleDialog().requestRules();
+		return result.orElseGet(Rules::new);
 	}
 
 	/**
