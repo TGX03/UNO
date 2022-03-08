@@ -11,7 +11,7 @@ import java.io.Serial;
 /**
  * A class representing the wild card.
  */
-public class ChooseColor extends ColorChooser {
+public class ChooseColor extends Card {
 
 	@Serial
 	private static final long serialVersionUID = -2223262444434498162L;
@@ -20,7 +20,7 @@ public class ChooseColor extends ColorChooser {
 	 * The color this card currently represents.
 	 * Needs to be changed before the card is actually played.
 	 */
-	private Color color = Color.BLACK;
+	protected Color color = Color.BLACK;
 
 	@Override
 	public boolean place(@Nullable Card below) {
@@ -38,7 +38,6 @@ public class ChooseColor extends ColorChooser {
 		return color;
 	}
 
-	@Override
 	public void setColor(@NotNull Color color) {
 		this.color = color;
 	}
