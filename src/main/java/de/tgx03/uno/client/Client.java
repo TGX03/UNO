@@ -149,9 +149,9 @@ public class Client implements Runnable {
 	 *
 	 * @return The player of this client
 	 */
-	@Nullable
+	@NotNull
 	public Player getPlayer() {
-		return player;
+		return player == null ? new Player() : this.player;
 	}
 
 	/**
