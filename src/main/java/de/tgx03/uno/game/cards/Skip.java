@@ -63,23 +63,8 @@ public class Skip extends Card {
 	}
 
 	@Override
-	public boolean jump(@Nullable Card below) {
-		return this.equals(below);
-	}
-
-	@Override
-	public boolean changesDirection() {
-		return false;
-	}
-
-	@Override
 	public boolean skipNextPlayer() {
 		return true;
-	}
-
-	@Override
-	public int penalty() {
-		return 0;
 	}
 
 	@Override

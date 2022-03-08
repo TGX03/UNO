@@ -33,21 +33,6 @@ public class ChooseColor extends ColorChooser {
 	}
 
 	@Override
-	public boolean changesDirection() {
-		return false;
-	}
-
-	@Override
-	public boolean skipNextPlayer() {
-		return false;
-	}
-
-	@Override
-	public int penalty() {
-		return 0;
-	}
-
-	@Override
 	@NotNull
 	public Color color() {
 		return color;

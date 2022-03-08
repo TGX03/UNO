@@ -81,26 +81,6 @@ public class Default extends Card {
 	}
 
 	@Override
-	public boolean jump(@Nullable Card below) {
-		return this.equals(below);
-	}
-
-	@Override
-	public boolean changesDirection() {
-		return false;
-	}
-
-	@Override
-	public boolean skipNextPlayer() {
-		return false;
-	}
-
-	@Override
-	public int penalty() {
-		return 0;
-	}
-
-	@Override
 	@NotNull
 	public Color color() {
 		assert this.color != null;

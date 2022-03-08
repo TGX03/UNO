@@ -107,7 +107,9 @@ public abstract class Card implements Externalizable, Cloneable {
 	 * @param below The card this card shall be thrown on top of.
 	 * @return Whether it's legal.
 	 */
-	public abstract boolean jump(@NotNull Card below);
+	public boolean jump(@NotNull Card below) {
+		return this.equals(below);
+	}
 
 	/**
 	 * Whether this card reverses the current order of the game.
@@ -115,7 +117,9 @@ public abstract class Card implements Externalizable, Cloneable {
 	 *
 	 * @return Whether this card changed direction.
 	 */
-	public abstract boolean changesDirection();
+	public boolean changesDirection() {
+		return false;
+	}
 
 	/**
 	 * Whether this card results in the next player being skipped.
@@ -123,7 +127,9 @@ public abstract class Card implements Externalizable, Cloneable {
 	 *
 	 * @return Whether to skip the next player.
 	 */
-	public abstract boolean skipNextPlayer();
+	public boolean skipNextPlayer() {
+		return false;
+	}
 
 	/**
 	 * Whether this card requires any penalty cards to be picked up by the next player
@@ -131,7 +137,9 @@ public abstract class Card implements Externalizable, Cloneable {
 	 *
 	 * @return How many cards the next player needs to pick up.
 	 */
-	public abstract int penalty();
+	public int penalty() {
+		return 0;
+	}
 
 	/**
 	 * Returns the color of this card.

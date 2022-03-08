@@ -33,16 +33,6 @@ public class TakeFour extends ColorChooser {
 	}
 
 	@Override
-	public boolean changesDirection() {
-		return false;
-	}
-
-	@Override
-	public boolean skipNextPlayer() {
-		return false;
-	}
-
-	@Override
 	public int penalty() {
 		return 4;
 	}

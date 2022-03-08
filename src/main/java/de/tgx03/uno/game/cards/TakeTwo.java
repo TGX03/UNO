@@ -63,21 +63,6 @@ public class TakeTwo extends Card {
 	}
 
 	@Override
-	public boolean jump(@Nullable Card below) {
-		return this.equals(below);
-	}
-
-	@Override
-	public boolean changesDirection() {
-		return false;
-	}
-
-	@Override
-	public boolean skipNextPlayer() {
-		return false;
-	}
-
-	@Override
 	public int penalty() {
 		return 2;
 	}
