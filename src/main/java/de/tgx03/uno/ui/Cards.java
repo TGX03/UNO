@@ -106,17 +106,17 @@ public final class Cards {
 
 		// Get the position in the corresponding array
 		int number;
-		if (card instanceof TakeFour) {
+		if (card.getClass() == TakeFour.class) {
 			return TAKEFOUR;
-		} else if (card instanceof ChooseColor) {
+		} else if (card.getClass() == ChooseColor.class) {
 			return WILD;
-		} else if (card instanceof Default) {
+		} else if (card.getClass() == Default.class) {
 			number = ((Default) card).value;
-		} else if (card instanceof Reverse) {
+		} else if (card.getClass() == Reverse.class) {
 			number = 10;
-		} else if (card instanceof Skip) {
+		} else if (card.getClass() == Skip.class) {
 			number = 11;
-		} else if (card instanceof TakeTwo) {
+		} else if (card.getClass() == TakeTwo.class) {
 			number = 12;
 		} else {
 			throw new IllegalArgumentException("Unknown card");
