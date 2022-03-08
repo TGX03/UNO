@@ -76,8 +76,8 @@ public class Reverse extends Card {
 
 	@Override
 	public boolean equals(@Nullable Object o) {
-		if (o instanceof Reverse r) {
-			return r.color == this.color;
+		if (o != null && o.getClass() == Reverse.class) {
+			return ((Reverse) o).color == this.color;
 		}
 		return false;
 	}

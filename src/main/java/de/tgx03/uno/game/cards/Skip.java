@@ -76,8 +76,8 @@ public class Skip extends Card {
 
 	@Override
 	public boolean equals(@Nullable Object o) {
-		if (o instanceof Skip s) {
-			return s.color == this.color;
+		if (o != null && o.getClass() == Skip.class)  {
+			return ((Skip) o).color == this.color;
 		}
 		return false;
 	}

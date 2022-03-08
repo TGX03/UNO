@@ -76,8 +76,8 @@ public class TakeTwo extends Card {
 
 	@Override
 	public boolean equals(@Nullable Object o) {
-		if (o instanceof TakeTwo t) {
-			return t.color == this.color;
+		if (o != null && o.getClass() == TakeTwo.class) {
+			return ((TakeTwo) o).color == this.color;
 		}
 		return false;
 	}

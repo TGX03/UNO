@@ -50,8 +50,8 @@ public class TakeFour extends ColorChooser {
 
 	@Override
 	public boolean equals(@Nullable Object o) {
-		if (o instanceof TakeFour t) {
-			return t.color == this.color;
+		if (o != null && o.getClass() == TakeFour.class) {
+			return ((TakeFour) o).color == this.color;
 		} else return false;
 	}
 

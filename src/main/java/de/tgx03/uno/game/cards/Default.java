@@ -89,8 +89,8 @@ public class Default extends Card {
 
 	@Override
 	public boolean equals(@Nullable Object o) {
-		if (o instanceof Default d) {
-			return d.color == this.color && d.value == this.value;
+		if (o != null && o.getClass() == Default.class) {
+			return ((Default) o).color == this.color && ((Default) o).value == this.value;
 		}
 		return false;
 	}
