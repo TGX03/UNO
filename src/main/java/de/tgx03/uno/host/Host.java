@@ -5,7 +5,7 @@ import de.tgx03.uno.game.Game;
 import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.Rules;
 import de.tgx03.uno.game.cards.Card;
-import de.tgx03.uno.game.cards.ColorChooser;
+import de.tgx03.uno.game.cards.ChooseColor;
 import de.tgx03.uno.messaging.Command;
 import de.tgx03.uno.messaging.Update;
 import org.jetbrains.annotations.NotNull;
@@ -345,8 +345,8 @@ public class Host implements Runnable {
 			synchronized (game) {
 				Player player = game.getPlayer(this.id);
 				Card card = player.getCards()[order.cardNumber];
-				if (card instanceof ColorChooser) {
-					((ColorChooser) card).setColor(order.color);
+				if (card instanceof ChooseColor) {
+					((ChooseColor) card).setColor(order.color);
 					return true;
 				} else {
 					return false;

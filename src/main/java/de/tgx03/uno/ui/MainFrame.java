@@ -5,8 +5,8 @@ import de.tgx03.uno.client.ClientUpdate;
 import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.Rules;
 import de.tgx03.uno.game.cards.Card;
+import de.tgx03.uno.game.cards.ChooseColor;
 import de.tgx03.uno.game.cards.Color;
-import de.tgx03.uno.game.cards.ColorChooser;
 import de.tgx03.uno.host.Host;
 import de.tgx03.uno.messaging.Update;
 import javafx.application.Application;
@@ -439,7 +439,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 		if (number2.intValue() > 0) {
 			Player player = client.getPlayer();
 			Card card = player.getCards()[number2.intValue()];
-			if (card instanceof ColorChooser) {
+			if (card instanceof ChooseColor) {
 				colorPicker.setDisable(false);
 				setColor.setDisable(false);
 				colorPicker.setItems(AVAILABLE_COLORS);

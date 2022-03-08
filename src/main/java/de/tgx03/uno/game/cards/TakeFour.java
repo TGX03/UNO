@@ -3,9 +3,6 @@ package de.tgx03.uno.game.cards;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serial;
 
 /**
@@ -37,9 +34,7 @@ public class TakeFour extends ChooseColor {
 	@Override
 	@NotNull
 	public TakeFour clone() {
-		TakeFour result = new TakeFour();
-		result.setColor(this.color);
-		return result;
+		return (TakeFour) super.clone();
 	}
 
 	@Override

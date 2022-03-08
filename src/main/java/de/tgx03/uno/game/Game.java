@@ -1,8 +1,8 @@
 package de.tgx03.uno.game;
 
 import de.tgx03.uno.game.cards.Card;
+import de.tgx03.uno.game.cards.ChooseColor;
 import de.tgx03.uno.game.cards.Color;
-import de.tgx03.uno.game.cards.ColorChooser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,8 +64,7 @@ public class Game {
 		top = Card.generateCard();
 		if (top.color() == Color.BLACK) {   // If the top card is a color chooser, randomly select a color.
 			byte colorValue = (byte) (new Random().nextInt(4) + 1);
-			ColorChooser chooser = (ColorChooser) this.top;
-			chooser.setColor(Color.getByValue(colorValue));
+			((ChooseColor) this.top).setColor(Color.getByValue(colorValue));
 		}
 
 		// Initialize the players with their cards
