@@ -20,7 +20,7 @@ public class ChooseColor extends Card {
 	 * The color this card currently represents.
 	 * Needs to be changed before the card is actually played.
 	 */
-	protected Color color = Color.BLACK;
+	private Color color = Color.BLACK;
 
 	@Override
 	public boolean place(@Nullable Card below) {

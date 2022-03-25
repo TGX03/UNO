@@ -21,7 +21,7 @@ public class TakeFour extends ChooseColor {
 	@Override
 	public boolean equals(@Nullable Object o) {
 		if (o != null && o.getClass() == TakeFour.class) {
-			return ((TakeFour) o).color == this.color;
+			return ((TakeFour) o).color() == this.color();
 		} else return false;
 	}
 
@@ -39,6 +39,6 @@ public class TakeFour extends ChooseColor {
 
 	@Override
 	public int hashCode() {
-		return 57 + this.color.ordinal();
+		return 57 + this.color().ordinal();
 	}
 }
