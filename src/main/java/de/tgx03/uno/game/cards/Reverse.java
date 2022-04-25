@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serial;
+import java.lang.reflect.Field;
 
 /**
  * The card inverting the playing order.
@@ -15,19 +16,20 @@ public class Reverse extends Card {
 
 	@Serial
 	private static final long serialVersionUID = 467179758413513210L;
+
 	/**
-	 * The offset of the color field. Used for deserialization with Unsafe.
+	 * The reflective field of the Color of this card.
+	 * Used for deserialization.
 	 */
-	private static final long COLOR_OFFSET;
+	private static final Field COLOR_FIELD;
 
 	static {
-		long offset = -1L;
 		try {
-			offset = UNSAFE.objectFieldOffset(Reverse.class.getField("color"));
+			COLOR_FIELD = Reverse.class.getDeclaredField("color");
+			COLOR_FIELD.setAccessible(true);
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			throw new ExceptionInInitializerError(NO_SUCH_FIELD);
 		}
-		COLOR_OFFSET = offset;
 	}
 
 	/**
@@ -110,6 +112,11 @@ public class Reverse extends Card {
 
 	@Override
 	public void readExternal(@NotNull ObjectInput in) throws IOException {
-		UNSAFE.putObject(this, COLOR_OFFSET, Color.getByValue(in.readByte()));
+		//colorField.setAccessible(true);
+		try {
+			COLOR_FIELD.set(this, Color.getByValue(in.readByte()));
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(ACCESS_ERROR);
+		}
 	}
 }

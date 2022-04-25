@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serial;
+import java.lang.reflect.Field;
 
 /**
  * A take two card.
@@ -15,19 +16,20 @@ public class TakeTwo extends Card {
 
 	@Serial
 	private static final long serialVersionUID = 3572737636745065895L;
+
 	/**
-	 * The offset of the color field. Used during deserialization with Unsafe.
+	 * The reflective field of the Color of this card.
+	 * Used for deserialization.
 	 */
-	private static final long COLOR_OFFSET;
+	private static final Field COLOR_FIELD;
 
 	static {
-		long color = -1L;
 		try {
-			color = UNSAFE.objectFieldOffset(TakeTwo.class.getField("color"));
+			COLOR_FIELD = TakeTwo.class.getDeclaredField("color");
+			COLOR_FIELD.setAccessible(true);
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			throw new ExceptionInInitializerError(NO_SUCH_FIELD);
 		}
-		COLOR_OFFSET = color;
 	}
 
 	/**
@@ -112,6 +114,10 @@ public class TakeTwo extends Card {
 
 	@Override
 	public void readExternal(@NotNull ObjectInput in) throws IOException {
-		UNSAFE.putObject(this, COLOR_OFFSET, Color.getByValue(in.readByte()));
+		try {
+			COLOR_FIELD.set(this, Color.getByValue(in.readByte()));
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(ACCESS_ERROR);
+		}
 	}
 }

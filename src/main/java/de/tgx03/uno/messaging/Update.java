@@ -4,7 +4,6 @@ import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.cards.Card;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sun.misc.Unsafe;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -18,63 +17,55 @@ public class Update implements Externalizable {
 
 	@Serial
 	private static final long serialVersionUID = 1959833843176392241L;
+
 	/**
-	 * The Unsafe used during deserialization.
+	 * The reflective field of the boolean stating whether it's this players turn
+	 * Used for deserialization.
 	 */
-	private static final Unsafe UNSAFE;
+	private static final Field TURN_FIELD;
 	/**
-	 * The offset of the turn field. Used during deserialization with Unsafe.
+	 * The reflective field of the boolean stating whether the game has ended.
+	 * Used for deserialization.
 	 */
-	private static final long TURN_OFFSET;
+	private static final Field END_FIELD;
 	/**
-	 * The offset of the end field. Used during deserialization with Unsafe.
+	 * The reflective field of the corresponding player object for the client.
+	 * Used for deserialization.
 	 */
-	private static final long END_OFFSET;
+	private static final Field PLAYER_FIELD;
 	/**
-	 * The offset of the player field. Used during deserialization with Unsafe.
+	 * The reflective field of the card currently lying on top.
+	 * Used for deserialization.
 	 */
-	private static final long PLAYER_OFFSET;
+	private static final Field CARD_FIELD;
 	/**
-	 * The offset of the topCard field. Used during deserialization with Unsafe.
+	 * The reflective field of how many cards the other players have.
+	 * Used for deserialization.
 	 */
-	private static final long CARD_OFFSET;
+	private static final Field NUMBERS_FIELD;
 	/**
-	 * The offset of the cardCount field. Used during deserialization with Unsafe.
+	 * The reflective field of how many cards are on the stack.
+	 * Used for deserialization.
 	 */
-	private static final long COUNT_OFFSET;
-	/**
-	 * The offset of the stack field. Used during deserialization with Unsafe.
-	 */
-	private static final long STACK_OFFSET;
+	private static final Field STACK_FIELD;
 
 	static {
-		Unsafe unsafe = null;
-		long turn = -1L;
-		long end = -1L;
-		long player = -1L;
-		long card = -1L;
-		long count = -1L;
-		long stack = -1L;
 		try {
-			Field field = Unsafe.class.getDeclaredField("theUnsafe");
-			field.setAccessible(true);
-			unsafe = (Unsafe) field.get(null);
-			turn = unsafe.objectFieldOffset(Update.class.getDeclaredField("turn"));
-			end = unsafe.objectFieldOffset(Update.class.getDeclaredField("ended"));
-			player = unsafe.objectFieldOffset(Update.class.getDeclaredField("player"));
-			card = unsafe.objectFieldOffset(Update.class.getDeclaredField("topCard"));
-			count = unsafe.objectFieldOffset(Update.class.getDeclaredField("cardNumbers"));
-			stack = unsafe.objectFieldOffset(Update.class.getDeclaredField("stack"));
-		} catch (NoSuchFieldException | IllegalAccessException exception) {
-			exception.printStackTrace();
+			TURN_FIELD = Update.class.getDeclaredField("turn");
+			END_FIELD = Update.class.getDeclaredField("ended");
+			PLAYER_FIELD = Update.class.getDeclaredField("player");
+			CARD_FIELD = Update.class.getDeclaredField("topCard");
+			NUMBERS_FIELD = Update.class.getDeclaredField("cardNumbers");
+			STACK_FIELD = Update.class.getDeclaredField("stack");
+			TURN_FIELD.setAccessible(true);
+			END_FIELD.setAccessible(true);
+			PLAYER_FIELD.setAccessible(true);
+			CARD_FIELD.setAccessible(true);
+			NUMBERS_FIELD.setAccessible(true);
+			STACK_FIELD.setAccessible(true);
+		} catch (NoSuchFieldException e) {
+			throw new ExceptionInInitializerError("Couldn't get fields for deserialization.");
 		}
-		UNSAFE = unsafe;
-		TURN_OFFSET = turn;
-		END_OFFSET = end;
-		PLAYER_OFFSET = player;
-		CARD_OFFSET = card;
-		COUNT_OFFSET = count;
-		STACK_OFFSET = stack;
 	}
 
 	/**
@@ -183,11 +174,15 @@ public class Update implements Externalizable {
 
 	@Override
 	public void readExternal(@NotNull ObjectInput in) throws IOException, ClassNotFoundException {
-		UNSAFE.putBoolean(this, TURN_OFFSET, in.readBoolean());
-		UNSAFE.putBoolean(this, END_OFFSET, in.readBoolean());
-		UNSAFE.putShort(this, STACK_OFFSET, in.readShort());
-		UNSAFE.putObject(this, PLAYER_OFFSET, in.readObject());
-		UNSAFE.putObject(this, CARD_OFFSET, in.readObject());
-		UNSAFE.putObject(this, COUNT_OFFSET, in.readObject());
+		try {
+			TURN_FIELD.setBoolean(this, in.readBoolean());
+			END_FIELD.setBoolean(this, in.readBoolean());
+			STACK_FIELD.setShort(this, in.readShort());
+			PLAYER_FIELD.set(this, in.readObject());
+			CARD_FIELD.set(this, in.readObject());
+			NUMBERS_FIELD.set(this, in.readObject());
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Can't access fields.");
+		}
 	}
 }

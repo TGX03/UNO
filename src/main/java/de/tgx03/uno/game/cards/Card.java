@@ -1,11 +1,9 @@
 package de.tgx03.uno.game.cards;
 
 import org.jetbrains.annotations.NotNull;
-import sun.misc.Unsafe;
 
 import java.io.Externalizable;
 import java.io.Serial;
-import java.lang.reflect.Field;
 import java.util.Random;
 
 /**
@@ -14,27 +12,21 @@ import java.util.Random;
 public abstract class Card implements Externalizable, Cloneable {
 
 	/**
-	 * The Unsafe object required for Cards with final fields as those can't even be set using reflection.
+	 * The text of an error when during initialization of a class the reflection fields
+	 * couldn't be correctly set up.
 	 */
-	protected static final Unsafe UNSAFE;
+	protected static final String NO_SUCH_FIELD = "Couldn't get fields for deserialization.";
+	/**
+	 * The text of an error when for some reason the fields of a card
+	 * couldn't be accessed during deserialization.
+	 */
+	protected static final String ACCESS_ERROR = "Can't access fields.";
 	@Serial
 	private static final long serialVersionUID = 3828684409287282936L;
 	/**
 	 * The number generator used for generating new cards.
 	 */
 	private static final Random rand = new Random();
-
-	static {
-		Unsafe result = null;
-		try {
-			Field field = Unsafe.class.getDeclaredField("theUnsafe");
-			field.setAccessible(true);
-			result = (Unsafe) field.get(null);
-		} catch (NoSuchFieldException | IllegalAccessException exception) {
-			exception.printStackTrace();
-		}
-		UNSAFE = result;
-	}
 
 	/**
 	 * Generates a new card in accordance with a normal uno deck.

@@ -2,7 +2,6 @@ package de.tgx03.uno.game;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sun.misc.Unsafe;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -15,43 +14,34 @@ public class Rules implements Externalizable, Cloneable {
 
 	@Serial
 	private static final long serialVersionUID = 5037643636101348351L;
+
 	/**
-	 * The Unsafe used for deserialization of final fields.
+	 * The reflective field of the Jumping boolean.
+	 * Used for deserialization.
 	 */
-	private static final Unsafe UNSAFE;
+	private static final Field JUMP_FIELD;
 	/**
-	 * The offset of the jump field. Used for deserialization with Unsafe.
+	 * The reflective field of the Stacking boolean.
+	 * Used for deserialization.
 	 */
-	private static final long JUMP_OFFSET;
+	private static final Field STACK_FIELD;
 	/**
-	 * The offset of the stack field. Used for deserialization with Unsafe.
+	 * The reflective field of the ForceContinue boolean.
+	 * Used for deserialization.
 	 */
-	private static final long STACK_OFFSET;
-	/**
-	 * The offset of the force field. Used for deserialization with Unsafe.
-	 */
-	private static final long FORCE_OFFSET;
+	private static final Field FORCE_FIELD;
 
 	static {
-		Unsafe unsafe = null;
-		long jump = -1L;
-		long stack = -1L;
-		long force = -1L;
 		try {
-			Field field = Unsafe.class.getDeclaredField("theUnsafe");
-			field.setAccessible(true);
-			unsafe = (Unsafe) field.get(null);
-			jump = unsafe.objectFieldOffset(Rules.class.getDeclaredField("jumping"));
-			stack = unsafe.objectFieldOffset(Rules.class.getDeclaredField("stacking"));
-			force = unsafe.objectFieldOffset(Rules.class.getDeclaredField("forceContinue"));
-
-		} catch (NoSuchFieldException | IllegalAccessException exception) {
-			exception.printStackTrace();
+			JUMP_FIELD = Rules.class.getDeclaredField("jumping");
+			STACK_FIELD = Rules.class.getDeclaredField("stacking");
+			FORCE_FIELD = Rules.class.getDeclaredField("forceContinue");
+			JUMP_FIELD.setAccessible(true);
+			STACK_FIELD.setAccessible(true);
+			FORCE_FIELD.setAccessible(true);
+		} catch (NoSuchFieldException e) {
+			throw new ExceptionInInitializerError("Couldn't get fields for deserialization.");
 		}
-		UNSAFE = unsafe;
-		JUMP_OFFSET = jump;
-		STACK_OFFSET = stack;
-		FORCE_OFFSET = force;
 	}
 
 	/**
@@ -116,8 +106,12 @@ public class Rules implements Externalizable, Cloneable {
 
 	@Override
 	public void readExternal(ObjectInput in) throws IOException {
-		UNSAFE.putBoolean(this, JUMP_OFFSET, in.readBoolean());
-		UNSAFE.putBoolean(this, STACK_OFFSET, in.readBoolean());
-		UNSAFE.putBoolean(this, FORCE_OFFSET, in.readBoolean());
+		try {
+			JUMP_FIELD.setBoolean(this, in.readBoolean());
+			STACK_FIELD.setBoolean(this, in.readBoolean());
+			FORCE_FIELD.setBoolean(this, in.readBoolean());
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Can't access fields.");
+		}
 	}
 }

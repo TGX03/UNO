@@ -3,7 +3,6 @@ package de.tgx03.uno.messaging;
 import de.tgx03.uno.game.cards.Color;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sun.misc.Unsafe;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -16,42 +15,34 @@ public class Command implements Externalizable {
 
 	@Serial
 	private static final long serialVersionUID = -569083254883826234L;
+
 	/**
-	 * The Unsafe used for deserialization
+	 * The reflective field for the type of this Command.
+	 * Used for deserialization.
 	 */
-	private static final Unsafe UNSAFE;
+	private static final Field TYPE_FIELD;
 	/**
-	 * The offset of the type field. Used during deserialization with Unsafe.
+	 * The reflective field of the number of the Card to play.
+	 * Used for deserialization.
 	 */
-	private static final long TYPE_OFFSET;
+	private static final Field NUMBER_FIELD;
 	/**
-	 * THe offset of the number field. Used during deserialization with Unsafe.
+	 * The reflective field of the new color of a black card.
+	 * Used for deserialization.
 	 */
-	private static final long NUMBER_OFFSET;
-	/**
-	 * The offset of the color field. Used during deserialization with Unsafe.
-	 */
-	private static final long COLOR_OFFSET;
+	private static final Field COLOR_FIELD;
 
 	static {
-		Unsafe unsafe = null;
-		long type = -1L;
-		long number = -1L;
-		long color = -1L;
 		try {
-			Field field = Unsafe.class.getDeclaredField("theUnsafe");
-			field.setAccessible(true);
-			unsafe = (Unsafe) field.get(null);
-			type = unsafe.objectFieldOffset(Command.class.getDeclaredField("type"));
-			number = unsafe.objectFieldOffset(Command.class.getDeclaredField("cardNumber"));
-			color = unsafe.objectFieldOffset(Command.class.getDeclaredField("color"));
-		} catch (NoSuchFieldException | IllegalAccessException exception) {
-			exception.printStackTrace();
+			TYPE_FIELD = Command.class.getDeclaredField("type");
+			NUMBER_FIELD = Command.class.getDeclaredField("cardNumber");
+			COLOR_FIELD = Command.class.getDeclaredField("color");
+			TYPE_FIELD.setAccessible(true);
+			NUMBER_FIELD.setAccessible(true);
+			COLOR_FIELD.setAccessible(true);
+		} catch (NoSuchFieldException e) {
+			throw new ExceptionInInitializerError("Couldn't get fields for deserialization.");
 		}
-		UNSAFE = unsafe;
-		TYPE_OFFSET = type;
-		NUMBER_OFFSET = number;
-		COLOR_OFFSET = color;
 	}
 
 	/**
@@ -156,14 +147,17 @@ public class Command implements Externalizable {
 
 	@Override
 	public void readExternal(@NotNull ObjectInput in) throws IOException, ClassNotFoundException {
-		CommandType type = (CommandType) in.readObject();
-		UNSAFE.putObject(this, TYPE_OFFSET, type);
-		switch (type) {
-			case NORMAL, JUMP -> UNSAFE.putInt(this, NUMBER_OFFSET, in.readInt());
-			case SELECT_COLOR -> {
-				UNSAFE.putInt(this, NUMBER_OFFSET, in.readInt());
-				UNSAFE.putObject(this, COLOR_OFFSET, Color.getByValue(in.readByte()));
+		try {
+			TYPE_FIELD.set(this, in.readObject());
+			switch (type) {
+				case NORMAL, JUMP -> NUMBER_FIELD.setInt(this, in.readInt());
+				case SELECT_COLOR -> {
+					NUMBER_FIELD.setInt(this, in.readInt());
+					COLOR_FIELD.set(this, Color.getByValue(in.readByte()));
+				}
 			}
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Can't access fields.");
 		}
 	}
 

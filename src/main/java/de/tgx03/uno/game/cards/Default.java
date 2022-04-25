@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serial;
+import java.lang.reflect.Field;
 
 /**
  * A standard UNO card.
@@ -15,26 +16,27 @@ public class Default extends Card {
 
 	@Serial
 	private static final long serialVersionUID = -807259155534165108L;
+
 	/**
-	 * The offset of the color field, used during deserialization with Unsafe
+	 * The reflective field of the Color of this card.
+	 * Used for deserialization.
 	 */
-	private static final long COLOR_OFFSET;
+	private static final Field COLOR_FIELD;
 	/**
-	 * The offset of the value field, used during deserialization with Unsafe
+	 * The reflective field of the Value of this card.
+	 * Used for deserialization.
 	 */
-	private static final long VALUE_OFFSET;
+	private static final Field VALUE_FIELD;
 
 	static {
-		long color = -1L;
-		long value = -1L;
 		try {
-			color = UNSAFE.objectFieldOffset(Default.class.getField("color"));
-			value = UNSAFE.objectFieldOffset(Default.class.getField("value"));
+			COLOR_FIELD = Default.class.getDeclaredField("color");
+			VALUE_FIELD = Default.class.getDeclaredField("value");
+			COLOR_FIELD.setAccessible(true);
+			VALUE_FIELD.setAccessible(true);
 		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
+			throw new ExceptionInInitializerError(NO_SUCH_FIELD);
 		}
-		COLOR_OFFSET = color;
-		VALUE_OFFSET = value;
 	}
 
 	/**
@@ -131,7 +133,11 @@ public class Default extends Card {
 
 	@Override
 	public void readExternal(@NotNull ObjectInput in) throws IOException {
-		UNSAFE.putByte(this, VALUE_OFFSET, in.readByte());
-		UNSAFE.putObject(this, COLOR_OFFSET, Color.getByValue(in.readByte()));
+		try {
+			VALUE_FIELD.setByte(this, in.readByte());
+			COLOR_FIELD.set(this, Color.getByValue(in.readByte()));
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(ACCESS_ERROR);
+		}
 	}
 }
