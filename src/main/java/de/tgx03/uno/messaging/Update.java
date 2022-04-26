@@ -64,7 +64,7 @@ public class Update implements Externalizable {
 			NUMBERS_FIELD.setAccessible(true);
 			STACK_FIELD.setAccessible(true);
 		} catch (NoSuchFieldException e) {
-			throw new ExceptionInInitializerError("Couldn't get fields for deserialization.");
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 
@@ -182,7 +182,7 @@ public class Update implements Externalizable {
 			CARD_FIELD.set(this, in.readObject());
 			NUMBERS_FIELD.set(this, in.readObject());
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException("Can't access fields.");
+			throw new RuntimeException(e);
 		}
 	}
 }

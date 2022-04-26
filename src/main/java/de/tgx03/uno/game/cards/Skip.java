@@ -27,7 +27,7 @@ public class Skip extends Card {
 		try {
 			COLOR_FIELD = Skip.class.getDeclaredField("color");
 		} catch (NoSuchFieldException e) {
-			throw new ExceptionInInitializerError(NO_SUCH_FIELD);
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class Skip extends Card {
 		try {
 			COLOR_FIELD.set(this, Color.getByValue(in.readByte()));
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(ACCESS_ERROR);
+			throw new RuntimeException(e);
 		}
 	}
 }

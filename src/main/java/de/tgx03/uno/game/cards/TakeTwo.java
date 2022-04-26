@@ -28,7 +28,7 @@ public class TakeTwo extends Card {
 			COLOR_FIELD = TakeTwo.class.getDeclaredField("color");
 			COLOR_FIELD.setAccessible(true);
 		} catch (NoSuchFieldException e) {
-			throw new ExceptionInInitializerError(NO_SUCH_FIELD);
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class TakeTwo extends Card {
 		try {
 			COLOR_FIELD.set(this, Color.getByValue(in.readByte()));
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(ACCESS_ERROR);
+			throw new RuntimeException(e);
 		}
 	}
 }

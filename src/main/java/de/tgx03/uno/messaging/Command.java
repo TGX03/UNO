@@ -41,7 +41,7 @@ public class Command implements Externalizable {
 			NUMBER_FIELD.setAccessible(true);
 			COLOR_FIELD.setAccessible(true);
 		} catch (NoSuchFieldException e) {
-			throw new ExceptionInInitializerError("Couldn't get fields for deserialization.");
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 
@@ -157,7 +157,7 @@ public class Command implements Externalizable {
 				}
 			}
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException("Can't access fields.");
+			throw new RuntimeException(e);
 		}
 	}
 

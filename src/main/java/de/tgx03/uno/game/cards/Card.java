@@ -10,17 +10,6 @@ import java.util.Random;
  * The basic implementation of a game card.
  */
 public abstract class Card implements Externalizable, Cloneable {
-
-	/**
-	 * The text of an error when during initialization of a class the reflection fields
-	 * couldn't be correctly set up.
-	 */
-	protected static final String NO_SUCH_FIELD = "Couldn't get fields for deserialization.";
-	/**
-	 * The text of an error when for some reason the fields of a card
-	 * couldn't be accessed during deserialization.
-	 */
-	protected static final String ACCESS_ERROR = "Can't access fields.";
 	@Serial
 	private static final long serialVersionUID = 3828684409287282936L;
 	/**

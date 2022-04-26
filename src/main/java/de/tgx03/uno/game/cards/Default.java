@@ -35,7 +35,7 @@ public class Default extends Card {
 			COLOR_FIELD.setAccessible(true);
 			VALUE_FIELD.setAccessible(true);
 		} catch (NoSuchFieldException e) {
-			throw new ExceptionInInitializerError(NO_SUCH_FIELD);
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 
@@ -137,7 +137,7 @@ public class Default extends Card {
 			VALUE_FIELD.setByte(this, in.readByte());
 			COLOR_FIELD.set(this, Color.getByValue(in.readByte()));
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(ACCESS_ERROR);
+			throw new RuntimeException(e);
 		}
 	}
 }
