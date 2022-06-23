@@ -26,6 +26,7 @@ public class Skip extends Card {
 	static {
 		try {
 			COLOR_FIELD = Skip.class.getDeclaredField("color");
+			COLOR_FIELD.setAccessible(true);
 		} catch (NoSuchFieldException e) {
 			throw new ExceptionInInitializerError(e);
 		}
