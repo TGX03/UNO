@@ -436,7 +436,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	@Override
 	public synchronized void changed(@Nullable ObservableValue<? extends Number> observableValue, @Nullable Number number1, @NotNull Number number2) {
 		// Updates the color shown in the combo box
-		if (number2.intValue() > 0) {
+		if (number2.intValue() >= 0) {
 			Player player = client.getPlayer();
 			Card card = player.getCards()[number2.intValue()];
 			if (card instanceof ChooseColor) {
