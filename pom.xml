@@ -56,7 +56,7 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
-            <version>18.0.2</version>
+            <version>19</version>
             <classifier>mac</classifier>
         </dependency>
         <dependency>
