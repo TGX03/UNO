@@ -81,7 +81,11 @@ public class Rules implements Externalizable, Cloneable {
 	@Override
 	@NotNull
 	public Rules clone() {
-		return new Rules(this.jumping, this.stacking, this.forceContinue);
+		try {
+			return (Rules) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

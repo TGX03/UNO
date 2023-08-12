@@ -119,7 +119,7 @@ public class Update implements Externalizable {
 	 * @param topCard The card on top of the pile.
 	 * @param count   How many cards the other players have.
 	 */
-	public Update(boolean turn, @NotNull Player player, @NotNull Card topCard, @NotNull short[] count, short stack) {
+	public Update(boolean turn, @NotNull Player player, @NotNull Card topCard, short @NotNull [] count, short stack) {
 		this.turn = turn;
 		this.ended = false;
 		this.player = player;
@@ -137,7 +137,7 @@ public class Update implements Externalizable {
 	 * @param card   The card on top of the pile.
 	 * @param count  How many cards the other players have.
 	 */
-	public Update(boolean turn, boolean ended, @NotNull Player player, @NotNull Card card, @NotNull short[] count, short stack) {
+	public Update(boolean turn, boolean ended, @NotNull Player player, @NotNull Card card, short @NotNull [] count, short stack) {
 		this.turn = turn;
 		this.ended = ended;
 		this.player = player;

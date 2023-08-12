@@ -306,7 +306,7 @@ public class Host implements Runnable {
 		 * @param cardCount How many cards all the players have.
 		 * @throws IOException When something goes wrong during send operation.
 		 */
-		public void update(@NotNull short[] cardCount) throws IOException {
+		public void update(short @NotNull [] cardCount) throws IOException {
 			Update update;
 			synchronized (game) {
 				boolean turn = game.getCurrentPlayer() == this.id;

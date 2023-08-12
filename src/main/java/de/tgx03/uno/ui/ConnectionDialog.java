@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -37,6 +38,30 @@ public class ConnectionDialog {
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 
+		GridPane layout = createConnectionGrid(stage);
+
+		Scene scene = new Scene(layout, 300, 100);
+		stage.setTitle("Create connection");
+		stage.setScene(scene);
+		stage.showAndWait();
+
+		if (!validPort) {
+			throw new IllegalArgumentException("Invalid port provided");
+		} else if (client == null) {
+			throw new RuntimeException("Couldn't create client");
+		} else {
+			return client;
+		}
+	}
+
+	/**
+	 * Creates the Grid to get the connection details from the user
+	 * for the given stage.
+	 * @param stage The stage the grid shall be placed on.
+	 * @return The created Grid Pane with fields and labels.
+	 */
+	@NotNull
+	private GridPane createConnectionGrid(Stage stage) {
 		TextField host = new TextField("Host");
 		TextField port = new TextField("Port");
 		Label hostLabel = new Label("Host:");
@@ -59,18 +84,6 @@ public class ConnectionDialog {
 		layout.add(portLabel, 0, 1);
 		layout.add(port, 1, 1);
 		layout.add(confirm, 1, 2);
-
-		Scene scene = new Scene(layout, 300, 100);
-		stage.setTitle("Create connection");
-		stage.setScene(scene);
-		stage.showAndWait();
-
-		if (!validPort) {
-			throw new IllegalArgumentException("Invalid port provided");
-		} else if (client == null) {
-			throw new RuntimeException("Couldn't create client");
-		} else {
-			return client;
-		}
+		return layout;
 	}
 }

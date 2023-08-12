@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -135,7 +136,9 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 
 	@Override
 	public void start(@NotNull Stage stage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/MainFrame.fxml"));
+		URL resource = getClass().getResource("/MainFrame.fxml");
+		assert resource != null;
+		Parent root = FXMLLoader.load(resource);
 		stage.setTitle("UNO");
 		stage.setScene(new Scene(root));
 		stage.show();

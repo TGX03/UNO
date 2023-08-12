@@ -109,7 +109,7 @@ public class Player implements Externalizable {
 	 * @return Whether the player has played all his cards.
 	 */
 	public boolean finished() {
-		return cards.size() == 0;
+		return cards.isEmpty();
 	}
 
 	/**
