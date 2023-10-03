@@ -7,7 +7,7 @@ import de.tgx03.uno.game.Rules;
 import de.tgx03.uno.game.cards.Card;
 import de.tgx03.uno.game.cards.ChooseColor;
 import de.tgx03.uno.game.cards.Color;
-import de.tgx03.uno.host.Host;
+import de.tgx03.uno.Host;
 import de.tgx03.uno.messaging.Update;
 import javafx.application.Application;
 import javafx.application.Platform;

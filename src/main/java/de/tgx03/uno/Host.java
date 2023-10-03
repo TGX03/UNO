@@ -1,4 +1,4 @@
-package de.tgx03.uno.host;
+package de.tgx03.uno;
 
 import de.tgx03.ExceptionHandler;
 import de.tgx03.uno.game.Game;
