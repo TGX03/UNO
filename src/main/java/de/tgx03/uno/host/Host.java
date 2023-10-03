@@ -20,6 +20,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 /**
  * A class representing the server of a game of UNO.
@@ -35,9 +36,13 @@ public class Host implements Runnable {
 	 */
 	private final Rules rules;
 	/**
-	 * A list of all the handlers connecting to the clients.
+	 * A list of all the receivers receiving commands from the clients
 	 */
-	private final List<Handler> handler = new ArrayList<>();
+	private final List<Receiver> receivers = new ArrayList<>();
+	/**
+	 * A list of all the output streams updates get sent through.
+	 */
+	private final List<ObjectOutputStream> outputs = new ArrayList<>();
 	/**
 	 * The handlers for exceptions that may occur during operation.
 	 */
@@ -113,7 +118,7 @@ public class Host implements Runnable {
 
 		// Set up the game and inform the clients of it
 		synchronized (this) {
-			game = new Game(handler.size(), rules);
+			game = new Game(receivers.size(), rules);
 			notifyAll();
 		}
 		try {
@@ -132,10 +137,11 @@ public class Host implements Runnable {
 			try {
 				Socket socket = serverSocket.accept();
 				if (!start) {
-					Handler handler = new Handler(socket, currentID);
-					new Thread(handler, "Host-Receiver " + currentID).start();
+					Receiver receiver = new Receiver(new ObjectInputStream(socket.getInputStream()), currentID);
+					Thread.ofVirtual().name("Host-Receiver " + currentID).start(receiver);
 					currentID++;
-					this.handler.add(handler);
+					outputs.add(new ObjectOutputStream(socket.getOutputStream()));
+					this.receivers.add(receiver);
 				}
 			} catch (SocketException e) {
 				if (!start) {
@@ -150,15 +156,27 @@ public class Host implements Runnable {
 	/**
 	 * Informs all the clients of an update to the game.
 	 *
-	 * @throws IOException When something went wrong while sendig the update.
+	 * @throws IOException When something went wrong while sending the update.
 	 */
 	private void update() throws IOException {
+		Container<IOException> container = new Container<>();
 		synchronized (game) {
 			short[] cardCount = game.getCardCount();
-			for (Handler handler : this.handler) {
-				handler.update(cardCount);
-			}
+			IntStream.range(0, receivers.size()).parallel().forEach(id -> {
+				Update update;
+				boolean turn = game.getCurrentPlayer() == id;
+				update = new Update(turn, game.getPlayer(id), game.getTopCard(), cardCount, (short) game.getStackSize());
+				try {
+					synchronized (outputs.get(id)) {
+						outputs.get(id).reset();
+						outputs.get(id).writeObject(update);
+					}
+				} catch (IOException e) {
+					container.element = e;
+				}
+			});
 		}
+		if (container.element != null) throw container.element;
 	}
 
 	/**
@@ -179,9 +197,24 @@ public class Host implements Runnable {
 	 * @throws IOException When something goes wrong during sending.
 	 */
 	private void end() throws IOException {
-		for (Handler handler : this.handler) {
-			handler.end();
+		Container<IOException> container = new Container<>();
+		synchronized (game) {
+			short[] cardCount = game.getCardCount();
+			IntStream.range(0, outputs.size()).parallel().forEach(id -> {
+				Update update;
+				update = new Update(false, true, game.getPlayer(id), game.getTopCard(), cardCount, (short) game.getStackSize());
+				try {
+					synchronized (outputs.get(id)) {
+						outputs.get(id).reset();
+						outputs.get(id).writeObject(update);
+					}
+					receivers.get(id).input.close();
+				} catch (IOException e) {
+					container.element = e;
+				}
+			});
 		}
+		if (container.element != null) throw container.element;
 	}
 
 	/**
@@ -211,32 +244,27 @@ public class Host implements Runnable {
 	/**
 	 * A class handling the connection with a client.
 	 */
-	private class Handler implements Runnable {
+	private class Receiver implements Runnable {
 
 		/**
-		 * The ID of the player this handler represents.
+		 * The ID of the player this receiver represents.
 		 */
 		private final int id;
 		/**
 		 * The input stream for receiving commands from the client.
 		 */
 		private final ObjectInputStream input;
-		/**
-		 * The output stream for sending updates to the client.
-		 */
-		private final ObjectOutputStream output;
 
 		/**
-		 * Creates a new handler.
+		 * Creates a new receiver.
 		 *
-		 * @param socket The socket of this handler.
-		 * @param id     The ID of the player this handler is responsible for.
+		 * @param input The input stream this receiver receives updates on.
+		 * @param id    The ID of the player this receiver is responsible for.
 		 * @throws IOException When a stream couldn't be opened.
 		 */
-		public Handler(@NotNull Socket socket, int id) throws IOException {
+		public Receiver(@NotNull ObjectInputStream input, int id) throws IOException {
 			this.id = id;
-			this.input = new ObjectInputStream(socket.getInputStream());
-			this.output = new ObjectOutputStream(socket.getOutputStream());
+			this.input = input;
 		}
 
 		@Override
@@ -301,41 +329,6 @@ public class Host implements Runnable {
 		}
 
 		/**
-		 * Sends an update to the client of this handler.
-		 *
-		 * @param cardCount How many cards all the players have.
-		 * @throws IOException When something goes wrong during send operation.
-		 */
-		public void update(short @NotNull [] cardCount) throws IOException {
-			Update update;
-			synchronized (game) {
-				boolean turn = game.getCurrentPlayer() == this.id;
-				update = new Update(turn, game.getPlayer(this.id), game.getTopCard(), cardCount, (short) game.getStackSize());
-			}
-			synchronized (output) {
-				output.reset();
-				output.writeObject(update);
-			}
-		}
-
-		/**
-		 * Sends a last update informing all clients that the round has ended.
-		 *
-		 * @throws IOException When something goes wrong during send operation.
-		 */
-		public void end() throws IOException {
-			Update update;
-			synchronized (game) {
-				update = new Update(false, true, game.getPlayer(this.id), game.getTopCard(), new short[game.playerCount()], (short) game.getStackSize());
-			}
-			synchronized (output) {
-				output.reset();
-				output.writeObject(update);
-			}
-			input.close();
-		}
-
-		/**
 		 * Sets the color of a wild card this player holds.
 		 *
 		 * @param order The order informing this host of the operation.
@@ -353,5 +346,16 @@ public class Host implements Runnable {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Just a small holder that gets used to hold an exception that occurs in another thread.
+	 * @param <E> Whatever this is supposed to hold.
+	 */
+	private static class Container<E> {
+		/**
+		 * The element this holds.
+		 */
+		private volatile E element;
 	}
 }
