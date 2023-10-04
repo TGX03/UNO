@@ -20,6 +20,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -39,6 +40,11 @@ public class Host implements Runnable {
 	 * The Condition used to wait for the start of the game.
 	 */
 	private final Condition waiter = startLock.newCondition();
+	/**
+	 * This lock gets used for synchronizing on the game state.
+	 * Not exactly required for virtual threads, but may slightly advantageous.
+	 */
+	private final Lock gameLock = new ReentrantLock(true);
 	/**
 	 * The server socket that accepts new connections.
 	 */
@@ -173,33 +179,66 @@ public class Host implements Runnable {
 	 */
 	private void update() throws IOException {
 		Container<IOException> container = new Container<>();
-		synchronized (game) {
-			short[] cardCount = game.getCardCount();
-			IntStream.range(0, receivers.size()).parallel().forEach(id -> {
-				boolean turn = game.getCurrentPlayer() == id;
-				Update update = new Update(turn, game.getPlayer(id), game.getTopCard(), cardCount, (short) game.getStackSize());
-				try {
-					synchronized (outputs.get(id)) {
-						outputs.get(id).reset();
-						outputs.get(id).writeObject(update);
-					}
-				} catch (IOException e) {
-					container.element = e;
+		gameLock.lock();
+		short[] cardCount = game.getCardCount();
+		IntStream.range(0, receivers.size()).parallel().forEach(id -> {
+			boolean turn = game.getCurrentPlayer() == id;
+			Update update = new Update(turn, game.getPlayer(id), game.getTopCard(), cardCount, (short) game.getStackSize());
+			try {
+				synchronized (outputs.get(id)) {
+					outputs.get(id).reset();
+					outputs.get(id).writeObject(update);
 				}
-			});
-		}
+			} catch (IOException e) {
+				container.element = e;
+			}
+		});
+		gameLock.unlock();
 		if (container.element != null) throw container.element;
 	}
 
 	/**
-	 * Tries to terminate this host and end the round.
+	 * Ends this host, if required by force.
 	 */
 	public void kill() {
 		kill = true;
+		boolean lock = false;
 		try {
-			this.end();
-		} catch (IOException ignored) {
+			lock = gameLock.tryLock(5, TimeUnit.SECONDS);
+		} catch (InterruptedException ignored) {
 		}
+		if (lock) {
+			try {
+				this.end();
+			} catch (IOException e) {
+				outputs.parallelStream().forEach(stream -> {
+					try {
+						stream.close();
+					} catch (IOException ignored) {
+					}
+				});
+				receivers.parallelStream().forEach(receiver -> {
+					try {
+						receiver.input.close();
+					} catch (IOException ignored) {
+					}
+				});
+			}
+		} else {    // Just forcefully close every stream if the lock couldn't be acquired.
+			outputs.parallelStream().forEach(stream -> {
+				try {
+					stream.close();
+				} catch (IOException ignored) {
+				}
+			});
+			receivers.parallelStream().forEach(receiver -> {
+				try {
+					receiver.input.close();
+				} catch (IOException ignored) {
+				}
+			});
+		}
+		gameLock.unlock();
 	}
 
 	/**
@@ -210,22 +249,22 @@ public class Host implements Runnable {
 	 */
 	private void end() throws IOException {
 		Container<IOException> container = new Container<>();
-		synchronized (game) {
-			short[] cardCount = game.getCardCount();
-			IntStream.range(0, outputs.size()).parallel().forEach(id -> {
-				Update update;
-				update = new Update(false, true, game.getPlayer(id), game.getTopCard(), cardCount, (short) game.getStackSize());
-				try {
-					synchronized (outputs.get(id)) {
-						outputs.get(id).reset();
-						outputs.get(id).writeObject(update);
-					}
-					receivers.get(id).input.close();
-				} catch (IOException e) {
-					container.element = e;
+		gameLock.lock();
+		short[] cardCount = game.getCardCount();
+		IntStream.range(0, outputs.size()).parallel().forEach(id -> {
+			Update update;
+			update = new Update(false, true, game.getPlayer(id), game.getTopCard(), cardCount, (short) game.getStackSize());
+			try {
+				synchronized (outputs.get(id)) {
+					outputs.get(id).reset();
+					outputs.get(id).writeObject(update);
 				}
-			});
-		}
+				receivers.get(id).input.close();
+			} catch (IOException e) {
+				container.element = e;
+			}
+		});
+		gameLock.unlock();
 		if (container.element != null) throw container.element;
 	}
 
@@ -295,33 +334,34 @@ public class Host implements Runnable {
 					Command order = (Command) input.readObject();
 					System.out.println("Received command from player " + this.id + " \"" + order.toString() + "\"");
 					boolean success = false;
-					synchronized (game) {
-						switch (order.type) {
-							case NORMAL -> {
-								if (game.getCurrentPlayer() == this.id) {
-									success = game.playCard(order.cardNumber);
-								}
+					gameLock.lockInterruptibly();
+					switch (order.type) {
+						case NORMAL -> {
+							if (game.getCurrentPlayer() == this.id) {
+								success = game.playCard(order.cardNumber);
 							}
-							case JUMP -> success = game.jump(this.id, order.cardNumber);
-							case ACCEPT -> {
-								if (game.getCurrentPlayer() == this.id) {
-									success = game.acceptCards();
-								}
+						}
+						case JUMP -> success = game.jump(this.id, order.cardNumber);
+						case ACCEPT -> {
+							if (game.getCurrentPlayer() == this.id) {
+								success = game.acceptCards();
 							}
-							case SELECT_COLOR -> success = selectColor(order);
-							case TAKE_CARD -> {
-								if (game.getCurrentPlayer() == this.id) {
-									game.takeCard();
-									success = true;
-								}
+						}
+						case SELECT_COLOR -> success = selectColor(order);
+						case TAKE_CARD -> {
+							if (game.getCurrentPlayer() == this.id) {
+								game.takeCard();
+								success = true;
 							}
 						}
 					}
+					gameLock.unlock();
 
 					// Update the clients when something was changed after execution
 					if (success) {
 						Host.this.update();
 					}
+				} catch (InterruptedException ignored) {
 				} catch (Exception e) {
 					handleException(e);
 				}
@@ -343,15 +383,17 @@ public class Host implements Runnable {
 		 * @return Whether the operation succeeded.
 		 */
 		private boolean selectColor(@NotNull Command order) {
-			synchronized (game) {
-				Player player = game.getPlayer(this.id);
-				Card card = player.getCards()[order.cardNumber];
-				if (card instanceof ChooseColor) {
-					((ChooseColor) card).setColor(order.color);
-					return true;
-				} else {
-					return false;
-				}
+			assert order.color != null;
+			gameLock.lock();
+			Player player = game.getPlayer(this.id);
+			Card card = player.getCards()[order.cardNumber];
+			if (card instanceof ChooseColor cc) {
+				cc.setColor(order.color);
+				gameLock.unlock();
+				return true;
+			} else {
+				gameLock.unlock();
+				return false;
 			}
 		}
 	}
