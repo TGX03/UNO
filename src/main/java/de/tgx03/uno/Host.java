@@ -20,6 +20,9 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 
 /**
@@ -27,6 +30,15 @@ import java.util.stream.IntStream;
  */
 public class Host implements Runnable {
 
+	/**
+	 * The lock used to wait for the start of the game.
+	 * Required as virtual threads don't play nice with synchronized blocks.
+	 */
+	private final Lock startLock = new ReentrantLock(false);
+	/**
+	 * The Condition used to wait for the start of the game.
+	 */
+	private final Condition waiter = startLock.newCondition();
 	/**
 	 * The server socket that accepts new connections.
 	 */
@@ -117,10 +129,11 @@ public class Host implements Runnable {
 		waitForClients();
 
 		// Set up the game and inform the clients of it
-		synchronized (this) {
-			game = new Game(receivers.size(), rules);
-			notifyAll();
-		}
+		startLock.lock();
+		game = new Game(receivers.size(), rules);
+		waiter.signalAll();
+		startLock.unlock();
+
 		try {
 			update();
 		} catch (IOException e) {
@@ -163,9 +176,8 @@ public class Host implements Runnable {
 		synchronized (game) {
 			short[] cardCount = game.getCardCount();
 			IntStream.range(0, receivers.size()).parallel().forEach(id -> {
-				Update update;
 				boolean turn = game.getCurrentPlayer() == id;
-				update = new Update(turn, game.getPlayer(id), game.getTopCard(), cardCount, (short) game.getStackSize());
+				Update update = new Update(turn, game.getPlayer(id), game.getTopCard(), cardCount, (short) game.getStackSize());
 				try {
 					synchronized (outputs.get(id)) {
 						outputs.get(id).reset();
@@ -271,14 +283,10 @@ public class Host implements Runnable {
 		public void run() {
 
 			// Wait until the game starts
-			synchronized (Host.this) {
-				while (!start || Host.this.game == null) {
-					try {
-						Host.this.wait();
-					} catch (InterruptedException exception) {
-						handleException(exception);
-					}
-				}
+			while (!start || Host.this.game == null) {
+				startLock.lock();
+				waiter.awaitUninterruptibly();
+				startLock.unlock();
 			}
 
 			while (!game.hasEnded() && !kill) {
@@ -350,6 +358,7 @@ public class Host implements Runnable {
 
 	/**
 	 * Just a small holder that gets used to hold an exception that occurs in another thread.
+	 *
 	 * @param <E> Whatever this is supposed to hold.
 	 */
 	private static class Container<E> {
