@@ -238,7 +238,7 @@ public class Host implements Runnable {
 				}
 			});
 		}
-		gameLock.unlock();
+		if (lock) gameLock.unlock();
 	}
 
 	/**
