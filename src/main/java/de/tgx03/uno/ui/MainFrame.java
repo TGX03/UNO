@@ -1,14 +1,15 @@
 package de.tgx03.uno.ui;
 
-import de.tgx03.uno.client.Client;
+import de.tgx03.uno.client.SocketClient;
 import de.tgx03.uno.client.ClientUpdate;
 import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.Rules;
 import de.tgx03.uno.game.cards.Card;
 import de.tgx03.uno.game.cards.ChooseColor;
 import de.tgx03.uno.game.cards.Color;
-import de.tgx03.uno.Host;
+import de.tgx03.uno.server.Server;
 import de.tgx03.uno.messaging.Update;
+import de.tgx03.uno.server.SocketServer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -119,11 +120,11 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	/**
 	 * The host object if it has been created.
 	 */
-	private Host host;
+	private Server server;
 	/**
 	 * The client object of the game.
 	 */
-	private Client client;
+	private SocketClient client;
 
 	/**
 	 * Launches a new MainFrame.
@@ -168,8 +169,8 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 				int port = Integer.parseInt(result.get());
 				Rules rules = createRules();
 				try {
-					host = new Host(port, rules);   // Create the host
-					host.registerExceptionHandler(this);
+					server = new SocketServer(port, rules);   // Create the host
+					server.registerExceptionHandler(this);
 
 					// Disable the buttons
 					createHost.setDisable(true);
@@ -177,7 +178,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 					joinGame.setDisable(true);
 
 					// Set up the client
-					client = new Client("localhost", port);
+					client = new SocketClient("localhost", port);
 					client.registerReceiver(this);
 				} catch (IOException e) {
 					handleInternalException(e);
@@ -198,7 +199,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 * @param e ignored
 	 */
 	public synchronized void startHost(@Nullable ActionEvent e) {
-		host.start();
+		server.start();
 		cardList.getSelectionModel().selectedIndexProperty().addListener(this);
 		startGame.setDisable(true);
 		end.setDisable(false);
@@ -317,14 +318,14 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 * @param e ignored
 	 */
 	public synchronized void endGame(@Nullable ActionEvent e) {
-		if (host == null && client == null) {
+		if (server == null && client == null) {
 			return;
-		} else if (host == null) {
+		} else if (server == null) {
 			client.kill();
 		} else {
-			host.kill();
-			host.removeExceptionHandler(this);
-			host = null;
+			server.kill();
+			server.removeExceptionHandler(this);
+			server = null;
 		}
 		client.removeReceiver(this);
 		client = null;
@@ -420,7 +421,7 @@ public class MainFrame extends Application implements ClientUpdate, ChangeListen
 	 * @param exception The exception to handle.
 	 */
 	private synchronized void handleInternalException(@NotNull Throwable exception) {
-		if ((client != null || host != null) && ExceptionDialog.showExceptionAnswer(exception) == ExceptionDialog.Answer.END_CONNECTION) {
+		if ((client != null || server != null) && ExceptionDialog.showExceptionAnswer(exception) == ExceptionDialog.Answer.END_CONNECTION) {
 			endGame(null);
 		} else {
 			ExceptionDialog.showException(exception);

@@ -1,6 +1,6 @@
 package de.tgx03.uno.ui;
 
-import de.tgx03.uno.client.Client;
+import de.tgx03.uno.client.SocketClient;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,7 +21,7 @@ public class ConnectionDialog {
 	/**
 	 * The (hopefully) created client.
 	 */
-	private Client client;
+	private SocketClient client;
 	/**
 	 * Whether a valid port was entered.
 	 */
@@ -34,7 +34,7 @@ public class ConnectionDialog {
 	 * @return The created client.
 	 */
 	@Nullable
-	public Client createClient() {
+	public SocketClient createClient() {
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 
@@ -70,7 +70,7 @@ public class ConnectionDialog {
 		Button confirm = new Button("Confirm");
 		confirm.setOnAction(e -> {
 			try {
-				client = new Client(host.getText(), Integer.parseInt(port.getText()));
+				client = new SocketClient(host.getText(), Integer.parseInt(port.getText()));
 				stage.close();
 			} catch (IOException ignored) {
 			} catch (NumberFormatException ex) {

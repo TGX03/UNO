@@ -1,7 +1,5 @@
-package de.tgx03.uno;
+package de.tgx03.uno.server;
 
-import de.tgx03.ExceptionHandler;
-import de.tgx03.uno.game.Game;
 import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.Rules;
 import de.tgx03.uno.game.cards.Card;
@@ -14,45 +12,24 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.UncheckedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 
-/**
- * A class representing the server of a game of UNO.
- */
-public class Host implements Runnable {
+public class SocketServer extends Server {
 
-	/**
-	 * The lock used to wait for the start of the game.
-	 * Required as virtual threads don't play nice with synchronized blocks.
-	 */
-	private final Lock startLock = new ReentrantLock(false);
-	/**
-	 * The Condition used to wait for the start of the game.
-	 */
-	private final Condition waiter = startLock.newCondition();
-	/**
-	 * This lock gets used for synchronizing on the game state.
-	 * Not exactly required for virtual threads, but may slightly advantageous.
-	 */
-	private final Lock gameLock = new ReentrantLock(true);
 	/**
 	 * The server socket that accepts new connections.
 	 */
 	private final ServerSocket serverSocket;
-	/**
-	 * The rules of the game to use once the game gets started.
-	 */
-	private final Rules rules;
 	/**
 	 * A list of all the receivers receiving commands from the clients
 	 */
@@ -61,23 +38,6 @@ public class Host implements Runnable {
 	 * A list of all the output streams updates get sent through.
 	 */
 	private final List<ObjectOutputStream> outputs = new ArrayList<>();
-	/**
-	 * The handlers for exceptions that may occur during operation.
-	 */
-	private final List<ExceptionHandler> exceptionHandlers = new ArrayList<>(1);
-
-	/**
-	 * Whether the game shall be started.
-	 */
-	private volatile boolean start = false;
-	/**
-	 * Whether the game shall be stopped.
-	 */
-	private volatile boolean kill = false;
-	/**
-	 * The game instance this host deals with.
-	 */
-	private Game game;
 
 	/**
 	 * Creates a new server that listens on the provided port
@@ -87,70 +47,31 @@ public class Host implements Runnable {
 	 * @param rules The rules of the game.
 	 * @throws IOException When something goes wrong while starting the server.
 	 */
-	public Host(int port, @Nullable Rules rules) throws IOException {
+	public SocketServer(int port, @Nullable Rules rules) throws IOException {
+		super(rules);
 		serverSocket = new ServerSocket(port);
-		this.rules = rules;
 		Thread accepter = new Thread(this, "Host-Main");
 		accepter.setDaemon(true);
 		accepter.start();
 	}
 
-	/**
-	 * Starts the round.
-	 */
+	@Override
 	public synchronized void start() {
-		start = true;
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
 			handleException(e);
 		}
-		notifyAll();
-	}
-
-	/**
-	 * Registers a new object that wishes to handle exceptions that may occur during this hosts execution.
-	 *
-	 * @param handler The object to be registered as exception handler.
-	 */
-	public void registerExceptionHandler(@NotNull ExceptionHandler handler) {
-		synchronized (exceptionHandlers) {
-			exceptionHandlers.add(handler);
-		}
-	}
-
-	/**
-	 * Removes an exception handler that no longer wishes to be informed of exceptions.
-	 *
-	 * @param handler The handler to remove.
-	 */
-	public void removeExceptionHandler(@NotNull ExceptionHandler handler) {
-		synchronized (exceptionHandlers) {  // TODO: When removing an exception handler while handling an exception a concurrent modification exception occurs.
-			exceptionHandlers.remove(handler);
-		}
+		super.start();
 	}
 
 	@Override
-	public void run() {
-		waitForClients();
-
-		// Set up the game and inform the clients of it
-		startLock.lock();
-		game = new Game(receivers.size(), rules);
-		waiter.signalAll();
-		startLock.unlock();
-
-		try {
-			update();
-		} catch (IOException e) {
-			handleException(e);
-		}
+	public int getPlayerCount() {
+		return receivers.size();
 	}
 
-	/**
-	 * Accepts new clients and sets up the connections with them.
-	 */
-	private void waitForClients() {
+	@Override
+	protected void waitForClients() {
 		int currentID = 0;  // Used to get the ID for each new connection
 		do {
 			try {
@@ -172,13 +93,8 @@ public class Host implements Runnable {
 		} while (!start && !kill);
 	}
 
-	/**
-	 * Informs all the clients of an update to the game.
-	 *
-	 * @throws IOException When something went wrong while sending the update.
-	 */
-	private void update() throws IOException {
-		Container<IOException> container = new Container<>();
+	@Override
+	protected void update() {
 		gameLock.lock();
 		short[] cardCount = game.getCardCount();
 		IntStream.range(0, receivers.size()).parallel().forEach(id -> {
@@ -190,65 +106,39 @@ public class Host implements Runnable {
 					outputs.get(id).writeObject(update);
 				}
 			} catch (IOException e) {
-				container.element = e;
+				throw new UncheckedIOException(e);
 			}
 		});
 		gameLock.unlock();
-		if (container.element != null) throw container.element;
 	}
 
-	/**
-	 * Ends this host, if required by force.
-	 */
+	@Override
 	public void kill() {
-		kill = true;
 		boolean lock = false;
 		try {
 			lock = gameLock.tryLock(5, TimeUnit.SECONDS);
 		} catch (InterruptedException ignored) {
 		}
-		if (lock) {
+		if (lock) this.end();
+		outputs.parallelStream().forEach(stream -> {
 			try {
-				this.end();
+				stream.close();
 			} catch (IOException e) {
-				outputs.parallelStream().forEach(stream -> {
-					try {
-						stream.close();
-					} catch (IOException ignored) {
-					}
-				});
-				receivers.parallelStream().forEach(receiver -> {
-					try {
-						receiver.input.close();
-					} catch (IOException ignored) {
-					}
-				});
+				throw new UncheckedIOException(e);
 			}
-		} else {    // Just forcefully close every stream if the lock couldn't be acquired.
-			outputs.parallelStream().forEach(stream -> {
-				try {
-					stream.close();
-				} catch (IOException ignored) {
-				}
-			});
-			receivers.parallelStream().forEach(receiver -> {
-				try {
-					receiver.input.close();
-				} catch (IOException ignored) {
-				}
-			});
-		}
+		});
+		receivers.parallelStream().forEach(receiver -> {
+			try {
+				receiver.input.close();
+			} catch (IOException e) {
+				throw new UncheckedIOException(e);
+			}
+		});
 		if (lock) gameLock.unlock();
 	}
 
-	/**
-	 * Informs all the clients that the game has ended
-	 * and shuts down the threads.
-	 *
-	 * @throws IOException When something goes wrong during sending.
-	 */
-	private void end() throws IOException {
-		Container<IOException> container = new Container<>();
+	@Override
+	protected void end() {
 		gameLock.lock();
 		short[] cardCount = game.getCardCount();
 		IntStream.range(0, outputs.size()).parallel().forEach(id -> {
@@ -261,35 +151,10 @@ public class Host implements Runnable {
 				}
 				receivers.get(id).input.close();
 			} catch (IOException e) {
-				container.element = e;
+				throw new UncheckedIOException(e);
 			}
 		});
 		gameLock.unlock();
-		if (container.element != null) throw container.element;
-	}
-
-	/**
-	 * Gives an exception that occurred to all the registered handlers.
-	 *
-	 * @param e The exception to forward.
-	 */
-	private synchronized void handleException(@NotNull Exception e) {
-		synchronized (this.exceptionHandlers) {
-			this.exceptionHandlers.parallelStream().forEach(x -> x.handleException(e));
-		}
-	}
-
-	@Override
-	public boolean equals(@Nullable Object o) {
-		if (o instanceof Host h) {
-			return this.serverSocket.equals(h.serverSocket) && this.rules.equals(h.rules) && (this.game != null && this.game.equals(h.game));
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(serverSocket, rules, game);
 	}
 
 	/**
@@ -322,11 +187,7 @@ public class Host implements Runnable {
 		public void run() {
 
 			// Wait until the game starts
-			while (!start || Host.this.game == null) {
-				startLock.lock();
-				waiter.awaitUninterruptibly();
-				startLock.unlock();
-			}
+			awaitStart();
 
 			while (!game.hasEnded() && !kill) {
 				// Read orders and process them
@@ -359,7 +220,7 @@ public class Host implements Runnable {
 
 					// Update the clients when something was changed after execution
 					if (success) {
-						Host.this.update();
+						SocketServer.this.update();
 					}
 				} catch (InterruptedException ignored) {
 				} catch (Exception e) {
@@ -367,11 +228,7 @@ public class Host implements Runnable {
 				}
 			}
 			if (!kill) {
-				try {
-					Host.this.end();
-				} catch (IOException e) {
-					handleException(e);
-				}
+				SocketServer.this.end();
 			}
 			System.out.println("Shutting down host thread");
 		}
@@ -396,17 +253,5 @@ public class Host implements Runnable {
 				return false;
 			}
 		}
-	}
-
-	/**
-	 * Just a small holder that gets used to hold an exception that occurs in another thread.
-	 *
-	 * @param <E> Whatever this is supposed to hold.
-	 */
-	private static class Container<E> {
-		/**
-		 * The element this holds.
-		 */
-		private volatile E element;
 	}
 }
