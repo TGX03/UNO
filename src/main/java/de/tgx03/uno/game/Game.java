@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A class representing a game of Uno.
@@ -22,6 +24,8 @@ public class Game {
 	 * How many cards each player gets at the start of a round.
 	 */
 	private static final int INITIAL_CARDS = 7;
+
+	public final Lock gameLock = new ReentrantLock(true);
 
 	/**
 	 * ALl the players in this game.
@@ -85,9 +89,15 @@ public class Game {
 	 * @param cardNumber The number of the number in the current players stack.
 	 * @return Whether the current player did play this card.
 	 */
-	public synchronized boolean playCard(int cardNumber) {
-		if (stack > 0) return mustStack(cardNumber);
-		else return normalPlay(cardNumber);
+	public boolean playCard(int playerNumber, int cardNumber) {
+		gameLock.lock();
+		try {
+			if (currentPlayer != playerNumber) return false;
+			if (stack > 0) return mustStack(cardNumber);
+			else return normalPlay(cardNumber);
+		} finally {
+			gameLock.unlock();
+		}
 	}
 
 	/**
@@ -98,22 +108,26 @@ public class Game {
 	 * @param cardNumber Which card the player wants to jump with.
 	 * @return Whether the move was executed.
 	 */
-	public synchronized boolean jump(int player, int cardNumber) {
+	public boolean jump(int player, int cardNumber) {
+		gameLock.lock();
+		try {
+			// Directly return if jumping is forbidden
+			if (!rules.jumping) return false;
 
-		// Directly return if jumping is forbidden
-		if (!rules.jumping) return false;
+			// Try to play the card
+			Card played = players[player].jumpCard(cardNumber);
+			if (played == null) return false;
+			currentPlayer = player;
+			top = played;
 
-		// Try to play the card
-		Card played = players[player].jumpCard(cardNumber);
-		if (played == null) return false;
-		currentPlayer = player;
-		top = played;
-
-		// Update
-		updateTop();
-		applyPenalties();
-		nextPlayer();
-		return true;
+			// Update
+			updateTop();
+			applyPenalties();
+			nextPlayer();
+			return true;
+		} finally {
+			gameLock.unlock();
+		}
 	}
 
 	/**
@@ -121,29 +135,42 @@ public class Game {
 	 *
 	 * @return Whether a card was picked up.
 	 */
-	public synchronized boolean acceptCards() {
+	public boolean acceptCards(int playerNumber) {
 
-		// Directly return if there currently is no penalty
-		if (stack == 0) return false;
+		gameLock.lock();
 
-		// Pick up the cards
-		for (int i = 0; i < stack; i++) {
-			players[currentPlayer].drawCard();
+		try {
+			// Directly return if there currently is no penalty
+			if (stack == 0 || currentPlayer != playerNumber) return false;
+
+			// Pick up the cards
+			for (int i = 0; i < stack; i++) {
+				players[currentPlayer].drawCard();
+			}
+
+			// Update
+			nextPlayer();
+			stack = 0;
+			return true;
+		} finally {
+			gameLock.unlock();
 		}
-
-		// Update
-		nextPlayer();
-		stack = 0;
-		return true;
 	}
 
 	/**
 	 * The current player picks up a card.
 	 */
-	public synchronized void takeCard() {
-		players[currentPlayer].drawCard();
-		if (!rules.forceContinue) {
-			nextPlayer();
+	public boolean takeCard(int playerNumber) {
+		gameLock.lock();
+		try {
+			if (playerNumber != currentPlayer) return false;
+			players[currentPlayer].drawCard();
+			if (!rules.forceContinue) {
+				nextPlayer();
+			}
+			return true;
+		} finally {
+			gameLock.unlock();
 		}
 	}
 
@@ -176,11 +203,13 @@ public class Game {
 	 *
 	 * @return The card count of each player.
 	 */
-	public synchronized short[] getCardCount() {
+	public short[] getCardCount() {
 		short[] count = new short[players.length];
+		gameLock.lock();
 		for (int i = 0; i < players.length; i++) {
 			count[i] = (short) players[i].cardCount();
 		}
+		gameLock.unlock();
 		return count;
 	}
 
@@ -197,7 +226,7 @@ public class Game {
 	 *
 	 * @return If the game has finished.
 	 */
-	public synchronized boolean hasEnded() {
+	public boolean hasEnded() {
 		for (Player player : players) {
 			if (!player.finished()) {
 				return false;
@@ -221,23 +250,27 @@ public class Game {
 	 * @param cardNumber The number of the card to play.
 	 * @return Whether the card was played.
 	 */
-	private synchronized boolean normalPlay(int cardNumber) {
+	private boolean normalPlay(int cardNumber) {
+		gameLock.lock();
+		try {
+			// Play the cards
+			Card played = players[currentPlayer].playCard(cardNumber);
+			if (played == null) return false;
+			// Check whether a black card got played by accident and return it if so
+			if (played.color() == Color.BLACK) {
+				players[currentPlayer].giveCard(cardNumber, played);
+				return false;
+			}
+			top = played;
 
-		// Play the cards
-		Card played = players[currentPlayer].playCard(cardNumber);
-		if (played == null) return false;
-		// Check whether a black card got played by accident and return it if so
-		if (played.color() == Color.BLACK) {
-			players[currentPlayer].giveCard(cardNumber, played);
-			return false;
+			// Update
+			updateTop();
+			applyPenalties();
+			nextPlayer();
+			return true;
+		} finally {
+			gameLock.unlock();
 		}
-		top = played;
-
-		// Update
-		updateTop();
-		applyPenalties();
-		nextPlayer();
-		return true;
 	}
 
 	/**
@@ -246,44 +279,53 @@ public class Game {
 	 * @param cardNumber The card of the current player to be played.
 	 * @return Whether it was successful.
 	 */
-	private synchronized boolean mustStack(int cardNumber) {
+	private boolean mustStack(int cardNumber) {
+		gameLock.lock();
+		try {
+			// Already return false if stacking is forbidden
+			if (!rules.stacking) {
+				return false;
+			}
 
-		// Already return false if stacking is forbidden
-		if (!rules.stacking) {
-			return false;
-		}
-
-		// Try to play card and check whether it's the correct type of card to stack
-		Card played = players[currentPlayer].playCard(cardNumber);
-		if (played == null) return false;
-		if (played.penalty() != 0 && top.penalty() == played.penalty()) {
-			top = played;
-			updateTop();
-			applyPenalties();
-			nextPlayer();
-			return true;
-		} else {
-			players[currentPlayer].giveCard(cardNumber, played);
-			return false;
+			// Try to play card and check whether it's the correct type of card to stack
+			Card played = players[currentPlayer].playCard(cardNumber);
+			if (played == null) return false;
+			if (played.penalty() != 0 && top.penalty() == played.penalty()) {
+				top = played;
+				updateTop();
+				applyPenalties();
+				nextPlayer();
+				return true;
+			} else {
+				players[currentPlayer].giveCard(cardNumber, played);
+				return false;
+			}
+		} finally {
+			gameLock.unlock();
 		}
 	}
 
 	/**
 	 * Go to the next player.
 	 */
-	private synchronized void nextPlayer() {
-		if (!this.hasEnded()) {
-			if (reversed) {
-				do {
-					currentPlayer--;
-					if (currentPlayer < 0) currentPlayer = players.length - 1;
-				} while (players[currentPlayer].finished());
-			} else {
-				do {
-					currentPlayer++;
-					if (currentPlayer >= players.length) currentPlayer = 0;
-				} while (players[currentPlayer].finished());
+	private void nextPlayer() {
+		gameLock.lock();
+		try {
+			if (!this.hasEnded()) {
+				if (reversed) {
+					do {
+						currentPlayer--;
+						if (currentPlayer < 0) currentPlayer = players.length - 1;
+					} while (players[currentPlayer].finished());
+				} else {
+					do {
+						currentPlayer++;
+						if (currentPlayer >= players.length) currentPlayer = 0;
+					} while (players[currentPlayer].finished());
+				}
 			}
+		} finally {
+			gameLock.unlock();
 		}
 	}
 
@@ -291,18 +333,22 @@ public class Game {
 	 * Apply the penalties in accordance with the card currently lying on top.
 	 */
 	private synchronized void applyPenalties() {
+		gameLock.lock();
 		stack = stack + top.penalty();
 		reversed = top.changesDirection() != reversed;  // This was a simplification provided by IntelliJ, hope it works
 		if (top.skipNextPlayer()) nextPlayer();
+		gameLock.unlock();
 	}
 
 	/**
 	 * Give the new top card to all the players.
 	 */
-	private synchronized void updateTop() {
+	private void updateTop() {
+		gameLock.lock();
 		for (Player player : players) {
 			player.updateTop(top);
 		}
+		gameLock.unlock();
 	}
 
 	@Override

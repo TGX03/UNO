@@ -2,29 +2,18 @@ package de.tgx03.uno.server;
 
 import de.tgx03.ExceptionHandler;
 import de.tgx03.uno.game.Game;
-import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.Rules;
-import de.tgx03.uno.game.cards.Card;
 import de.tgx03.uno.game.cards.ChooseColor;
 import de.tgx03.uno.messaging.Command;
-import de.tgx03.uno.messaging.Update;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.IntStream;
 
 /**
  * A class representing the server of a game of UNO.
@@ -40,11 +29,6 @@ public abstract class Server implements Runnable {
 	 * The Condition used to wait for the start of the game.
 	 */
 	private final Condition waiter = startLock.newCondition();
-	/**
-	 * This lock gets used for synchronizing on the game state.
-	 * Not exactly required for virtual threads, but may slightly advantageous.
-	 */
-	protected final Lock gameLock = new ReentrantLock(true);
 	/**
 	 * The rules of the game to use once the game gets started.
 	 */
@@ -122,6 +106,7 @@ public abstract class Server implements Runnable {
 
 	/**
 	 * How many players are currently registered to play the game.
+	 *
 	 * @return How many players are registered.
 	 */
 	public abstract int getPlayerCount();
@@ -166,5 +151,22 @@ public abstract class Server implements Runnable {
 			waiter.awaitUninterruptibly();
 			startLock.unlock();
 		}
+	}
+
+	protected final void executeCommand(int player, Command command) {
+		boolean result = switch (command.type) {
+			case NORMAL -> game.playCard(player, command.cardNumber);
+			case JUMP -> game.jump(player, command.cardNumber);
+			case ACCEPT -> game.acceptCards(player);
+			case TAKE_CARD -> game.takeCard(player);
+			case SELECT_COLOR -> {
+				if (game.getPlayer(player).getCards()[command.cardNumber] instanceof ChooseColor cc) {
+					assert command.color != null;
+					cc.setColor(command.color);
+					yield true;
+				} else yield false;
+			}
+		};
+		if (result) this.update();
 	}
 }

@@ -1,9 +1,6 @@
 package de.tgx03.uno.server;
 
-import de.tgx03.uno.game.Player;
 import de.tgx03.uno.game.Rules;
-import de.tgx03.uno.game.cards.Card;
-import de.tgx03.uno.game.cards.ChooseColor;
 import de.tgx03.uno.messaging.Command;
 import de.tgx03.uno.messaging.Update;
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +16,6 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 
 public class SocketServer extends Server {
@@ -95,7 +89,7 @@ public class SocketServer extends Server {
 
 	@Override
 	protected void update() {
-		gameLock.lock();
+		game.gameLock.lock();
 		short[] cardCount = game.getCardCount();
 		IntStream.range(0, receivers.size()).parallel().forEach(id -> {
 			boolean turn = game.getCurrentPlayer() == id;
@@ -109,14 +103,14 @@ public class SocketServer extends Server {
 				throw new UncheckedIOException(e);
 			}
 		});
-		gameLock.unlock();
+		game.gameLock.unlock();
 	}
 
 	@Override
 	public void kill() {
 		boolean lock = false;
 		try {
-			lock = gameLock.tryLock(5, TimeUnit.SECONDS);
+			lock = game.gameLock.tryLock(5, TimeUnit.SECONDS);
 		} catch (InterruptedException ignored) {
 		}
 		if (lock) this.end();
@@ -134,12 +128,12 @@ public class SocketServer extends Server {
 				throw new UncheckedIOException(e);
 			}
 		});
-		if (lock) gameLock.unlock();
+		if (lock) game.gameLock.unlock();
 	}
 
 	@Override
 	protected void end() {
-		gameLock.lock();
+		game.gameLock.lock();
 		short[] cardCount = game.getCardCount();
 		IntStream.range(0, outputs.size()).parallel().forEach(id -> {
 			Update update;
@@ -154,7 +148,7 @@ public class SocketServer extends Server {
 				throw new UncheckedIOException(e);
 			}
 		});
-		gameLock.unlock();
+		game.gameLock.unlock();
 	}
 
 	/**
@@ -194,35 +188,7 @@ public class SocketServer extends Server {
 				try {
 					Command order = (Command) input.readObject();
 					System.out.println("Received command from player " + this.id + " \"" + order.toString() + "\"");
-					boolean success = false;
-					gameLock.lockInterruptibly();
-					switch (order.type) {
-						case NORMAL -> {
-							if (game.getCurrentPlayer() == this.id) {
-								success = game.playCard(order.cardNumber);
-							}
-						}
-						case JUMP -> success = game.jump(this.id, order.cardNumber);
-						case ACCEPT -> {
-							if (game.getCurrentPlayer() == this.id) {
-								success = game.acceptCards();
-							}
-						}
-						case SELECT_COLOR -> success = selectColor(order);
-						case TAKE_CARD -> {
-							if (game.getCurrentPlayer() == this.id) {
-								game.takeCard();
-								success = true;
-							}
-						}
-					}
-					gameLock.unlock();
-
-					// Update the clients when something was changed after execution
-					if (success) {
-						SocketServer.this.update();
-					}
-				} catch (InterruptedException ignored) {
+					executeCommand(this.id, order);
 				} catch (Exception e) {
 					handleException(e);
 				}
@@ -231,27 +197,6 @@ public class SocketServer extends Server {
 				SocketServer.this.end();
 			}
 			System.out.println("Shutting down host thread");
-		}
-
-		/**
-		 * Sets the color of a wild card this player holds.
-		 *
-		 * @param order The order informing this host of the operation.
-		 * @return Whether the operation succeeded.
-		 */
-		private boolean selectColor(@NotNull Command order) {
-			assert order.color != null;
-			gameLock.lock();
-			Player player = game.getPlayer(this.id);
-			Card card = player.getCards()[order.cardNumber];
-			if (card instanceof ChooseColor cc) {
-				cc.setColor(order.color);
-				gameLock.unlock();
-				return true;
-			} else {
-				gameLock.unlock();
-				return false;
-			}
 		}
 	}
 }
