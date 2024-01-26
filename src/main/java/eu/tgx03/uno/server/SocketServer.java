@@ -81,6 +81,9 @@ public class SocketServer extends Server implements Runnable {
 		return receivers.size();
 	}
 
+	/**
+	 * Accepts new clients until interrupted.
+	 */
 	protected void waitForClients() {
 		int currentID = 0;  // Used to get the ID for each new connection
 		do {
@@ -176,6 +179,9 @@ public class SocketServer extends Server implements Runnable {
 		startLock.unlock();
 	}
 
+	/**
+	 * Wait until the game starts.
+	 */
 	private void awaitStart() {
 		startLock.lock();
 		startWaiter.awaitUninterruptibly();
