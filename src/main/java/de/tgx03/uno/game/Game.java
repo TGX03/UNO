@@ -25,6 +25,9 @@ public class Game {
 	 */
 	private static final int INITIAL_CARDS = 7;
 
+	/**
+	 * This lock can be used to synchronize on a game externally, as synchronized blocks are avoided for virtual threads.
+	 */
 	public final Lock gameLock = new ReentrantLock(true);
 
 	/**
