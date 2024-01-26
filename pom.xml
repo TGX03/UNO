@@ -82,7 +82,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>de.tgx03.uno.ui.Launcher</mainClass>
+                            <mainClass>eu.tgx03.uno.ui.Launcher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

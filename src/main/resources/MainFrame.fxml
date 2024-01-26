@@ -37,7 +37,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2"
-      fx:controller="de.tgx03.uno.ui.MainFrame">
+      fx:controller="eu.tgx03.uno.ui.MainFrame">
 	<MenuBar VBox.vgrow="NEVER">
 		<Menu mnemonicParsing="false" text="Game">
 			<MenuItem fx:id="createHost" mnemonicParsing="false" onAction="#createHost" text="Create Host"/>
