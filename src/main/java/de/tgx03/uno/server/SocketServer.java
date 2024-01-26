@@ -1,5 +1,6 @@
 package de.tgx03.uno.server;
 
+import de.tgx03.uno.game.Game;
 import de.tgx03.uno.game.Rules;
 import de.tgx03.uno.messaging.Command;
 import de.tgx03.uno.messaging.Update;
@@ -16,9 +17,12 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 
-public class SocketServer extends Server {
+public class SocketServer extends Server implements Runnable {
 
 	/**
 	 * The server socket that accepts new connections.
@@ -32,6 +36,18 @@ public class SocketServer extends Server {
 	 * A list of all the output streams updates get sent through.
 	 */
 	private final List<ObjectOutputStream> outputs = new ArrayList<>();
+	/**
+	 * The rules of the game.
+	 */
+	private final Rules rules;
+	/**
+	 * The lock used to make receivers wait for the start of the round.
+	 */
+	private final Lock startLock = new ReentrantLock();
+	/**
+	 * The condition derived from startLock to make threads wait for the start of the round.
+	 */
+	private final Condition startWaiter = startLock.newCondition();
 
 	/**
 	 * Creates a new server that listens on the provided port
@@ -42,7 +58,7 @@ public class SocketServer extends Server {
 	 * @throws IOException When something goes wrong while starting the server.
 	 */
 	public SocketServer(int port, @Nullable Rules rules) throws IOException {
-		super(rules);
+		this.rules = rules;
 		serverSocket = new ServerSocket(port);
 		Thread accepter = new Thread(this, "Host-Main");
 		accepter.setDaemon(true);
@@ -50,13 +66,14 @@ public class SocketServer extends Server {
 	}
 
 	@Override
-	public synchronized void start() {
+	public void start() {
+		start = true;
+		super.game = new Game(this.getPlayerCount(), rules);
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
 			handleException(e);
 		}
-		super.start();
 	}
 
 	@Override
@@ -64,7 +81,6 @@ public class SocketServer extends Server {
 		return receivers.size();
 	}
 
-	@Override
 	protected void waitForClients() {
 		int currentID = 0;  // Used to get the ID for each new connection
 		do {
@@ -149,6 +165,21 @@ public class SocketServer extends Server {
 			}
 		});
 		game.gameLock.unlock();
+	}
+
+	@Override
+	public void run() {
+		waitForClients();
+
+		startLock.lock();
+		startWaiter.signalAll();
+		startLock.unlock();
+	}
+
+	private void awaitStart() {
+		startLock.lock();
+		startWaiter.awaitUninterruptibly();
+		startLock.unlock();
 	}
 
 	/**

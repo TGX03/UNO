@@ -2,37 +2,18 @@ package de.tgx03.uno.server;
 
 import de.tgx03.ExceptionHandler;
 import de.tgx03.uno.game.Game;
-import de.tgx03.uno.game.Rules;
 import de.tgx03.uno.game.cards.ChooseColor;
 import de.tgx03.uno.messaging.Command;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A class representing the server of a game of UNO.
  */
-public abstract class Server implements Runnable {
+public abstract class Server {
 
-	/**
-	 * The lock used to wait for the start of the game.
-	 * Required as virtual threads don't play nice with synchronized blocks.
-	 */
-	private final Lock startLock = new ReentrantLock(false);
-	/**
-	 * The Condition used to wait for the start of the game.
-	 */
-	private final Condition waiter = startLock.newCondition();
-	/**
-	 * The rules of the game to use once the game gets started.
-	 */
-	private final Rules rules;
 	/**
 	 * The handlers for exceptions that may occur during operation.
 	 */
@@ -50,25 +31,6 @@ public abstract class Server implements Runnable {
 	 * The game instance this host deals with.
 	 */
 	protected Game game;
-
-	/**
-	 * Creates a new server that listens on the provided port
-	 * for clients.
-	 *
-	 * @param rules The rules of the game.
-	 * @throws IOException When something goes wrong while starting the server.
-	 */
-	public Server(@Nullable Rules rules) throws IOException {
-		this.rules = rules;
-	}
-
-	/**
-	 * Starts the round.
-	 */
-	public synchronized void start() {
-		start = true;
-		notifyAll();
-	}
 
 	/**
 	 * Registers a new object that wishes to handle exceptions that may occur during this hosts execution.
@@ -92,17 +54,10 @@ public abstract class Server implements Runnable {
 		}
 	}
 
-	@Override
-	public void run() {
-		waitForClients();
-
-		// Set up the game and inform the clients of it
-		startLock.lock();
-		game = new Game(getPlayerCount(), rules);
-		waiter.signalAll();
-		startLock.unlock();
-		update();
-	}
+	/**
+	 * Starts the round.
+	 */
+	public abstract void start();
 
 	/**
 	 * How many players are currently registered to play the game.
@@ -110,11 +65,6 @@ public abstract class Server implements Runnable {
 	 * @return How many players are registered.
 	 */
 	public abstract int getPlayerCount();
-
-	/**
-	 * Accepts new clients and sets up the connections with them.
-	 */
-	protected abstract void waitForClients();
 
 	/**
 	 * Informs all the clients of an update to the game.
@@ -142,14 +92,6 @@ public abstract class Server implements Runnable {
 	protected synchronized void handleException(@NotNull Exception e) {
 		synchronized (this.exceptionHandlers) {
 			this.exceptionHandlers.parallelStream().forEach(x -> x.handleException(e));
-		}
-	}
-
-	protected void awaitStart() {
-		while (!start || Server.this.game == null) {
-			startLock.lock();
-			waiter.awaitUninterruptibly();
-			startLock.unlock();
 		}
 	}
 
