@@ -3,6 +3,7 @@ package eu.tgx03.uno.client;
 import eu.tgx03.uno.game.Player;
 import eu.tgx03.uno.game.cards.Card;
 import eu.tgx03.uno.game.cards.Color;
+import eu.tgx03.uno.messaging.Command;
 import eu.tgx03.uno.messaging.Update;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,6 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class representing a generic client for UNO, which provides the necessary functions to communicate with the server.
+ */
 public abstract class Client implements Runnable {
 
 	/**
@@ -78,7 +82,12 @@ public abstract class Client implements Runnable {
 		}
 	}
 
-	protected void update(Update update) {
+	/**
+	 * Examines an update and updates the presentation to the Use accordingly.
+	 *
+	 * @param update The new data.
+	 */
+	protected final void update(Update update) {
 		synchronized (this) {
 			player = update.player;
 			topCard = update.topCard;
@@ -94,13 +103,64 @@ public abstract class Client implements Runnable {
 		ended = true;
 	}
 
-	public abstract void play(int cardNumber) throws IOException;
+	/**
+	 * Play the selected card normally.
+	 * There is no response, whether the operation has actually succeeded
+	 * must be determined with the update.
+	 *
+	 * @param cardNumber The card to place.
+	 * @throws IOException When an error occurs during transmission.
+	 */
+	public final void play(int cardNumber) throws IOException {
+		sendCommand(new Command(Command.CommandType.NORMAL, cardNumber));
+	}
 
-	public abstract void jump(int cardNumber) throws IOException;
+	/**
+	 * Throws in the selected card no matter whose turn it is
+	 * There is no response, whether the operation has actually succeeded
+	 * must be determined with the update.
+	 *
+	 * @param cardNumber The card to throw.
+	 * @throws IOException When an error occurs during transmission.
+	 */
+	public final void jump(int cardNumber) throws IOException {
+		sendCommand(new Command(Command.CommandType.JUMP, cardNumber));
+	}
 
-	public abstract void acceptCards() throws IOException;
+	/**
+	 * Informs the host that the penalty cards get accepted by this client.
+	 *
+	 * @throws IOException When an error occurs during transmission.
+	 */
+	public final void acceptCards() throws IOException {
+		sendCommand(new Command(Command.CommandType.ACCEPT, -1));
+	}
 
-	public abstract void takeCard() throws IOException;
+	/**
+	 * Requests the host to create a new card and add it to this player.
+	 *
+	 * @throws IOException When an error occurs during transmission.
+	 */
+	public final void takeCard() throws IOException {
+		sendCommand(new Command());
+	}
 
-	public abstract void selectColor(int cardNumber, @NotNull Color color) throws IOException;
+	/**
+	 * Informs the server which color a +4 or Wild Card should have.
+	 *
+	 * @param cardNumber The number of the card to set.
+	 * @param color      The desired color.
+	 * @throws IOException When an error occurs during transmission.
+	 */
+	public final void selectColor(int cardNumber, @NotNull Color color) throws IOException {
+		sendCommand(new Command(color, cardNumber));
+	}
+
+	/**
+	 * Send a given command to the host through this client.
+	 *
+	 * @param command The command to send.
+	 * @throws IOException When an error occurs during transmission
+	 */
+	protected abstract void sendCommand(Command command) throws IOException;
 }

@@ -47,69 +47,6 @@ public class SocketClient extends Client {
 	}
 
 	/**
-	 * Play the selected card normally.
-	 * There is no response, whether the operation has actually succeeded
-	 * must be determined with the update.
-	 *
-	 * @param cardNumber The card to place.
-	 * @throws IOException When an error occurs during transmission.
-	 */
-	public synchronized void play(int cardNumber) throws IOException {
-		output.reset();
-		Command command = new Command(Command.CommandType.NORMAL, cardNumber);
-		output.writeObject(command);
-	}
-
-	/**
-	 * Throws in the selected card no matter whose turn it is
-	 * There is no response, whether the operation has actually succeeded
-	 * must be determined with the update.
-	 *
-	 * @param cardNumber The card to throw.
-	 * @throws IOException When an error occurs during transmission.
-	 */
-	public synchronized void jump(int cardNumber) throws IOException {
-		output.reset();
-		Command command = new Command(Command.CommandType.JUMP, cardNumber);
-		output.writeObject(command);
-	}
-
-	/**
-	 * Informs the host that the penalty cards get accepted by this client.
-	 *
-	 * @throws IOException When an error occurs during transmission.
-	 */
-	public synchronized void acceptCards() throws IOException {
-		output.reset();
-		Command command = new Command(Command.CommandType.ACCEPT, -1);
-		output.writeObject(command);
-	}
-
-	/**
-	 * Requests the host to create a new card and add it to this player.
-	 *
-	 * @throws IOException When an error occurs during transmission.
-	 */
-	public synchronized void takeCard() throws IOException {
-		output.reset();
-		Command command = new Command();
-		output.writeObject(command);
-	}
-
-	/**
-	 * Informs the server which color a +4 or Wild Card should have.
-	 *
-	 * @param cardNumber The number of the card to set.
-	 * @param color      The desired color.
-	 * @throws IOException When an error occurs during transmission.
-	 */
-	public synchronized void selectColor(int cardNumber, @NotNull Color color) throws IOException {
-		output.reset();
-		Command command = new Command(color, cardNumber);
-		output.writeObject(command);
-	}
-
-	/**
 	 * Informs this client that the game is to be ended.
 	 * The client actually only shuts down when either a new update is received
 	 * or an error occurs during last transmission.
@@ -121,6 +58,12 @@ public class SocketClient extends Client {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
+	}
+
+	@Override
+	protected void sendCommand(Command command) throws IOException {
+		output.reset();
+		output.writeObject(command);
 	}
 
 	@Override
