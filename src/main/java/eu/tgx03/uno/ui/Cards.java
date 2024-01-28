@@ -1,6 +1,5 @@
 package eu.tgx03.uno.ui;
 
-import de.tgx03.uno.game.cards.*;
 import eu.tgx03.uno.game.cards.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
