@@ -150,8 +150,11 @@ public class SocketServer extends Server implements Runnable {
 		if (lock) game.gameLock.unlock();
 	}
 
-	@Override
-	protected void end() {
+	/**
+	 * Informs all the clients that the game has ended
+	 * and shuts down the threads.
+	 */
+	private void end() {
 		game.gameLock.lock();
 		short[] cardCount = game.getCardCount();
 		IntStream.range(0, outputs.size()).parallel().forEach(id -> {

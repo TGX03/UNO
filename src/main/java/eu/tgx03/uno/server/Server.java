@@ -79,12 +79,6 @@ public abstract class Server {
 	}
 
 	/**
-	 * Informs all the clients that the game has ended
-	 * and shuts down the threads.
-	 */
-	protected abstract void end();
-
-	/**
 	 * Gives an exception that occurred to all the registered handlers.
 	 *
 	 * @param e The exception to forward.
