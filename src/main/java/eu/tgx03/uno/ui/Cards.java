@@ -92,7 +92,7 @@ public final class Cards {
 	 * @throws IllegalAccessException No.
 	 */
 	private Cards() throws IllegalAccessException {
-		throw new IllegalAccessException("Not instantiable");
+		throw new IllegalAccessError("Not instantiable");
 	}
 
 	/**
