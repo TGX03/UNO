@@ -81,31 +81,6 @@ public class SocketServer extends Server implements Runnable {
 		return receivers.size();
 	}
 
-	/**
-	 * Accepts new clients until interrupted.
-	 */
-	protected void waitForClients() {
-		int currentID = 0;  // Used to get the ID for each new connection
-		do {
-			try {
-				Socket socket = serverSocket.accept();
-				if (!start) {
-					Receiver receiver = new Receiver(new ObjectInputStream(socket.getInputStream()), currentID);
-					Thread.ofVirtual().name("Host-Receiver " + currentID).start(receiver);
-					currentID++;
-					outputs.add(new ObjectOutputStream(socket.getOutputStream()));
-					this.receivers.add(receiver);
-				}
-			} catch (SocketException e) {
-				if (!start) {
-					handleException(e);
-				}
-			} catch (IOException e) {
-				handleException(e);
-			}
-		} while (!start && !kill);
-	}
-
 	@Override
 	protected void update() {
 		game.gameLock.lock();
@@ -189,6 +164,32 @@ public class SocketServer extends Server implements Runnable {
 		startLock.lock();
 		startWaiter.awaitUninterruptibly();
 		startLock.unlock();
+	}
+
+
+	/**
+	 * Accepts new clients until interrupted.
+	 */
+	private void waitForClients() {
+		int currentID = 0;  // Used to get the ID for each new connection
+		do {
+			try {
+				Socket socket = serverSocket.accept();
+				if (!start) {
+					Receiver receiver = new Receiver(new ObjectInputStream(socket.getInputStream()), currentID);
+					Thread.ofVirtual().name("Host-Receiver " + currentID).start(receiver);
+					currentID++;
+					outputs.add(new ObjectOutputStream(socket.getOutputStream()));
+					this.receivers.add(receiver);
+				}
+			} catch (SocketException e) {
+				if (!start) {
+					handleException(e);
+				}
+			} catch (IOException e) {
+				handleException(e);
+			}
+		} while (!start && !kill);
 	}
 
 	/**
