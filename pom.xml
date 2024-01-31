@@ -65,6 +65,11 @@
             <version>24.1.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro-tools</artifactId>
+            <version>1.11.3</version>
+        </dependency>
     </dependencies>
 
     <build>
