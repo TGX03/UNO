@@ -1,7 +1,6 @@
 package eu.tgx03.uno.client;
 
 import eu.tgx03.uno.game.cards.Card;
-import eu.tgx03.uno.game.cards.Color;
 import eu.tgx03.uno.messaging.Command;
 import eu.tgx03.uno.messaging.Update;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +37,7 @@ public class SocketClient extends Client {
 	 * @throws IOException If an error occurred when trying to establish the connection.
 	 */
 	public SocketClient(@NotNull String host, int hostPort) throws IOException {
-		Socket socket = new Socket(host, hostPort);
+		@SuppressWarnings("resource") Socket socket = new Socket(host, hostPort);
 		output = new ObjectOutputStream(socket.getOutputStream());
 		input = new ObjectInputStream(socket.getInputStream());
 		Thread thread = new Thread(this, "Client-Receiver");
