@@ -209,10 +209,9 @@ public class SocketServer extends Server implements Runnable {
 		 * Creates a new receiver.
 		 *
 		 * @param input The input stream this receiver receives updates on.
-		 * @param id    The ID of the player this receiver is responsible for.
-		 * @throws IOException When a stream couldn't be opened.
+		 * @param id    The ID of the player this receiver is responsible for.d.
 		 */
-		public Receiver(@NotNull ObjectInputStream input, int id) throws IOException {
+		public Receiver(@NotNull ObjectInputStream input, int id) {
 			this.id = id;
 			this.input = input;
 		}
