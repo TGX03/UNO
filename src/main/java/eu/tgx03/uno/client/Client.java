@@ -71,6 +71,18 @@ public abstract class Client implements Runnable {
 		}
 	}
 
+
+	@Override
+	public String toString() {
+		Card[] cards = player.getCards();
+		StringBuilder builder = new StringBuilder();
+		for (Card card : cards) {
+			builder.append(card).append("; ");
+		}
+		builder.append(System.lineSeparator()).append("Top Card:").append(topCard);
+		return builder.toString();
+	}
+
 	/**
 	 * Informs the receivers of this client that an exception occurred.
 	 *

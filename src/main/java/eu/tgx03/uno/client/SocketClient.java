@@ -65,17 +65,6 @@ public class SocketClient extends Client {
 		output.writeObject(command);
 	}
 
-	@Override
-	public String toString() {
-		Card[] cards = player.getCards();
-		StringBuilder builder = new StringBuilder();
-		for (Card card : cards) {
-			builder.append(card).append("; ");
-		}
-		builder.append(System.lineSeparator()).append("Top Card:").append(topCard);
-		return builder.toString();
-	}
-
 	/**
 	 * Basically the daemon waiting for updates from the server.
 	 */
