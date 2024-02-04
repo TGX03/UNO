@@ -183,11 +183,11 @@ public class UDPServer extends Server implements Runnable {
 	 * @param packet The packet to decode.
 	 */
 	private void decodeCommand(DatagramPacket packet) {
-		ByteBuffer buffer = ByteBuffer.wrap(packet.getData());
-		short id = buffer.getShort();
+		ByteArrayInputStream buffer = new ByteArrayInputStream(packet.getData(), 0, packet.getLength());
 
 		try {
-			ObjectInputStream input = new ObjectInputStream(new ByteBufferBackedInputStream(buffer));
+			ObjectInputStream input = new ObjectInputStream(buffer);
+			short id = input.readShort();
 			Command command = (Command) input.readObject();
 
 			int player = -1;
