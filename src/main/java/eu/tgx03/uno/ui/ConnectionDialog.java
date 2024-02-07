@@ -57,6 +57,7 @@ public class ConnectionDialog {
 	/**
 	 * Creates the Grid to get the connection details from the user
 	 * for the given stage.
+	 *
 	 * @param stage The stage the grid shall be placed on.
 	 * @return The created Grid Pane with fields and labels.
 	 */

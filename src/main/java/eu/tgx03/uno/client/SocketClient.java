@@ -1,6 +1,5 @@
 package eu.tgx03.uno.client;
 
-import eu.tgx03.uno.game.cards.Card;
 import eu.tgx03.uno.messaging.Command;
 import eu.tgx03.uno.messaging.Update;
 import org.jetbrains.annotations.NotNull;

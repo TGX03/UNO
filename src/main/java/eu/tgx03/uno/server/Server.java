@@ -91,7 +91,8 @@ public abstract class Server {
 
 	/**
 	 * Execute a received command.
-	 * @param player The player this belongs to.
+	 *
+	 * @param player  The player this belongs to.
 	 * @param command The received command to execute.
 	 */
 	protected final void executeCommand(int player, Command command) {

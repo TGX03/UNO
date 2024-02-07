@@ -1,14 +1,14 @@
 package eu.tgx03.uno.ui;
 
-import eu.tgx03.uno.client.SocketClient;
 import eu.tgx03.uno.client.ClientUpdate;
+import eu.tgx03.uno.client.SocketClient;
 import eu.tgx03.uno.game.Player;
 import eu.tgx03.uno.game.Rules;
 import eu.tgx03.uno.game.cards.Card;
 import eu.tgx03.uno.game.cards.ChooseColor;
 import eu.tgx03.uno.game.cards.Color;
-import eu.tgx03.uno.server.Server;
 import eu.tgx03.uno.messaging.Update;
+import eu.tgx03.uno.server.Server;
 import eu.tgx03.uno.server.SocketServer;
 import javafx.application.Application;
 import javafx.application.Platform;
