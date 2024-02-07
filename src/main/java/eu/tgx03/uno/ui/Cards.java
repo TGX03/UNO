@@ -89,7 +89,7 @@ public final class Cards {
 	/**
 	 * Private cause utility class.
 	 *
-	 * @throws IllegalAccessException No.
+	 * @throws IllegalAccessError No.
 	 */
 	private Cards() throws IllegalAccessError {
 		throw new IllegalAccessError("Not instantiable");
