@@ -99,7 +99,7 @@ public abstract class Client implements Runnable {
 	 *
 	 * @param update The new data.
 	 */
-	protected final void update(Update update) {
+	protected final void update(@NotNull Update update) {
 		synchronized (this) {
 			player = update.player;
 			topCard = update.topCard;
@@ -174,5 +174,5 @@ public abstract class Client implements Runnable {
 	 * @param command The command to send.
 	 * @throws IOException When an error occurs during transmission
 	 */
-	protected abstract void sendCommand(Command command) throws IOException;
+	protected abstract void sendCommand(@NotNull Command command) throws IOException;
 }

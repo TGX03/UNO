@@ -118,7 +118,7 @@ public class Player implements Externalizable {
 	 * @return All the cards of this player.
 	 */
 	@NotNull
-	public Card[] getCards() {
+	public Card @NotNull [] getCards() {
 		return cards.toArray(new Card[0]);
 	}
 

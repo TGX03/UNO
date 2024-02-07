@@ -68,6 +68,7 @@ public class Rules implements Externalizable, Cloneable {
 	}
 
 	/**
+	 * Creates a new Ruleset with the specified rules.
 	 * @param jumping       Whether throwing in when a player has exactly the same card as is lying on the pile is allowed.
 	 * @param stacking      Whether stacking penalty cards is allowed.
 	 * @param forceContinue Whether a player has to pick up cards until he is able to play.

@@ -177,6 +177,10 @@ public class Game {
 		}
 	}
 
+	/**
+	 * How many cards are currently on the penalty stack.
+	 * @return How many cards are currently on the penalty stack.
+	 */
 	public int getStackSize() {
 		return this.stack;
 	}
@@ -206,7 +210,7 @@ public class Game {
 	 *
 	 * @return The card count of each player.
 	 */
-	public short[] getCardCount() {
+	public short @NotNull [] getCardCount() {
 		short[] count = new short[players.length];
 		gameLock.lock();
 		for (int i = 0; i < players.length; i++) {

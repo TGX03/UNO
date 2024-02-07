@@ -59,7 +59,7 @@ public class SocketClient extends Client {
 	}
 
 	@Override
-	protected void sendCommand(Command command) throws IOException {
+	protected void sendCommand(@NotNull Command command) throws IOException {
 		output.reset();
 		output.writeObject(command);
 	}

@@ -2,6 +2,7 @@ package eu.tgx03.uno.client;
 
 import eu.tgx03.uno.messaging.Command;
 import eu.tgx03.uno.messaging.Update;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.DatagramPacket;
@@ -46,7 +47,7 @@ public class UDPClient extends Client {
 	 * @param nat      Whether NAT is in place and shall be dealt with.
 	 * @throws IOException Gets thrown when communication with the server could not be established.
 	 */
-	public UDPClient(String hostname, int port, boolean nat) throws IOException {
+	public UDPClient(@NotNull String hostname, int port, boolean nat) throws IOException {
 		socket = new DatagramSocket();
 		remoteAddress = new InetSocketAddress(hostname, port);
 		socket.connect(remoteAddress);
@@ -79,7 +80,7 @@ public class UDPClient extends Client {
 	}
 
 	@Override
-	protected void sendCommand(Command command) throws IOException {
+	protected void sendCommand(@NotNull Command command) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		ObjectOutputStream out = new ObjectOutputStream(bytes);
 		out.writeShort(id);

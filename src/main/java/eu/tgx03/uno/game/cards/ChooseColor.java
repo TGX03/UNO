@@ -38,6 +38,11 @@ public class ChooseColor extends Card {
 		return color;
 	}
 
+	/**
+	 * Updates the color of this wildcard to a new color to make sure only cards of that color can be placed on top.
+	 * Method must be called before playing this card.
+	 * @param color The color this card should represent.
+	 */
 	public void setColor(@NotNull Color color) {
 		this.color = color;
 	}
