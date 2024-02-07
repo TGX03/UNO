@@ -24,7 +24,7 @@ public class ChooseColor extends Card {
 
 	@Override
 	public boolean place(@Nullable Card below) {
-		return true;
+		return this.color != Color.BLACK;
 	}
 
 	@Override
