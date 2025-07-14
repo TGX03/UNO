@@ -29,12 +29,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>25-ea+22b</version>
+            <version>25-ea+24</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>25-ea+22b</version>
+            <version>25-ea+23</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
